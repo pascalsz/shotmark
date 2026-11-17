@@ -186,6 +186,7 @@ kbd {
   inset: -0.06em -0.12em -0.02em;
   width: calc(100% + 0.24em);
   height: calc(100% + 0.08em);
+  max-width: none; /* the global svg { max-width: 100% } would clip the overhang */
   overflow: visible;
   pointer-events: none;
   filter: var(--mark-shadow);
@@ -264,7 +265,7 @@ kbd {
   line-height: 1.02;
 }
 .hero h1 .mark-box { padding-right: calc(0.12em + 0.035em); }
-.hero h1 .mark-box > svg:first-of-type { inset: -0.02em -0.1em 0.02em; }
+.hero h1 .mark-box > svg:first-of-type { inset: -0.02em -0.12em 0.02em; }
 
 /* the arrow hangs off the framed word: it points at the frame from the right, above the full stop */
 .hero .mark-box > .mark-arrow {
