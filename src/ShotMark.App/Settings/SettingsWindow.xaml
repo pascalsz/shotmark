@@ -60,6 +60,8 @@
         <CheckBox x:Name="AutostartBox" Content="{x:Static loc:Strings.Settings_Autostart}" />
         <TextBlock x:Name="AutostartHint" Foreground="{StaticResource TextFaintBrush}" FontSize="12" Margin="28,4,0,0" TextWrapping="Wrap" />
         <CheckBox x:Name="ClipboardBox" Content="{x:Static loc:Strings.Settings_Clipboard}" Margin="0,12,0,0" />
+        <CheckBox x:Name="UpdatesBox" Content="{x:Static loc:Strings.Settings_CheckForUpdates}" Margin="0,12,0,0" />
+        <TextBlock Text="{x:Static loc:Strings.Settings_UpdatesHint}" Foreground="{StaticResource TextFaintBrush}" FontSize="12" Margin="28,4,0,0" TextWrapping="Wrap" />
 
         <TextBlock Text="{x:Static loc:Strings.Settings_Language}" Style="{StaticResource SectionLabel}" Margin="0,22,0,10" />
         <WrapPanel>

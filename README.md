@@ -1,6 +1,6 @@
 # ShotMark
 
-**Projektseite:** [pascalsz.github.io/shotmark/de](https://pascalsz.github.io/shotmark/de/) · English: [pascalsz.github.io/shotmark](https://pascalsz.github.io/shotmark/)
+**Projektseite:** [pascalsz.github.io/shotmark/de](https://pascalsz.github.io/shotmark/de/) · English: [pascalsz.github.io/shotmark](https://pascalsz.github.io/shotmark/) · [Code signing policy](https://pascalsz.github.io/shotmark/code-signing/)
 
 Schlankes Screenshot- und Markierungswerkzeug für Windows: **Druck-Taste → Bereich aufziehen → markieren → fertig gespeichert.**
 Gedacht als leichtgewichtige Alternative zu großen Screenshot-Suiten. Liegt der Speicherordner in einem synchronisierten
@@ -149,6 +149,7 @@ dotnet test ShotMark.slnx
 - `tests/`: xUnit-Tests. `UiSnapshots` rendert alle Fenster offscreen als PNG nach `SHOTMARK_SNAPSHOT_DIR\de\` und `…\en\`, wenn die Variable gesetzt ist.
 - Lokal paketieren: `powershell -ExecutionPolicy Bypass -File scripts\publish.ps1 -Version 1.2.3` legt Setup, Portable-Zip und Update-Pakete nach `Releases\` ([Velopack](https://velopack.io)).
 - Veröffentlichen: Tag pushen (`git tag v1.2.3`, `git push origin v1.2.3`). Die GitHub Action `release.yml` testet, packt und erstellt das Release, die installierten Versionen aktualisieren sich daraus.
+- Code-Signatur über die SignPath Foundation: Einrichtung und Ablauf in [docs/code-signing.md](docs/code-signing.md). Ohne eingerichtete Signatur entsteht das Release wie bisher unsigniert.
 - Update-Feed zum Testen umbiegen: Umgebungsvariable `SHOTMARK_UPDATE_FEED` auf einen Ordner mit `Releases\`-Inhalt setzen.
 
 ## Datenschutz
@@ -156,6 +157,7 @@ dotnet test ShotMark.slnx
 ShotMark arbeitet lokal. Es gibt keine Telemetrie und kein Konto. Aufnahmen landen nur in dem Ordner, den du selbst festlegst.
 Die einzige Netzwerkverbindung ist die Update-Prüfung: Die installierte Version ruft die Release-Dateien von
 `github.com/pascalsz/shotmark` ab. Dabei werden keine Daten über dich oder deine Aufnahmen übertragen.
+Die Update-Prüfung lässt sich in den Einstellungen abschalten (*Automatisch nach Updates suchen*).
 
 ## Lizenz
 

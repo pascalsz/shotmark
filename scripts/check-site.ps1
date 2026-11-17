@@ -15,7 +15,7 @@ $Root = [System.IO.Path]::GetFullPath($Root)
 
 $SiteUrl = 'https://pascalsz.github.io/shotmark/'
 $SetupUrl = 'https://github.com/pascalsz/shotmark/releases/latest/download/ShotMark.App-win-Setup.exe'
-$AllowedLinkHosts = @('github.com', 'docs.github.com')
+$AllowedLinkHosts = @('github.com', 'docs.github.com', 'about.signpath.io', 'signpath.org')
 $Trademark = @{
     en = 'Snagit is a trademark of TechSmith Corporation. ShotMark is not affiliated with TechSmith.'
     de = 'Snagit ist eine Marke der TechSmith Corporation. ShotMark steht in keiner Verbindung zu TechSmith.'
@@ -151,6 +151,12 @@ foreach ($lang in $Pages.Keys) {
         Check ($r.Ref -notmatch "assets/$other/") $lang "Bild der anderen Sprache: $($r.Ref)"
     }
 
+    # Code signing policy (Bedingung der SignPath Foundation): von der Startseite verlinkt, mit genau diesem Begriff
+    Check ([regex]::IsMatch($html, '<a\s[^>]*href="code-signing/"[^>]*>Code signing policy</a>')) $lang 'Link "Code signing policy" auf code-signing/ fehlt'
+    # Download-Bereich muss die SignPath Foundation nennen (Bedingung im SignPath-Antrag)
+    $download = [regex]::Match($html, '(?s)<section[^>]*id="download".*?</section>').Value
+    Check ($download.Contains('<a href="https://signpath.org/">SignPath Foundation</a>')) $lang 'Download-Bereich nennt die SignPath Foundation nicht'
+
     # 9. Snagit nur als Einordnung, Markenhinweis wörtlich
     foreach ($el in 'title', 'h1', 'h2', 'h3') {
         foreach ($t in Inner $html $el) { Check ($t -notmatch 'Snagit') $lang "Snagit in <$el>: $t" }
@@ -174,6 +180,16 @@ if (-not $Only -and $sectionIds.Count -eq 2) {
 
 # Begleitdateien
 if (-not $Only) {
+    $attribution = 'Free code signing provided by SignPath.io, certificate by SignPath Foundation.'
+    foreach ($policy in 'code-signing/index.html', 'de/code-signing/index.html') {
+        $path = Join-Path $Root $policy
+        Check (Test-Path $path) 'site' "$policy fehlt"
+        if (Test-Path $path) {
+            $text = (Text (Get-Content $path -Raw -Encoding UTF8)) -replace '\s+([,.])', '$1'
+            Check ($text.Contains($attribution)) 'site' "${policy}: SignPath-Hinweis fehlt oder weicht ab"
+            Check ($text.Contains('Code signing policy')) 'site' "${policy}: Überschrift „Code signing policy“ fehlt"
+        }
+    }
     foreach ($name in '404.html', 'robots.txt', 'sitemap.xml') {
         Check (Test-Path (Join-Path $Root $name)) 'site' "$name fehlt"
     }

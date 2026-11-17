@@ -462,6 +462,22 @@ kbd {
 .smartscreen li + li { margin-top: 6px; }
 .smartscreen .quote { color: var(--text); }
 
+/* code signing policy */
+.policy { padding-block: clamp(32px, 6vw, 72px) clamp(48px, 8vw, 96px); }
+.policy .wrap { max-width: 860px; }
+.policy h1 { font-size: clamp(2rem, 4.2vw, 3.25rem); font-weight: 700; } /* Headline step */
+.policy-lede { margin-top: 18px; color: var(--dim); font-size: 1.15rem; max-width: var(--measure); } /* section-intro step */
+.policy section { margin-top: 48px; }
+.policy h2 { font-size: 1.25rem; } /* Title step */
+.policy p, .policy ul { margin-top: 14px; color: var(--dim); max-width: var(--measure); }
+.policy ul { padding-left: 1.2em; }
+.policy li + li { margin-top: 8px; }
+.policy code { color: var(--text); overflow-wrap: anywhere; }
+.policy em { color: var(--text); font-style: normal; }
+.roles { display: grid; grid-template-columns: max-content 1fr; gap: 8px 24px; margin: 16px 0 0; }
+.roles dt { color: var(--text); font-weight: 600; }
+.roles dd { margin: 0; }
+
 /* footer */
 .site-footer { padding-block: 48px 64px; color: var(--faint); font-size: 0.92rem; }
 .site-footer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px 64px; }
@@ -476,6 +492,8 @@ kbd {
 
 @media (max-width: 880px) {
   .split, .split.flip, .download .wrap, .site-footer .wrap { grid-template-columns: minmax(0, 1fr); }
+  .roles { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .roles dd + dt { margin-top: 10px; }
   .split.flip > :first-child { order: 0; }
   .site-nav a:not(.lang) { display: none; }
 }

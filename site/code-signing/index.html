@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Code signing policy – ShotMark</title>
+  <meta name="description" content="How ShotMark releases are built and code-signed, who approves them, and what the app sends over the network.">
+  <link rel="canonical" href="https://pascalsz.github.io/shotmark/code-signing/">
+  <link rel="alternate" hreflang="en" href="https://pascalsz.github.io/shotmark/code-signing/">
+  <link rel="alternate" hreflang="de" href="https://pascalsz.github.io/shotmark/de/code-signing/">
+  <link rel="alternate" hreflang="x-default" href="https://pascalsz.github.io/shotmark/code-signing/">
+  <meta name="theme-color" content="#1b1b1d">
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="../" aria-label="ShotMark home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#fc4242"/><path d="M8 13V8h5M19 8h5v5M24 19v5h-5M13 24H8v-5M16 12.5v7M12.5 16h7" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ShotMark
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../#download">Download</a>
+        <a href="https://github.com/pascalsz/shotmark">GitHub</a>
+        <a class="lang" href="../de/code-signing/" hreflang="de" lang="de">Deutsch</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="policy">
+    <div class="wrap">
+      <h1>Code signing policy</h1>
+      <p class="policy-lede">Free code signing provided by <a href="https://about.signpath.io/">SignPath.io</a>, certificate by <a href="https://signpath.org/">SignPath Foundation</a>.</p>
+
+      <section aria-labelledby="what">
+        <h2 id="what">What is signed</h2>
+        <p>ShotMark's own program files (<code>ShotMark.exe</code> and the ShotMark libraries) and the installer <code>ShotMark.App-win-Setup.exe</code>. Third-party components are shipped as published by their vendors: the .NET runtime files are signed by Microsoft, the update engine <a href="https://github.com/velopack/velopack">Velopack</a> is shipped unchanged.</p>
+        <p>Signing is being set up: releases are signed once the SignPath Foundation has approved the project. Until then the setup is unsigned and Windows SmartScreen shows a warning on the first start.</p>
+      </section>
+
+      <section aria-labelledby="how">
+        <h2 id="how">How a release is built</h2>
+        <ul>
+          <li>Every release is built automatically by <a href="https://github.com/pascalsz/shotmark/blob/main/.github/workflows/release.yml">GitHub Actions</a> from the public repository <a href="https://github.com/pascalsz/shotmark">github.com/pascalsz/shotmark</a> when a version tag is pushed.</li>
+          <li>The tests run before anything is packed. Signing requests are submitted by that build and must be approved manually for every release.</li>
+          <li>The finished files are published as a <a href="https://github.com/pascalsz/shotmark/releases">GitHub release</a>. Installed copies update themselves from there.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="team">
+        <h2 id="team">Team roles</h2>
+        <dl class="roles">
+          <dt>Committers and reviewers</dt><dd><a href="https://github.com/pascalsz">Pascal Szorath (@pascalsz)</a></dd>
+          <dt>Approvers</dt><dd><a href="https://github.com/pascalsz">Pascal Szorath (@pascalsz)</a></dd>
+        </dl>
+        <p>All team members use multi-factor authentication for GitHub and SignPath. Changes from outside contributors are reviewed before they are merged.</p>
+      </section>
+
+      <section aria-labelledby="privacy">
+        <h2 id="privacy">Privacy</h2>
+        <p>ShotMark does not send any information about you or your captures to other networked systems. The only network access is the automatic update check: the app downloads the release list and, if there is a newer version, the update package from GitHub (<code>github.com/pascalsz/shotmark/releases</code>). This is explained on first start and can be switched off under <em>Settings → Check for updates automatically</em>. GitHub's own <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">privacy statement</a> applies to these downloads.</p>
+        <p>Captures are only saved to the folder you choose. If that folder is synchronised by a service such as Dropbox or OneDrive, that service's privacy policy applies.</p>
+      </section>
+
+      <section aria-labelledby="uninstall">
+        <h2 id="uninstall">Uninstall</h2>
+        <p><em>Windows Settings → Apps → Installed apps → ShotMark → Uninstall</em>. Your captures stay in their folder. Settings and the local log are kept in <code>%APPDATA%\ShotMark</code> and <code>%LOCALAPPDATA%\ShotMark</code>; delete those folders if you want them gone too.</p>
+      </section>
+
+      <section aria-labelledby="verify">
+        <h2 id="verify">Check a signature</h2>
+        <p>Right-click <code>ShotMark.App-win-Setup.exe</code> → <em>Properties</em> → <em>Digital Signatures</em>. A signed release shows “SignPath Foundation” as the signer.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>
+        <div class="footer-links">
+          <a href="../">ShotMark</a>
+          <a href="https://github.com/pascalsz/shotmark">GitHub</a>
+          <a href="../de/code-signing/" hreflang="de" lang="de">Deutsch</a>
+        </div>
+        <p>Snagit is a trademark of TechSmith Corporation. ShotMark is not affiliated with TechSmith.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

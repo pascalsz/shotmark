@@ -35,6 +35,25 @@ public class SettingsStoreTests
     }
 
     [Fact]
+    public void Update_check_is_on_by_default_and_for_old_files()
+    {
+        using var dir = new TempDir();
+        var store = new SettingsStore(dir.Path);
+        Assert.True(new AppSettings().CheckForUpdates);
+        File.WriteAllText(store.FilePath, """{ "pcName": "Büro" }""");
+        Assert.True(store.Load().CheckForUpdates);
+    }
+
+    [Fact]
+    public void Switched_off_update_check_stays_off()
+    {
+        using var dir = new TempDir();
+        var store = new SettingsStore(dir.Path);
+        store.Save(new AppSettings { PcName = "Büro", CheckForUpdates = false });
+        Assert.False(store.Load().CheckForUpdates);
+    }
+
+    [Fact]
     public void Language_round_trips()
     {
         using var dir = new TempDir();

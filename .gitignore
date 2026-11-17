@@ -483,3 +483,6 @@ $RECYCLE.BIN/
 
 # Velopack-Ausgabe (scripts/publish.ps1)
 Releases/
+
+# Zwischenstand der Code-Signatur im Release-Workflow
+signing/

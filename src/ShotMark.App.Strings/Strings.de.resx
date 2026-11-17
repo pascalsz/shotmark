@@ -163,6 +163,9 @@ Das lässt sich später in den Einstellungen ändern.</value>
   <data name="FirstRun_Start" xml:space="preserve">
     <value>Los geht’s</value>
   </data>
+  <data name="FirstRun_UpdatesNote" xml:space="preserve">
+    <value>ShotMark sucht bei GitHub nach Updates und installiert sie automatisch. Daten über dich oder deine Aufnahmen werden nicht übertragen. Das lässt sich in den Einstellungen abschalten.</value>
+  </data>
   <data name="FirstRun_UseAnyway" xml:space="preserve">
     <value>Trotzdem verwenden</value>
   </data>
@@ -417,6 +420,9 @@ PC: {1}</value>
   <data name="Settings_Change" xml:space="preserve">
     <value>Ändern …</value>
   </data>
+  <data name="Settings_CheckForUpdates" xml:space="preserve">
+    <value>Automatisch nach Updates suchen</value>
+  </data>
   <data name="Settings_Clipboard" xml:space="preserve">
     <value>Fertiges Bild nach der Aufnahme in die Zwischenablage kopieren</value>
   </data>
@@ -512,6 +518,9 @@ PC: {1}</value>
   </data>
   <data name="Settings_TurnOff" xml:space="preserve">
     <value>Ausschalten</value>
+  </data>
+  <data name="Settings_UpdatesHint" xml:space="preserve">
+    <value>ShotMark fragt bei GitHub nach einer neueren Version (Releases von pascalsz/shotmark). Daten über dich oder deine Aufnahmen werden nicht übertragen.</value>
   </data>
   <data name="Settings_WindowTitle" xml:space="preserve">
     <value>ShotMark – Einstellungen</value>

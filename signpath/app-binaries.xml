@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SignPath-Artefaktkonfiguration "app-binaries": ShotMarks eigene Programmdateien.
+  Inhalt in SignPath unter Project > Artifact Configurations einfügen (Slug: app-binaries).
+  Das Artefakt baut .github/workflows/release.yml (Schritt "Eigene Programmdateien bereitstellen").
+  Neue eigene DLL? Hier und im Workflow ergänzen, sonst bricht der Release-Build ab.
+-->
+<artifact-configuration xmlns="http://signpath.io/artifact-configuration/v1">
+  <parameters>
+    <parameter name="version" required="true" />
+  </parameters>
+  <zip-file>
+    <pe-file path="ShotMark.exe" product-name="ShotMark" product-version="${version}">
+      <authenticode-sign />
+    </pe-file>
+    <pe-file path="ShotMark.dll" product-name="ShotMark" product-version="${version}">
+      <authenticode-sign />
+    </pe-file>
+    <pe-file path="ShotMark.Core.dll" product-name="ShotMark" product-version="${version}">
+      <authenticode-sign />
+    </pe-file>
+    <pe-file path="ShotMark.App.Strings.dll" product-name="ShotMark" product-version="${version}">
+      <authenticode-sign />
+    </pe-file>
+    <directory path="de">
+      <pe-file path="ShotMark.Core.resources.dll" product-name="ShotMark" product-version="${version}">
+        <authenticode-sign />
+      </pe-file>
+      <pe-file path="ShotMark.App.Strings.resources.dll" product-name="ShotMark" product-version="${version}">
+        <authenticode-sign />
+      </pe-file>
+    </directory>
+  </zip-file>
+</artifact-configuration>

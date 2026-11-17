@@ -2,6 +2,11 @@
 #   git tag v1.1.0 && git push origin v1.1.0
 # Baut, testet, packt mit Velopack und legt Setup.exe, Portable.zip und die Update-Pakete
 # in ein GitHub-Release. Installierte ShotMark-Versionen holen sich das Update von dort selbst.
+#
+# Code-Signatur (SignPath Foundation, siehe docs/code-signing.md): Ist die Repository-Variable
+# SIGNPATH_ORGANIZATION_ID gesetzt, werden erst die eigenen Programmdateien und dann das Setup
+# signiert; jede Anfrage muss in SignPath von Hand freigegeben werden. Ohne die Variable entsteht
+# das Release unsigniert wie bisher.
 name: Release
 
 on:
@@ -10,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  actions: read # SignPath lädt das hochgeladene Artefakt über die Actions-API
 
 concurrency:
   group: release
@@ -18,6 +24,9 @@ concurrency:
 jobs:
   release:
     runs-on: windows-latest
+    timeout-minutes: 180 # Wartezeit auf die beiden Freigaben in SignPath eingerechnet
+    env:
+      SIGNING: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -45,9 +54,111 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Bauen und packen
+      - name: Bauen
         shell: pwsh
-        run: ./scripts/publish.ps1 -Version $env:VERSION
+        run: ./scripts/publish.ps1 -Version $env:VERSION -Step Build
+
+      # --- Signatur der eigenen Programmdateien (nur mit SignPath) ---
+      - name: Eigene Programmdateien bereitstellen
+        if: env.SIGNING == 'true'
+        shell: pwsh
+        run: |
+          if (-not $env:SIGNPATH_API_TOKEN) { throw 'SIGNPATH_ORGANIZATION_ID ist gesetzt, das Secret SIGNPATH_API_TOKEN fehlt.' }
+          # Nur ShotMarks eigene Dateien; .NET-Laufzeit und Velopack bleiben, wie sie sind
+          $own = 'ShotMark.exe', 'ShotMark.dll', 'ShotMark.Core.dll', 'ShotMark.App.Strings.dll',
+                 'de\ShotMark.Core.resources.dll', 'de\ShotMark.App.Strings.resources.dll'
+          $actual = Get-ChildItem publish -Recurse -File -Include 'ShotMark*.exe', 'ShotMark*.dll' |
+            ForEach-Object { $_.FullName.Substring((Resolve-Path publish).Path.Length + 1) }
+          $missing = $own | Where-Object { $_ -notin $actual }
+          $extra = $actual | Where-Object { $_ -notin $own }
+          if ($missing -or $extra) { throw "Liste der eigenen Dateien stimmt nicht mehr. Fehlt: $missing  Neu: $extra (auch signpath/app-binaries.xml anpassen)" }
+          foreach ($file in $own) {
+            $target = Join-Path signing/app $file
+            New-Item -ItemType Directory -Force (Split-Path $target) | Out-Null
+            Copy-Item (Join-Path publish $file) $target
+          }
+        env:
+          SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+
+      - name: Programmdateien hochladen (unsigniert)
+        if: env.SIGNING == 'true'
+        id: app-unsigned
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: app-unsigned
+          path: signing/app/
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Programmdateien signieren (SignPath, Freigabe nötig)
+        if: env.SIGNING == 'true'
+        uses: SignPath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3.0
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG || 'shotmark' }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG || 'release-signing' }}
+          artifact-configuration-slug: app-binaries
+          github-artifact-id: ${{ steps.app-unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: signing/app-signed
+          parameters: |
+            version: ${{ toJSON(env.VERSION) }}
+
+      - name: Signierte Programmdateien übernehmen
+        if: env.SIGNING == 'true'
+        shell: pwsh
+        run: |
+          $root = (Resolve-Path signing/app-signed).Path
+          Get-ChildItem $root -Recurse -File | ForEach-Object {
+            $relative = $_.FullName.Substring($root.Length + 1)
+            $signature = Get-AuthenticodeSignature $_.FullName
+            if ($signature.Status -ne 'Valid') { throw "$relative ist nicht gültig signiert: $($signature.Status)" }
+            Copy-Item $_.FullName (Join-Path publish $relative) -Force
+            "{0,-45} {1}" -f $relative, $signature.SignerCertificate.Subject
+          }
+
+      - name: Packen
+        shell: pwsh
+        run: ./scripts/publish.ps1 -Version $env:VERSION -Step Pack
+
+      # --- Signatur des Setups (nur mit SignPath) ---
+      - name: Setup hochladen (unsigniert)
+        if: env.SIGNING == 'true'
+        id: setup-unsigned
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: setup-unsigned
+          path: Releases/ShotMark.App-win-Setup.exe
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Setup signieren (SignPath, Freigabe nötig)
+        if: env.SIGNING == 'true'
+        uses: SignPath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3.0
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG || 'shotmark' }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG || 'release-signing' }}
+          artifact-configuration-slug: installer
+          github-artifact-id: ${{ steps.setup-unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: signing/setup-signed
+          parameters: |
+            version: ${{ toJSON(env.VERSION) }}
+
+      - name: Signiertes Setup übernehmen
+        if: env.SIGNING == 'true'
+        shell: pwsh
+        run: |
+          $setup = 'signing/setup-signed/ShotMark.App-win-Setup.exe'
+          $signature = Get-AuthenticodeSignature $setup
+          if ($signature.Status -ne 'Valid') { throw "Setup ist nicht gültig signiert: $($signature.Status)" }
+          Copy-Item $setup Releases/ -Force
+          "Setup signiert von $($signature.SignerCertificate.Subject)"
 
       - name: Release veröffentlichen
         shell: pwsh

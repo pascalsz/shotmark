@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SignPath-Artefaktkonfiguration "installer": das Velopack-Setup.
+  Inhalt in SignPath unter Project > Artifact Configurations einfügen (Slug: installer).
+  Velopack schreibt Produktname und Version aus "vpk pack" in die Datei.
+-->
+<artifact-configuration xmlns="http://signpath.io/artifact-configuration/v1">
+  <parameters>
+    <parameter name="version" required="true" />
+  </parameters>
+  <zip-file>
+    <pe-file path="ShotMark.App-win-Setup.exe" product-name="ShotMark" product-version="${version}">
+      <authenticode-sign />
+    </pe-file>
+  </zip-file>
+</artifact-configuration>

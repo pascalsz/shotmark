@@ -20,6 +20,11 @@
             <TextBlock x:Name="FolderInfo" Foreground="{StaticResource TextDimBrush}" FontSize="12" TextWrapping="Wrap" LineHeight="18" />
         </Border>
 
+        <!-- Datenschutzhinweis zur automatischen Update-Prüfung (Pflicht für die SignPath-Signatur) -->
+        <Border Margin="0,10,0,0" Padding="14,12" CornerRadius="8" Background="{StaticResource BarBrush}">
+            <TextBlock Text="{x:Static loc:Strings.FirstRun_UpdatesNote}" Foreground="{StaticResource TextDimBrush}" FontSize="12" TextWrapping="Wrap" LineHeight="18" />
+        </Border>
+
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,26,0,0">
             <Button Style="{StaticResource OutlineButton}" Content="{x:Static loc:Strings.Common_Cancel}" IsCancel="True" Margin="0,0,8,0" Padding="16,8" />
             <Button x:Name="OkButton" Style="{StaticResource PrimaryButton}" Content="{x:Static loc:Strings.FirstRun_Start}" IsDefault="True" Click="OnOk" />
