@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
+using ShotMark.Core.Localization;
 using ShotMark.Core.Settings;
 using ShotMark.Core.Storage;
 
@@ -45,6 +46,12 @@ internal partial class SettingsWindow : Window
             : Strings.Settings_AutostartHint;
         AutostartHint.Visibility = isInstalledCopy ? Visibility.Collapsed : Visibility.Visible;
         ClipboardBox.IsChecked = settings.CopyToClipboard;
+        (settings.Language switch
+        {
+            UiLanguage.German => LanguageGerman,
+            UiLanguage.English => LanguageEnglish,
+            _ => LanguageAuto,
+        }).IsChecked = true;
         UpdateFolder();
     }
 
@@ -206,6 +213,7 @@ internal partial class SettingsWindow : Window
             SaveFolder = _customFolder,
             StartWithWindows = AutostartBox.IsChecked == true,
             CopyToClipboard = ClipboardBox.IsChecked == true,
+            Language = LanguageGerman.IsChecked == true ? UiLanguage.German : LanguageEnglish.IsChecked == true ? UiLanguage.English : null,
         };
         DialogResult = true;
     }

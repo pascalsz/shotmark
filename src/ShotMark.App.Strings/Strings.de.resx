@@ -172,6 +172,12 @@ Das lässt sich später in den Einstellungen ändern.</value>
   <data name="FirstRun_WindowTitle" xml:space="preserve">
     <value>ShotMark einrichten</value>
   </data>
+  <data name="Folder_NoDropbox" xml:space="preserve">
+    <value>Dropbox wurde auf diesem PC nicht gefunden. Screenshots werden in „{0}“ gespeichert.</value>
+  </data>
+  <data name="Folder_NotWritable" xml:space="preserve">
+    <value>Der Speicherordner „{0}“ ist nicht beschreibbar. Bitte in den Einstellungen prüfen.</value>
+  </data>
   <data name="Hint_Arrow" xml:space="preserve">
     <value>Vom Anfang zur Spitze ziehen. Mit Umschalt in 45°-Schritten.</value>
   </data>
@@ -224,6 +230,24 @@ PC: {1}</value>
   <data name="History_UnknownPc" xml:space="preserve">
     <value>unbekannt</value>
   </data>
+  <data name="Hotkey_CaptureStillInTray" xml:space="preserve">
+    <value>{0} Aufnahmen gehen weiterhin über das Tray-Menü.</value>
+  </data>
+  <data name="Hotkey_Failed" xml:space="preserve">
+    <value>Das Tastenkürzel „{0}“ konnte nicht registriert werden (Fehler {1}).</value>
+  </data>
+  <data name="Hotkey_ScrollNotRegistered" xml:space="preserve">
+    <value>Tastenkürzel für die Scroll-Aufnahme nicht registriert</value>
+  </data>
+  <data name="Hotkey_ScrollStillInTray" xml:space="preserve">
+    <value>{0} Die Scroll-Aufnahme geht weiterhin über das Tray-Menü.</value>
+  </data>
+  <data name="Hotkey_SnippingTool" xml:space="preserve">
+    <value>Windows verwendet die Druck-Taste für das Snipping Tool. Hier klicken und „Druck-Taste zum Öffnen der Bildschirmaufnahme verwenden“ ausschalten – oder in ShotMark ein anderes Kürzel wählen.</value>
+  </data>
+  <data name="Hotkey_Taken" xml:space="preserve">
+    <value>Das Tastenkürzel „{0}“ ist von einem anderen Programm belegt – z. B. Snagit oder die Screenshot-Funktion von Dropbox bzw. OneDrive. ShotMark versucht es automatisch weiter; alternativ in den Einstellungen ein anderes Kürzel wählen.</value>
+  </data>
   <data name="Key_Alt" xml:space="preserve">
     <value>Alt</value>
   </data>
@@ -269,6 +293,12 @@ PC: {1}</value>
   <data name="Key_Win" xml:space="preserve">
     <value>Win</value>
   </data>
+  <data name="Notice_CaptureSaved" xml:space="preserve">
+    <value>Die neue Aufnahme ist gespeichert und im Verlauf zu finden.</value>
+  </data>
+  <data name="Notice_HotkeyActive" xml:space="preserve">
+    <value>{0} ist jetzt für ShotMark aktiv.</value>
+  </data>
   <data name="Notice_RescuedLocally" xml:space="preserve">
     <value>Der Speicherordner ist nicht erreichbar. Deine Aufnahme wurde lokal gesichert:
 {0}</value>
@@ -278,6 +308,18 @@ PC: {1}</value>
   </data>
   <data name="OpenFailed" xml:space="preserve">
     <value>Die Aufnahme konnte nicht geöffnet werden.</value>
+  </data>
+  <data name="Overlay_Hint" xml:space="preserve">
+    <value>Bereich aufziehen  ·  Esc oder Rechtsklick bricht ab</value>
+  </data>
+  <data name="Overlay_ScrollHint" xml:space="preserve">
+    <value>↓  Scroll-Aufnahme: Bereich über den Inhalt aufziehen, der gescrollt werden soll  ·  Esc bricht ab</value>
+  </data>
+  <data name="Overlay_Title" xml:space="preserve">
+    <value>ShotMark – Bereich auswählen</value>
+  </data>
+  <data name="Overlay_TooShort" xml:space="preserve">
+    <value>↓  Zu niedrig für eine Scroll-Aufnahme – mindestens {0} px hoch aufziehen  ·  Esc bricht ab</value>
   </data>
   <data name="Panel_NoCaptureHint" xml:space="preserve">
     <value>Stehen bereit, sobald eine Aufnahme geöffnet ist.</value>
@@ -290,6 +332,12 @@ PC: {1}</value>
   </data>
   <data name="Panel_Tools" xml:space="preserve">
     <value>Werkzeuge</value>
+  </data>
+  <data name="Ready_Text" xml:space="preserve">
+    <value>Drücke {0}, um einen Bereich aufzunehmen. ShotMark wartet im Infobereich der Taskleiste.</value>
+  </data>
+  <data name="Ready_Title" xml:space="preserve">
+    <value>ShotMark ist bereit</value>
   </data>
   <data name="SaveFolderUnavailable" xml:space="preserve">
     <value>Der Speicherordner „{0}“ ist nicht erreichbar.</value>
@@ -305,6 +353,45 @@ PC: {1}</value>
   </data>
   <data name="SaveWriteFailed" xml:space="preserve">
     <value>Die Aufnahme konnte nicht in „{0}“ gespeichert werden.</value>
+  </data>
+  <data name="Scroll_ContentChanged" xml:space="preserve">
+    <value>Der Inhalt hat sich beim Scrollen verändert (z. B. nachladende Bilder oder Animationen) – die Scroll-Aufnahme wurde vorzeitig beendet.</value>
+  </data>
+  <data name="Scroll_Error" xml:space="preserve">
+    <value>Die Scroll-Aufnahme wurde wegen eines Fehlers beendet. Das Ergebnis bis dahin ist gespeichert; Details stehen im Protokoll.</value>
+  </data>
+  <data name="Scroll_MaxSize" xml:space="preserve">
+    <value>Höchstlänge erreicht – die Scroll-Aufnahme wurde bei {0:N0} px beendet.</value>
+  </data>
+  <data name="Scroll_TooFast" xml:space="preserve">
+    <value>Zu schnell gescrollt – die Scroll-Aufnahme endet beim letzten passenden Stand. Tipp: beim Selbst-Scrollen langsamer drehen.</value>
+  </data>
+  <data name="ScrollPanel_AutomaticHint" xml:space="preserve">
+    <value>Scrollt automatisch – das Seitenende wird erkannt.</value>
+  </data>
+  <data name="ScrollPanel_FrameTitle" xml:space="preserve">
+    <value>ShotMark – Scroll-Rahmen</value>
+  </data>
+  <data name="ScrollPanel_Height" xml:space="preserve">
+    <value>{0:N0} px</value>
+  </data>
+  <data name="ScrollPanel_PanelTitle" xml:space="preserve">
+    <value>ShotMark – Scroll-Aufnahme</value>
+  </data>
+  <data name="ScrollPanel_Stop" xml:space="preserve">
+    <value>Stopp</value>
+  </data>
+  <data name="ScrollPanel_StopEsc" xml:space="preserve">
+    <value>Stopp  (Esc)</value>
+  </data>
+  <data name="ScrollPanel_StopName" xml:space="preserve">
+    <value>Scroll-Aufnahme stoppen</value>
+  </data>
+  <data name="ScrollPanel_Title" xml:space="preserve">
+    <value>Scroll-Aufnahme</value>
+  </data>
+  <data name="ScrollPanel_TitleManual" xml:space="preserve">
+    <value>Scroll-Aufnahme · manuell</value>
   </data>
   <data name="Settings_Accepted" xml:space="preserve">
     <value>Übernommen. Gilt nach dem Speichern.</value>
@@ -347,6 +434,15 @@ PC: {1}</value>
   </data>
   <data name="Settings_IdleHint" xml:space="preserve">
     <value>Ins Feld klicken und die gewünschte Tastenkombination drücken. Die Scroll-Aufnahme gibt es auch im Tray-Menü.</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="Settings_LanguageAuto" xml:space="preserve">
+    <value>Automatisch (Windows-Sprache)</value>
+  </data>
+  <data name="Settings_LanguageHint" xml:space="preserve">
+    <value>Zum Wechseln der Sprache startet ShotMark neu.</value>
   </data>
   <data name="Settings_NamePreview" xml:space="preserve">
     <value>Neue Aufnahmen heißen z. B. {0} – vorhandene Dateien bleiben unverändert.</value>
@@ -524,6 +620,30 @@ PC: {1}</value>
   </data>
   <data name="Tool_Text" xml:space="preserve">
     <value>Text</value>
+  </data>
+  <data name="Tray_Exit" xml:space="preserve">
+    <value>ShotMark beenden</value>
+  </data>
+  <data name="Tray_NewCapture" xml:space="preserve">
+    <value>Neue Aufnahme   ({0})</value>
+  </data>
+  <data name="Tray_OpenEditor" xml:space="preserve">
+    <value>Editor öffnen</value>
+  </data>
+  <data name="Tray_OpenFolder" xml:space="preserve">
+    <value>Screenshot-Ordner öffnen</value>
+  </data>
+  <data name="Tray_ScrollCapture" xml:space="preserve">
+    <value>Scroll-Aufnahme</value>
+  </data>
+  <data name="Tray_ScrollCaptureWithKey" xml:space="preserve">
+    <value>Scroll-Aufnahme   ({0})</value>
+  </data>
+  <data name="Tray_Settings" xml:space="preserve">
+    <value>Einstellungen …</value>
+  </data>
+  <data name="Tray_Tooltip" xml:space="preserve">
+    <value>ShotMark – {0} für Screenshot</value>
   </data>
   <data name="UnexpectedError" xml:space="preserve">
     <value>Es ist ein unerwarteter Fehler aufgetreten. Details stehen in {0}.</value>

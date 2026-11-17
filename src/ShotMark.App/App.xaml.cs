@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
@@ -27,6 +28,7 @@ public partial class App : Application
     private AppUpdater? _updater;
     private bool _sessionEnding;
     private static bool _justUpdated;
+    private string[] _args = [];
 
     /// <summary>
     /// Velopack läuft vor WPF und führt die Installations-Hooks aus (diese beenden den Prozess danach selbst).
@@ -56,6 +58,10 @@ public partial class App : Application
     {
         base.OnStartup(e);
         System.Windows.Forms.Application.EnableVisualStyles();
+
+        _args = e.Args;
+        // Neustart nach Sprachwechsel: erst die alte Instanz enden lassen, sonst hält sie noch die Einzelinstanz-Sperre
+        if (RestartArguments.WaitFor(e.Args) is { } oldProcess) WaitForExit(oldProcess);
 
         var customProfile = ArgumentValue(e.Args, "--profile");
         var profile = customProfile is not null
@@ -98,6 +104,7 @@ public partial class App : Application
         };
 
         _host = new AppHost(profile, manageAutostart: customProfile is null);
+        _host.RestartRequested += Restart;
         SessionEnding += (_, _) =>
         {
             _sessionEnding = true;
@@ -134,6 +141,35 @@ public partial class App : Application
             // Lieber mit der alten Version weiterarbeiten als gar nicht starten
             Log.Error("Bereitliegendes Update konnte nicht angewendet werden", error);
             return false;
+        }
+    }
+
+    private async void Restart()
+    {
+        if (_host is null || !await _host.ShutdownAsync()) return;
+        try
+        {
+            var start = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = false };
+            foreach (var arg in RestartArguments.Build(_args, Environment.ProcessId)) start.ArgumentList.Add(arg);
+            Process.Start(start)?.Dispose();
+        }
+        catch (Exception error) when (error is System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+            Log.Error("Neustart nach Sprachwechsel fehlgeschlagen", error);
+        }
+        Shutdown();
+    }
+
+    private static void WaitForExit(int processId)
+    {
+        try
+        {
+            using var process = Process.GetProcessById(processId);
+            process.WaitForExit(TimeSpan.FromSeconds(30));
+        }
+        catch (ArgumentException)
+        {
+            // schon beendet
         }
     }
 

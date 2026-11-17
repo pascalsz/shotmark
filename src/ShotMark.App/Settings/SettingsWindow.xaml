@@ -61,6 +61,16 @@
         <TextBlock x:Name="AutostartHint" Foreground="{StaticResource TextFaintBrush}" FontSize="12" Margin="28,4,0,0" TextWrapping="Wrap" />
         <CheckBox x:Name="ClipboardBox" Content="{x:Static loc:Strings.Settings_Clipboard}" Margin="0,12,0,0" />
 
+        <TextBlock Text="{x:Static loc:Strings.Settings_Language}" Style="{StaticResource SectionLabel}" Margin="0,22,0,10" />
+        <WrapPanel>
+            <RadioButton x:Name="LanguageAuto" Style="{StaticResource Chip}" GroupName="Language" Margin="0,0,6,6"
+                         Content="{x:Static loc:Strings.Settings_LanguageAuto}" />
+            <!-- Sprachnamen stehen immer in der eigenen Sprache -->
+            <RadioButton x:Name="LanguageGerman" Style="{StaticResource Chip}" GroupName="Language" Margin="0,0,6,6" Content="Deutsch" />
+            <RadioButton x:Name="LanguageEnglish" Style="{StaticResource Chip}" GroupName="Language" Margin="0,0,6,6" Content="English" />
+        </WrapPanel>
+        <TextBlock Text="{x:Static loc:Strings.Settings_LanguageHint}" Foreground="{StaticResource TextFaintBrush}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap" />
+
         <Border x:Name="ErrorBox" Margin="0,18,0,0" Padding="12,10" CornerRadius="6" Background="#3A1E20"
                 BorderBrush="{StaticResource DangerBrush}" BorderThickness="1" Visibility="Collapsed">
             <TextBlock x:Name="ErrorText" TextWrapping="Wrap" />

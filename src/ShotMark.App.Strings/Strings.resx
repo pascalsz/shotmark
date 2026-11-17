@@ -172,6 +172,12 @@ You can change this later in the settings.</value>
   <data name="FirstRun_WindowTitle" xml:space="preserve">
     <value>Set up ShotMark</value>
   </data>
+  <data name="Folder_NoDropbox" xml:space="preserve">
+    <value>Dropbox was not found on this PC. Screenshots are saved to “{0}”.</value>
+  </data>
+  <data name="Folder_NotWritable" xml:space="preserve">
+    <value>The save folder “{0}” is not writable. Please check it in the settings.</value>
+  </data>
   <data name="Hint_Arrow" xml:space="preserve">
     <value>Drag from the start to the tip. Hold Shift for 45° steps.</value>
   </data>
@@ -224,6 +230,24 @@ PC: {1}</value>
   <data name="History_UnknownPc" xml:space="preserve">
     <value>unknown</value>
   </data>
+  <data name="Hotkey_CaptureStillInTray" xml:space="preserve">
+    <value>{0} Captures are still available from the tray menu.</value>
+  </data>
+  <data name="Hotkey_Failed" xml:space="preserve">
+    <value>The keyboard shortcut “{0}” could not be registered (error {1}).</value>
+  </data>
+  <data name="Hotkey_ScrollNotRegistered" xml:space="preserve">
+    <value>Keyboard shortcut for scrolling capture not registered</value>
+  </data>
+  <data name="Hotkey_ScrollStillInTray" xml:space="preserve">
+    <value>{0} Scrolling capture is still available from the tray menu.</value>
+  </data>
+  <data name="Hotkey_SnippingTool" xml:space="preserve">
+    <value>Windows uses the PrtScn key for the Snipping Tool. Click here and turn off “Use the Print screen key to open screen capture” – or choose a different shortcut in ShotMark.</value>
+  </data>
+  <data name="Hotkey_Taken" xml:space="preserve">
+    <value>The keyboard shortcut “{0}” is used by another program – e.g. Snagit or the screenshot feature of Dropbox or OneDrive. ShotMark keeps trying; alternatively choose a different shortcut in the settings.</value>
+  </data>
   <data name="Key_Alt" xml:space="preserve">
     <value>Alt</value>
   </data>
@@ -269,6 +293,12 @@ PC: {1}</value>
   <data name="Key_Win" xml:space="preserve">
     <value>Win</value>
   </data>
+  <data name="Notice_CaptureSaved" xml:space="preserve">
+    <value>The new capture is saved and can be found in the history.</value>
+  </data>
+  <data name="Notice_HotkeyActive" xml:space="preserve">
+    <value>{0} is now active for ShotMark.</value>
+  </data>
   <data name="Notice_RescuedLocally" xml:space="preserve">
     <value>The save folder is not reachable. Your capture was saved locally:
 {0}</value>
@@ -278,6 +308,18 @@ PC: {1}</value>
   </data>
   <data name="OpenFailed" xml:space="preserve">
     <value>The capture could not be opened.</value>
+  </data>
+  <data name="Overlay_Hint" xml:space="preserve">
+    <value>Drag an area  ·  Esc or right-click cancels</value>
+  </data>
+  <data name="Overlay_ScrollHint" xml:space="preserve">
+    <value>↓  Scrolling capture: drag over the content that should be scrolled  ·  Esc cancels</value>
+  </data>
+  <data name="Overlay_Title" xml:space="preserve">
+    <value>ShotMark – Select area</value>
+  </data>
+  <data name="Overlay_TooShort" xml:space="preserve">
+    <value>↓  Too short for a scrolling capture – drag at least {0} px high  ·  Esc cancels</value>
   </data>
   <data name="Panel_NoCaptureHint" xml:space="preserve">
     <value>Available as soon as a capture is open.</value>
@@ -290,6 +332,12 @@ PC: {1}</value>
   </data>
   <data name="Panel_Tools" xml:space="preserve">
     <value>Tools</value>
+  </data>
+  <data name="Ready_Text" xml:space="preserve">
+    <value>Press {0} to capture an area. ShotMark waits in the notification area of the taskbar.</value>
+  </data>
+  <data name="Ready_Title" xml:space="preserve">
+    <value>ShotMark is ready</value>
   </data>
   <data name="SaveFolderUnavailable" xml:space="preserve">
     <value>The save folder “{0}” is not reachable.</value>
@@ -305,6 +353,45 @@ PC: {1}</value>
   </data>
   <data name="SaveWriteFailed" xml:space="preserve">
     <value>The capture could not be saved to “{0}”.</value>
+  </data>
+  <data name="Scroll_ContentChanged" xml:space="preserve">
+    <value>The content changed while scrolling (e.g. images loading or animations) – the scrolling capture was stopped early.</value>
+  </data>
+  <data name="Scroll_Error" xml:space="preserve">
+    <value>The scrolling capture was stopped because of an error. The result so far is saved; details are in the log.</value>
+  </data>
+  <data name="Scroll_MaxSize" xml:space="preserve">
+    <value>Maximum length reached – the scrolling capture was stopped at {0:N0} px.</value>
+  </data>
+  <data name="Scroll_TooFast" xml:space="preserve">
+    <value>Scrolled too fast – the scrolling capture ends at the last matching position. Tip: turn the wheel more slowly when scrolling yourself.</value>
+  </data>
+  <data name="ScrollPanel_AutomaticHint" xml:space="preserve">
+    <value>Scrolling automatically – the end of the page is detected.</value>
+  </data>
+  <data name="ScrollPanel_FrameTitle" xml:space="preserve">
+    <value>ShotMark – Scroll frame</value>
+  </data>
+  <data name="ScrollPanel_Height" xml:space="preserve">
+    <value>{0:N0} px</value>
+  </data>
+  <data name="ScrollPanel_PanelTitle" xml:space="preserve">
+    <value>ShotMark – Scrolling capture</value>
+  </data>
+  <data name="ScrollPanel_Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="ScrollPanel_StopEsc" xml:space="preserve">
+    <value>Stop  (Esc)</value>
+  </data>
+  <data name="ScrollPanel_StopName" xml:space="preserve">
+    <value>Stop scrolling capture</value>
+  </data>
+  <data name="ScrollPanel_Title" xml:space="preserve">
+    <value>Scrolling capture</value>
+  </data>
+  <data name="ScrollPanel_TitleManual" xml:space="preserve">
+    <value>Scrolling capture · manual</value>
   </data>
   <data name="Settings_Accepted" xml:space="preserve">
     <value>Accepted. Takes effect after saving.</value>
@@ -347,6 +434,15 @@ PC: {1}</value>
   </data>
   <data name="Settings_IdleHint" xml:space="preserve">
     <value>Click into the field and press the key combination you want. Scrolling capture is also available in the tray menu.</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Settings_LanguageAuto" xml:space="preserve">
+    <value>Automatic (Windows language)</value>
+  </data>
+  <data name="Settings_LanguageHint" xml:space="preserve">
+    <value>ShotMark restarts to switch the language.</value>
   </data>
   <data name="Settings_NamePreview" xml:space="preserve">
     <value>New captures will be named e.g. {0} – existing files stay unchanged.</value>
@@ -524,6 +620,30 @@ PC: {1}</value>
   </data>
   <data name="Tool_Text" xml:space="preserve">
     <value>Text</value>
+  </data>
+  <data name="Tray_Exit" xml:space="preserve">
+    <value>Exit ShotMark</value>
+  </data>
+  <data name="Tray_NewCapture" xml:space="preserve">
+    <value>New capture   ({0})</value>
+  </data>
+  <data name="Tray_OpenEditor" xml:space="preserve">
+    <value>Open editor</value>
+  </data>
+  <data name="Tray_OpenFolder" xml:space="preserve">
+    <value>Open screenshot folder</value>
+  </data>
+  <data name="Tray_ScrollCapture" xml:space="preserve">
+    <value>Scrolling capture</value>
+  </data>
+  <data name="Tray_ScrollCaptureWithKey" xml:space="preserve">
+    <value>Scrolling capture   ({0})</value>
+  </data>
+  <data name="Tray_Settings" xml:space="preserve">
+    <value>Settings …</value>
+  </data>
+  <data name="Tray_Tooltip" xml:space="preserve">
+    <value>ShotMark – {0} for a screenshot</value>
   </data>
   <data name="UnexpectedError" xml:space="preserve">
     <value>An unexpected error occurred. Details are in {0}.</value>
