@@ -57,6 +57,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
     }
 
     public CaptureStore Store => _store;
+    public bool CheckForUpdates => _settings.CheckForUpdates;
     public string PcName => _pcName;
 
     public string RescueFolder { get; } =

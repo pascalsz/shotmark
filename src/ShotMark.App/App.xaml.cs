@@ -186,7 +186,7 @@ public partial class App : Application
         if (Installation.Manager is not { } manager) return;
         if (_justUpdated) _host!.Notify(Loc.Format(Strings.UpdatedNotice, Installation.Version));
         var host = _host!;
-        _updater = new AppUpdater(manager, host.CurrentActivity, host.ShutdownAsync);
+        _updater = new AppUpdater(manager, host.CurrentActivity, host.ShutdownAsync, () => host.CheckForUpdates);
         _updater.Start();
     }
 

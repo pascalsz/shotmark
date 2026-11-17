@@ -14,13 +14,16 @@ internal sealed class AppUpdater : IDisposable
     private readonly UpdateManager _manager;
     private readonly Func<UpdateActivity> _activity;
     private readonly Func<Task<bool>> _prepareRestart;
+    private readonly Func<bool> _enabled;
     private readonly DispatcherTimer _checkTimer;
     private readonly DispatcherTimer _restartTimer;
     private bool _checking;
     private bool _restarting;
 
-    public AppUpdater(UpdateManager manager, Func<UpdateActivity> activity, Func<Task<bool>> prepareRestart)
+    /// <param name="enabled">Einstellung „Automatisch nach Updates suchen“; bei jedem Durchlauf neu gelesen.</param>
+    public AppUpdater(UpdateManager manager, Func<UpdateActivity> activity, Func<Task<bool>> prepareRestart, Func<bool> enabled)
     {
+        _enabled = enabled;
         _manager = manager;
         _activity = activity;
         _prepareRestart = prepareRestart;
@@ -42,7 +45,7 @@ internal sealed class AppUpdater : IDisposable
 
     private async Task CheckAsync()
     {
-        if (_checking || _restarting) return;
+        if (_checking || _restarting || !_enabled()) return;
         _checking = true;
         try
         {

@@ -3,5 +3,10 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Einheitliche Datei-Metadaten (Bedingung der SignPath-Signatur): Produktname und Version gleich in allen Dateien -->
+    <Product>ShotMark</Product>
+    <Company>ShotMark</Company>
+    <Copyright>Copyright (c) 2026 Pascal Szorath</Copyright>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 </Project>

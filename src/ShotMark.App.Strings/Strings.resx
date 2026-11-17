@@ -163,6 +163,9 @@ You can change this later in the settings.</value>
   <data name="FirstRun_Start" xml:space="preserve">
     <value>Let's go</value>
   </data>
+  <data name="FirstRun_UpdatesNote" xml:space="preserve">
+    <value>ShotMark checks GitHub for updates and installs them automatically. No data about you or your captures is sent. You can turn this off in the settings.</value>
+  </data>
   <data name="FirstRun_UseAnyway" xml:space="preserve">
     <value>Use anyway</value>
   </data>
@@ -417,6 +420,9 @@ PC: {1}</value>
   <data name="Settings_Change" xml:space="preserve">
     <value>Change …</value>
   </data>
+  <data name="Settings_CheckForUpdates" xml:space="preserve">
+    <value>Check for updates automatically</value>
+  </data>
   <data name="Settings_Clipboard" xml:space="preserve">
     <value>Copy the finished image to the clipboard after capturing</value>
   </data>
@@ -512,6 +518,9 @@ PC: {1}</value>
   </data>
   <data name="Settings_TurnOff" xml:space="preserve">
     <value>Turn off</value>
+  </data>
+  <data name="Settings_UpdatesHint" xml:space="preserve">
+    <value>ShotMark asks GitHub for a newer version (pascalsz/shotmark releases). No data about you or your captures is sent.</value>
   </data>
   <data name="Settings_WindowTitle" xml:space="preserve">
     <value>ShotMark – Settings</value>
