@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using ShotMark.App.Localization;
 using ShotMark.Core.Settings;
 
 namespace ShotMark.App.Settings;
@@ -8,28 +9,28 @@ internal static class HotkeyText
     public static string Format(HotkeySetting hotkey)
     {
         var parts = new List<string>();
-        if (hotkey.Control) parts.Add("Strg");
-        if (hotkey.Shift) parts.Add("Umschalt");
-        if (hotkey.Alt) parts.Add("Alt");
-        if (hotkey.Windows) parts.Add("Win");
+        if (hotkey.Control) parts.Add(Strings.Key_Ctrl);
+        if (hotkey.Shift) parts.Add(Strings.Key_Shift);
+        if (hotkey.Alt) parts.Add(Strings.Key_Alt);
+        if (hotkey.Windows) parts.Add(Strings.Key_Win);
         parts.Add(KeyName(KeyInterop.KeyFromVirtualKey(hotkey.VirtualKey)));
         return string.Join("+", parts);
     }
 
     public static string KeyName(Key key) => key switch
     {
-        Key.Snapshot => "Druck",
-        Key.Space => "Leertaste",
-        Key.Insert => "Einfg",
-        Key.Delete => "Entf",
-        Key.Home => "Pos1",
-        Key.End => "Ende",
-        Key.PageUp => "Bild auf",
-        Key.PageDown => "Bild ab",
-        Key.Pause => "Pause",
-        Key.Scroll => "Rollen",
+        Key.Snapshot => Strings.Key_PrintScreen,
+        Key.Space => Strings.Key_Space,
+        Key.Insert => Strings.Key_Insert,
+        Key.Delete => Strings.Key_Delete,
+        Key.Home => Strings.Key_Home,
+        Key.End => Strings.Key_End,
+        Key.PageUp => Strings.Key_PageUp,
+        Key.PageDown => Strings.Key_PageDown,
+        Key.Pause => Strings.Key_Pause,
+        Key.Scroll => Strings.Key_ScrollLock,
         >= Key.D0 and <= Key.D9 => ((char)('0' + (key - Key.D0))).ToString(),
-        >= Key.NumPad0 and <= Key.NumPad9 => "Num " + (key - Key.NumPad0),
+        >= Key.NumPad0 and <= Key.NumPad9 => Loc.Format(Strings.Key_NumPad, key - Key.NumPad0),
         _ => key.ToString(),
     };
 

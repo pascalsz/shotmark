@@ -1,3 +1,4 @@
+using ShotMark.App.Localization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,7 +17,10 @@ internal partial class SettingsWindow : Window
     private HotkeySetting? _scrollHotkey;
     private string? _customFolder;
 
-    private const string IdleHint = "Ins Feld klicken und die gewünschte Tastenkombination drücken. Die Scroll-Aufnahme gibt es auch im Tray-Menü.";
+    private static string IdleHint => Strings.Settings_IdleHint;
+
+    /// <summary>Beispiel-Dateiname für die Vorschau – immer im festen Schema, unabhängig von der Sprache.</summary>
+    internal static string ExampleFileName(string pcName) => new CaptureName(DateTime.Now, PcName.ToSlug(pcName)).BaseName + ".png";
 
     /// <param name="checkHotkey">Prüft, ob das Kürzel frei ist; liefert sonst eine Fehlermeldung.</param>
     public SettingsWindow(AppSettings settings, string automaticFolder, bool isInstalledCopy, Func<HotkeySetting, string?> checkHotkey)
@@ -38,7 +42,7 @@ internal partial class SettingsWindow : Window
         AutostartBox.IsEnabled = isInstalledCopy;
         AutostartHint.Text = isInstalledCopy
             ? ""
-            : "Wirkt nur bei der installierten Version (über Setup.exe).";
+            : Strings.Settings_AutostartHint;
         AutostartHint.Visibility = isInstalledCopy ? Visibility.Collapsed : Visibility.Visible;
         ClipboardBox.IsChecked = settings.CopyToClipboard;
         UpdateFolder();
@@ -50,14 +54,14 @@ internal partial class SettingsWindow : Window
     {
         var name = NameBox.Text.Trim();
         NamePreview.Text = name.Length > 0
-            ? $"Neue Aufnahmen heißen z. B. {DateTime.Now:yyyy-MM-dd_HH-mm-ss}_{PcName.ToSlug(name)}.png – vorhandene Dateien bleiben unverändert."
-            : "Bitte einen Namen eingeben.";
+            ? Loc.Format(Strings.Settings_NamePreview, ExampleFileName(name))
+            : Strings.Settings_EnterName;
     }
 
     private void OnHotkeyFocus(object sender, KeyboardFocusChangedEventArgs e) =>
         HotkeyHint.Text = sender == ScrollHotkeyBox
-            ? "Jetzt die Tastenkombination für die Scroll-Aufnahme drücken …"
-            : "Jetzt die Tastenkombination für die Aufnahme drücken …";
+            ? Strings.Settings_PressScrollHotkey
+            : Strings.Settings_PressCaptureHotkey;
 
     private void OnHotkeyBlur(object sender, KeyboardFocusChangedEventArgs e) => HotkeyHint.Text = IdleHint;
 
@@ -91,14 +95,14 @@ internal partial class SettingsWindow : Window
         var standalone = key is Key.Snapshot or Key.Pause or Key.Scroll or (>= Key.F1 and <= Key.F24);
         if (!standalone && !(candidate.Control || candidate.Alt || candidate.Windows))
         {
-            HotkeyHint.Text = "Bitte mit Strg, Alt oder Win kombinieren – sonst blockiert das Kürzel normales Tippen.";
+            HotkeyHint.Text = Strings.Settings_NeedModifier;
             return;
         }
         if (candidate == (forScroll ? _hotkey : _scrollHotkey))
         {
             HotkeyHint.Text = forScroll
-                ? "Dieses Kürzel ist schon für die Aufnahme vergeben."
-                : "Dieses Kürzel ist schon für die Scroll-Aufnahme vergeben.";
+                ? Strings.Settings_TakenByCapture
+                : Strings.Settings_TakenByScroll;
             return;
         }
         if (forScroll)
@@ -111,14 +115,14 @@ internal partial class SettingsWindow : Window
             _hotkey = candidate;
             HotkeyBox.Text = HotkeyText.Format(_hotkey);
         }
-        HotkeyHint.Text = "Übernommen. Gilt nach dem Speichern.";
+        HotkeyHint.Text = Strings.Settings_Accepted;
     }
 
     private void OnResetHotkey(object sender, RoutedEventArgs e)
     {
         if (_scrollHotkey == HotkeySetting.PrintScreen)
         {
-            HotkeyHint.Text = "Die Druck-Taste ist schon für die Scroll-Aufnahme vergeben.";
+            HotkeyHint.Text = Strings.Settings_PrintScreenTakenByScroll;
             return;
         }
         _hotkey = HotkeySetting.PrintScreen;
@@ -131,7 +135,7 @@ internal partial class SettingsWindow : Window
         if (_scrollHotkey is not null) _scrollHotkey = null;
         else if (_hotkey == HotkeySetting.ScrollDefault)
         {
-            HotkeyHint.Text = "Dieses Kürzel ist schon für die Aufnahme vergeben – bitte ins Feld klicken und ein anderes drücken.";
+            HotkeyHint.Text = Strings.Settings_TakenByCaptureRetry;
             return;
         }
         else _scrollHotkey = HotkeySetting.ScrollDefault;
@@ -140,18 +144,18 @@ internal partial class SettingsWindow : Window
 
     private void UpdateScrollHotkey()
     {
-        ScrollHotkeyBox.Text = _scrollHotkey is { } scroll ? HotkeyText.Format(scroll) : "Aus – nur über das Tray-Menü";
-        ScrollToggleButton.Content = _scrollHotkey is null ? HotkeyText.Format(HotkeySetting.ScrollDefault) : "Ausschalten";
+        ScrollHotkeyBox.Text = _scrollHotkey is { } scroll ? HotkeyText.Format(scroll) : Strings.Settings_ScrollOff;
+        ScrollToggleButton.Content = _scrollHotkey is null ? HotkeyText.Format(HotkeySetting.ScrollDefault) : Strings.Settings_TurnOff;
         ScrollToggleButton.ToolTip = _scrollHotkey is null
-            ? "Scroll-Aufnahme wieder per Tastenkürzel starten"
-            : "Kein Tastenkürzel für die Scroll-Aufnahme – sie bleibt im Tray-Menü";
+            ? Strings.Settings_ScrollOnTip
+            : Strings.Settings_ScrollOffTip;
     }
 
     private void OnPickFolder(object sender, RoutedEventArgs e)
     {
         var dialog = new OpenFolderDialog
         {
-            Title = "Ordner für Screenshots wählen",
+            Title = Strings.Settings_PickFolderTitle,
             InitialDirectory = _customFolder ?? _automaticFolder,
         };
         if (dialog.ShowDialog(this) == true)
@@ -171,8 +175,8 @@ internal partial class SettingsWindow : Window
     {
         FolderBox.Text = _customFolder ?? _automaticFolder;
         FolderHint.Text = _customFolder is null
-            ? "Automatisch: Ordner „Screenshots“ in der Dropbox dieses PCs."
-            : "Eigener Ordner. Damit andere PCs die Aufnahmen sehen, sollte er in der Dropbox liegen.";
+            ? Strings.Settings_FolderAuto
+            : Strings.Settings_FolderCustom;
         AutoFolderButton.Visibility = _customFolder is null ? Visibility.Collapsed : Visibility.Visible;
     }
 
@@ -181,7 +185,7 @@ internal partial class SettingsWindow : Window
         var name = NameBox.Text.Trim();
         if (name.Length == 0)
         {
-            ShowError("Bitte einen Namen für diesen PC eingeben.");
+            ShowError(Strings.Settings_NameRequired);
             return;
         }
         if (_hotkey != _original.Hotkey && _checkHotkey(_hotkey) is { } hotkeyError)
@@ -191,7 +195,7 @@ internal partial class SettingsWindow : Window
         }
         if (_scrollHotkey is { } scroll && scroll != _original.ScrollHotkey && _checkHotkey(scroll) is { } scrollError)
         {
-            ShowError("Scroll-Aufnahme: " + scrollError);
+            ShowError(Loc.Format(Strings.Settings_ScrollError, scrollError));
             return;
         }
         Result = _original with

@@ -33,8 +33,14 @@
   <data name="Color_Yellow" xml:space="preserve">
     <value>Gelb</value>
   </data>
+  <data name="Common_Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
   <data name="Common_OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="Common_Save" xml:space="preserve">
+    <value>Speichern</value>
   </data>
   <data name="Confirm_DiscardUnsaved" xml:space="preserve">
     <value>Die Änderungen an der aktuellen Aufnahme konnten weder im Speicherordner noch lokal gesichert werden.
@@ -133,6 +139,39 @@ Trotzdem schließen? Sie bleiben im Editor erhalten; spätestens beim Beenden si
   <data name="ErrorDetails" xml:space="preserve">
     <value>Details: {0}</value>
   </data>
+  <data name="FirstRun_EnterName" xml:space="preserve">
+    <value>Bitte einen Namen eingeben, z. B. „Büro“ oder „Laptop“.</value>
+  </data>
+  <data name="FirstRun_Folder" xml:space="preserve">
+    <value>Screenshots werden automatisch hier gespeichert:
+{0}</value>
+  </data>
+  <data name="FirstRun_Intro" xml:space="preserve">
+    <value>Wie soll dieser PC heißen? Der Name steht im Dateinamen und im Verlauf. So siehst du später, auf welchem Rechner ein Screenshot entstanden ist.</value>
+  </data>
+  <data name="FirstRun_NamePreview" xml:space="preserve">
+    <value>Dateinamen sehen dann so aus: {0}</value>
+  </data>
+  <data name="FirstRun_NameTaken" xml:space="preserve">
+    <value>Der Name „{0}“ wird schon vom PC „{1}“ verwendet. Bitte wähle einen anderen Namen, damit sich die Aufnahmen nicht vermischen.</value>
+  </data>
+  <data name="FirstRun_NoDropbox" xml:space="preserve">
+    <value>Dropbox wurde auf diesem PC nicht gefunden. Screenshots landen vorerst in:
+{0}
+Das lässt sich später in den Einstellungen ändern.</value>
+  </data>
+  <data name="FirstRun_Start" xml:space="preserve">
+    <value>Los geht’s</value>
+  </data>
+  <data name="FirstRun_UseAnyway" xml:space="preserve">
+    <value>Trotzdem verwenden</value>
+  </data>
+  <data name="FirstRun_Welcome" xml:space="preserve">
+    <value>Willkommen bei ShotMark</value>
+  </data>
+  <data name="FirstRun_WindowTitle" xml:space="preserve">
+    <value>ShotMark einrichten</value>
+  </data>
   <data name="Hint_Arrow" xml:space="preserve">
     <value>Vom Anfang zur Spitze ziehen. Mit Umschalt in 45°-Schritten.</value>
   </data>
@@ -185,6 +224,51 @@ PC: {1}</value>
   <data name="History_UnknownPc" xml:space="preserve">
     <value>unbekannt</value>
   </data>
+  <data name="Key_Alt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="Key_Ctrl" xml:space="preserve">
+    <value>Strg</value>
+  </data>
+  <data name="Key_Delete" xml:space="preserve">
+    <value>Entf</value>
+  </data>
+  <data name="Key_End" xml:space="preserve">
+    <value>Ende</value>
+  </data>
+  <data name="Key_Home" xml:space="preserve">
+    <value>Pos1</value>
+  </data>
+  <data name="Key_Insert" xml:space="preserve">
+    <value>Einfg</value>
+  </data>
+  <data name="Key_NumPad" xml:space="preserve">
+    <value>Num {0}</value>
+  </data>
+  <data name="Key_PageDown" xml:space="preserve">
+    <value>Bild ab</value>
+  </data>
+  <data name="Key_PageUp" xml:space="preserve">
+    <value>Bild auf</value>
+  </data>
+  <data name="Key_Pause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="Key_PrintScreen" xml:space="preserve">
+    <value>Druck</value>
+  </data>
+  <data name="Key_ScrollLock" xml:space="preserve">
+    <value>Rollen</value>
+  </data>
+  <data name="Key_Shift" xml:space="preserve">
+    <value>Umschalt</value>
+  </data>
+  <data name="Key_Space" xml:space="preserve">
+    <value>Leertaste</value>
+  </data>
+  <data name="Key_Win" xml:space="preserve">
+    <value>Win</value>
+  </data>
   <data name="Notice_RescuedLocally" xml:space="preserve">
     <value>Der Speicherordner ist nicht erreichbar. Deine Aufnahme wurde lokal gesichert:
 {0}</value>
@@ -221,6 +305,120 @@ PC: {1}</value>
   </data>
   <data name="SaveWriteFailed" xml:space="preserve">
     <value>Die Aufnahme konnte nicht in „{0}“ gespeichert werden.</value>
+  </data>
+  <data name="Settings_Accepted" xml:space="preserve">
+    <value>Übernommen. Gilt nach dem Speichern.</value>
+  </data>
+  <data name="Settings_AutoFolder" xml:space="preserve">
+    <value>Automatisch (Dropbox)</value>
+  </data>
+  <data name="Settings_Autostart" xml:space="preserve">
+    <value>ShotMark mit Windows starten</value>
+  </data>
+  <data name="Settings_AutostartHint" xml:space="preserve">
+    <value>Wirkt nur bei der installierten Version (über Setup.exe).</value>
+  </data>
+  <data name="Settings_Behavior" xml:space="preserve">
+    <value>Verhalten</value>
+  </data>
+  <data name="Settings_Capture" xml:space="preserve">
+    <value>Aufnahme</value>
+  </data>
+  <data name="Settings_CaptureHotkeyName" xml:space="preserve">
+    <value>Tastenkürzel für die Aufnahme</value>
+  </data>
+  <data name="Settings_Change" xml:space="preserve">
+    <value>Ändern …</value>
+  </data>
+  <data name="Settings_Clipboard" xml:space="preserve">
+    <value>Fertiges Bild nach der Aufnahme in die Zwischenablage kopieren</value>
+  </data>
+  <data name="Settings_EnterName" xml:space="preserve">
+    <value>Bitte einen Namen eingeben.</value>
+  </data>
+  <data name="Settings_FolderAuto" xml:space="preserve">
+    <value>Automatisch: Ordner „Screenshots“ in der Dropbox dieses PCs.</value>
+  </data>
+  <data name="Settings_FolderCustom" xml:space="preserve">
+    <value>Eigener Ordner. Damit andere PCs die Aufnahmen sehen, sollte er in der Dropbox liegen.</value>
+  </data>
+  <data name="Settings_Hotkeys" xml:space="preserve">
+    <value>Tastenkürzel</value>
+  </data>
+  <data name="Settings_IdleHint" xml:space="preserve">
+    <value>Ins Feld klicken und die gewünschte Tastenkombination drücken. Die Scroll-Aufnahme gibt es auch im Tray-Menü.</value>
+  </data>
+  <data name="Settings_NamePreview" xml:space="preserve">
+    <value>Neue Aufnahmen heißen z. B. {0} – vorhandene Dateien bleiben unverändert.</value>
+  </data>
+  <data name="Settings_NameRequired" xml:space="preserve">
+    <value>Bitte einen Namen für diesen PC eingeben.</value>
+  </data>
+  <data name="Settings_NeedModifier" xml:space="preserve">
+    <value>Bitte mit Strg, Alt oder Win kombinieren – sonst blockiert das Kürzel normales Tippen.</value>
+  </data>
+  <data name="Settings_PcName" xml:space="preserve">
+    <value>Name dieses PCs</value>
+  </data>
+  <data name="Settings_PickFolderTitle" xml:space="preserve">
+    <value>Ordner für Screenshots wählen</value>
+  </data>
+  <data name="Settings_PressCaptureHotkey" xml:space="preserve">
+    <value>Jetzt die Tastenkombination für die Aufnahme drücken …</value>
+  </data>
+  <data name="Settings_PressScrollHotkey" xml:space="preserve">
+    <value>Jetzt die Tastenkombination für die Scroll-Aufnahme drücken …</value>
+  </data>
+  <data name="Settings_PrintScreenButton" xml:space="preserve">
+    <value>Druck-Taste</value>
+  </data>
+  <data name="Settings_PrintScreenTakenByScroll" xml:space="preserve">
+    <value>Die Druck-Taste ist schon für die Scroll-Aufnahme vergeben.</value>
+  </data>
+  <data name="Settings_PrintScreenTip" xml:space="preserve">
+    <value>Auf die Druck-Taste zurücksetzen</value>
+  </data>
+  <data name="Settings_SaveFolder" xml:space="preserve">
+    <value>Speicherordner</value>
+  </data>
+  <data name="Settings_ScrollCapture" xml:space="preserve">
+    <value>Scroll-Aufnahme</value>
+  </data>
+  <data name="Settings_ScrollError" xml:space="preserve">
+    <value>Scroll-Aufnahme: {0}</value>
+  </data>
+  <data name="Settings_ScrollHotkeyName" xml:space="preserve">
+    <value>Tastenkürzel für die Scroll-Aufnahme</value>
+  </data>
+  <data name="Settings_ScrollOff" xml:space="preserve">
+    <value>Aus – nur über das Tray-Menü</value>
+  </data>
+  <data name="Settings_ScrollOffTip" xml:space="preserve">
+    <value>Kein Tastenkürzel für die Scroll-Aufnahme – sie bleibt im Tray-Menü</value>
+  </data>
+  <data name="Settings_ScrollOnTip" xml:space="preserve">
+    <value>Scroll-Aufnahme wieder per Tastenkürzel starten</value>
+  </data>
+  <data name="Settings_Subtitle" xml:space="preserve">
+    <value>Gelten nur für diesen PC.</value>
+  </data>
+  <data name="Settings_TakenByCapture" xml:space="preserve">
+    <value>Dieses Kürzel ist schon für die Aufnahme vergeben.</value>
+  </data>
+  <data name="Settings_TakenByCaptureRetry" xml:space="preserve">
+    <value>Dieses Kürzel ist schon für die Aufnahme vergeben – bitte ins Feld klicken und ein anderes drücken.</value>
+  </data>
+  <data name="Settings_TakenByScroll" xml:space="preserve">
+    <value>Dieses Kürzel ist schon für die Scroll-Aufnahme vergeben.</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Settings_TurnOff" xml:space="preserve">
+    <value>Ausschalten</value>
+  </data>
+  <data name="Settings_WindowTitle" xml:space="preserve">
+    <value>ShotMark – Einstellungen</value>
   </data>
   <data name="Size_Block" xml:space="preserve">
     <value>Blockgröße</value>

@@ -33,8 +33,14 @@
   <data name="Color_Yellow" xml:space="preserve">
     <value>Yellow</value>
   </data>
+  <data name="Common_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="Common_OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="Common_Save" xml:space="preserve">
+    <value>Save</value>
   </data>
   <data name="Confirm_DiscardUnsaved" xml:space="preserve">
     <value>The changes to the current capture could be saved neither in the save folder nor locally.
@@ -133,6 +139,39 @@ Close anyway? They stay in the editor; ShotMark saves them locally on exit at th
   <data name="ErrorDetails" xml:space="preserve">
     <value>Details: {0}</value>
   </data>
+  <data name="FirstRun_EnterName" xml:space="preserve">
+    <value>Please enter a name, e.g. “Office” or “Laptop”.</value>
+  </data>
+  <data name="FirstRun_Folder" xml:space="preserve">
+    <value>Screenshots are saved here automatically:
+{0}</value>
+  </data>
+  <data name="FirstRun_Intro" xml:space="preserve">
+    <value>What should this PC be called? The name appears in the file name and in the history, so you can later see on which computer a screenshot was taken.</value>
+  </data>
+  <data name="FirstRun_NamePreview" xml:space="preserve">
+    <value>File names will then look like this: {0}</value>
+  </data>
+  <data name="FirstRun_NameTaken" xml:space="preserve">
+    <value>The name “{0}” is already used by the PC “{1}”. Please choose a different name so the captures don't get mixed up.</value>
+  </data>
+  <data name="FirstRun_NoDropbox" xml:space="preserve">
+    <value>Dropbox was not found on this PC. For now, screenshots are saved to:
+{0}
+You can change this later in the settings.</value>
+  </data>
+  <data name="FirstRun_Start" xml:space="preserve">
+    <value>Let's go</value>
+  </data>
+  <data name="FirstRun_UseAnyway" xml:space="preserve">
+    <value>Use anyway</value>
+  </data>
+  <data name="FirstRun_Welcome" xml:space="preserve">
+    <value>Welcome to ShotMark</value>
+  </data>
+  <data name="FirstRun_WindowTitle" xml:space="preserve">
+    <value>Set up ShotMark</value>
+  </data>
   <data name="Hint_Arrow" xml:space="preserve">
     <value>Drag from the start to the tip. Hold Shift for 45° steps.</value>
   </data>
@@ -185,6 +224,51 @@ PC: {1}</value>
   <data name="History_UnknownPc" xml:space="preserve">
     <value>unknown</value>
   </data>
+  <data name="Key_Alt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="Key_Ctrl" xml:space="preserve">
+    <value>Ctrl</value>
+  </data>
+  <data name="Key_Delete" xml:space="preserve">
+    <value>Del</value>
+  </data>
+  <data name="Key_End" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="Key_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Key_Insert" xml:space="preserve">
+    <value>Ins</value>
+  </data>
+  <data name="Key_NumPad" xml:space="preserve">
+    <value>Num {0}</value>
+  </data>
+  <data name="Key_PageDown" xml:space="preserve">
+    <value>PgDn</value>
+  </data>
+  <data name="Key_PageUp" xml:space="preserve">
+    <value>PgUp</value>
+  </data>
+  <data name="Key_Pause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="Key_PrintScreen" xml:space="preserve">
+    <value>PrtScn</value>
+  </data>
+  <data name="Key_ScrollLock" xml:space="preserve">
+    <value>ScrLk</value>
+  </data>
+  <data name="Key_Shift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="Key_Space" xml:space="preserve">
+    <value>Space</value>
+  </data>
+  <data name="Key_Win" xml:space="preserve">
+    <value>Win</value>
+  </data>
   <data name="Notice_RescuedLocally" xml:space="preserve">
     <value>The save folder is not reachable. Your capture was saved locally:
 {0}</value>
@@ -221,6 +305,120 @@ PC: {1}</value>
   </data>
   <data name="SaveWriteFailed" xml:space="preserve">
     <value>The capture could not be saved to “{0}”.</value>
+  </data>
+  <data name="Settings_Accepted" xml:space="preserve">
+    <value>Accepted. Takes effect after saving.</value>
+  </data>
+  <data name="Settings_AutoFolder" xml:space="preserve">
+    <value>Automatic (Dropbox)</value>
+  </data>
+  <data name="Settings_Autostart" xml:space="preserve">
+    <value>Start ShotMark with Windows</value>
+  </data>
+  <data name="Settings_AutostartHint" xml:space="preserve">
+    <value>Only takes effect in the installed version (via Setup.exe).</value>
+  </data>
+  <data name="Settings_Behavior" xml:space="preserve">
+    <value>Behavior</value>
+  </data>
+  <data name="Settings_Capture" xml:space="preserve">
+    <value>Capture</value>
+  </data>
+  <data name="Settings_CaptureHotkeyName" xml:space="preserve">
+    <value>Keyboard shortcut for capturing</value>
+  </data>
+  <data name="Settings_Change" xml:space="preserve">
+    <value>Change …</value>
+  </data>
+  <data name="Settings_Clipboard" xml:space="preserve">
+    <value>Copy the finished image to the clipboard after capturing</value>
+  </data>
+  <data name="Settings_EnterName" xml:space="preserve">
+    <value>Please enter a name.</value>
+  </data>
+  <data name="Settings_FolderAuto" xml:space="preserve">
+    <value>Automatic: “Screenshots” folder in this PC's Dropbox.</value>
+  </data>
+  <data name="Settings_FolderCustom" xml:space="preserve">
+    <value>Custom folder. For other PCs to see the captures, it should be in a shared folder such as Dropbox.</value>
+  </data>
+  <data name="Settings_Hotkeys" xml:space="preserve">
+    <value>Keyboard shortcuts</value>
+  </data>
+  <data name="Settings_IdleHint" xml:space="preserve">
+    <value>Click into the field and press the key combination you want. Scrolling capture is also available in the tray menu.</value>
+  </data>
+  <data name="Settings_NamePreview" xml:space="preserve">
+    <value>New captures will be named e.g. {0} – existing files stay unchanged.</value>
+  </data>
+  <data name="Settings_NameRequired" xml:space="preserve">
+    <value>Please enter a name for this PC.</value>
+  </data>
+  <data name="Settings_NeedModifier" xml:space="preserve">
+    <value>Please combine it with Ctrl, Alt or Win – otherwise the shortcut blocks normal typing.</value>
+  </data>
+  <data name="Settings_PcName" xml:space="preserve">
+    <value>Name of this PC</value>
+  </data>
+  <data name="Settings_PickFolderTitle" xml:space="preserve">
+    <value>Choose a folder for screenshots</value>
+  </data>
+  <data name="Settings_PressCaptureHotkey" xml:space="preserve">
+    <value>Now press the key combination for capturing …</value>
+  </data>
+  <data name="Settings_PressScrollHotkey" xml:space="preserve">
+    <value>Now press the key combination for scrolling capture …</value>
+  </data>
+  <data name="Settings_PrintScreenButton" xml:space="preserve">
+    <value>PrtScn key</value>
+  </data>
+  <data name="Settings_PrintScreenTakenByScroll" xml:space="preserve">
+    <value>The PrtScn key is already used for scrolling capture.</value>
+  </data>
+  <data name="Settings_PrintScreenTip" xml:space="preserve">
+    <value>Reset to the PrtScn key</value>
+  </data>
+  <data name="Settings_SaveFolder" xml:space="preserve">
+    <value>Save folder</value>
+  </data>
+  <data name="Settings_ScrollCapture" xml:space="preserve">
+    <value>Scrolling capture</value>
+  </data>
+  <data name="Settings_ScrollError" xml:space="preserve">
+    <value>Scrolling capture: {0}</value>
+  </data>
+  <data name="Settings_ScrollHotkeyName" xml:space="preserve">
+    <value>Keyboard shortcut for scrolling capture</value>
+  </data>
+  <data name="Settings_ScrollOff" xml:space="preserve">
+    <value>Off – tray menu only</value>
+  </data>
+  <data name="Settings_ScrollOffTip" xml:space="preserve">
+    <value>No keyboard shortcut for scrolling capture – it stays in the tray menu</value>
+  </data>
+  <data name="Settings_ScrollOnTip" xml:space="preserve">
+    <value>Start scrolling capture with a keyboard shortcut again</value>
+  </data>
+  <data name="Settings_Subtitle" xml:space="preserve">
+    <value>Apply to this PC only.</value>
+  </data>
+  <data name="Settings_TakenByCapture" xml:space="preserve">
+    <value>This shortcut is already used for capturing.</value>
+  </data>
+  <data name="Settings_TakenByCaptureRetry" xml:space="preserve">
+    <value>This shortcut is already used for capturing – please click into the field and press a different one.</value>
+  </data>
+  <data name="Settings_TakenByScroll" xml:space="preserve">
+    <value>This shortcut is already used for scrolling capture.</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Settings_TurnOff" xml:space="preserve">
+    <value>Turn off</value>
+  </data>
+  <data name="Settings_WindowTitle" xml:space="preserve">
+    <value>ShotMark – Settings</value>
   </data>
   <data name="Size_Block" xml:space="preserve">
     <value>Block size</value>
