@@ -364,12 +364,10 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
             _tray?.SetHotkeyLabels(HotkeyLabel, ScrollHotkeyLabel);
             _editor?.RefreshHotkeyLabel();
         }
-        if (restart)
-        {
-            RestartRequested?.Invoke();
-            return;
-        }
-        RegisterHotkey(showWarning: true);
+        // Kürzel immer wieder aktivieren: Bricht der Nutzer den Neustart ab (offene Änderungen nicht verwerfen),
+        // läuft ShotMark sonst ohne Tastenkürzel weiter. Beim Neustart gibt Dispose() sie ohnehin wieder frei.
+        RegisterHotkey(showWarning: !restart);
+        if (restart) RestartRequested?.Invoke();
     }
 
     /// <summary>Die Sprache wurde geändert – die App startet sich neu (siehe <see cref="App"/>).</summary>

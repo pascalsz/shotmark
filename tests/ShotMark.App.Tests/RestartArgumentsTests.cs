@@ -9,6 +9,13 @@ public class RestartArgumentsTests
     }
 
     [Fact]
+    public void Build_drops_one_shot_actions()
+    {
+        // Wer per Verknüpfung mit --capture gestartet hat, soll nach dem Sprachwechsel kein Aufnahme-Overlay bekommen
+        Assert.Equal(["--profile", "p", "--wait-for", "42"], RestartArguments.Build(["--capture", "--profile", "p", "--open-editor", "--exit"], 42));
+    }
+
+    [Fact]
     public void Build_replaces_an_earlier_wait()
     {
         Assert.Equal(["--wait-for", "42"], RestartArguments.Build(["--wait-for", "7"], 42));

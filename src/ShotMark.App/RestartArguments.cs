@@ -10,6 +10,9 @@ internal static class RestartArguments
 {
     private const string WaitForOption = "--wait-for";
 
+    /// <summary>Einmalige Aktionen des ursprünglichen Starts – nach dem Sprachwechsel sollen sie nicht erneut ausgelöst werden.</summary>
+    private static readonly string[] OneShotOptions = ["--capture", "--open-editor", "--exit"];
+
     public static string[] Build(string[] args, int pid)
     {
         var result = new List<string>();
@@ -20,6 +23,7 @@ internal static class RestartArguments
                 i++; // Wert der alten Option überspringen
                 continue;
             }
+            if (OneShotOptions.Contains(args[i], StringComparer.OrdinalIgnoreCase)) continue;
             result.Add(args[i]);
         }
         result.Add(WaitForOption);

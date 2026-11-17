@@ -27,6 +27,7 @@ public partial class App : Application
     private AppHost? _host;
     private AppUpdater? _updater;
     private bool _sessionEnding;
+    private bool _restarting;
     private static bool _justUpdated;
     private string[] _args = [];
 
@@ -146,7 +147,14 @@ public partial class App : Application
 
     private async void Restart()
     {
-        if (_host is null || !await _host.ShutdownAsync()) return;
+        if (_host is null || !await _host.ShutdownAsync())
+        {
+            Log.Info("Neustart nach Sprachwechsel abgebrochen – die Sprache gilt ab dem nächsten Start");
+            return;
+        }
+        // Ein bereitliegendes Update wendet die neue Instanz beim Start selbst an. Würde es jetzt beim Beenden
+        // installiert, liefe die neue Instanz schon aus demselben Ordner und würde dabei beendet.
+        _restarting = true;
         try
         {
             var start = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = false };
@@ -227,7 +235,7 @@ public partial class App : Application
     {
         _updater?.Dispose();
         // Beim Abmelden/Herunterfahren keinen Updater mehr starten – das Update folgt beim nächsten Start
-        if (!_sessionEnding) _updater?.ApplyPendingOnExit();
+        if (!_sessionEnding && !_restarting) _updater?.ApplyPendingOnExit();
         _host?.Dispose();
         _instanceMutex?.Dispose();
         base.OnExit(e);

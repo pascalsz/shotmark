@@ -65,7 +65,7 @@ Close anyway? They stay in the editor; ShotMark saves them locally on exit at th
     <value>Color</value>
   </data>
   <data name="Editor_Conflict" xml:space="preserve">
-    <value>This capture has since been changed on “{0}” ({1:MMM d, h:mm tt}). Your changes are not saved yet.</value>
+    <value>This capture has since been changed on “{0}” ({1:MMM d}, {1:t}). Your changes are not saved yet.</value>
   </data>
   <data name="Editor_Copied" xml:space="preserve">
     <value>Copied ✓</value>
@@ -224,7 +224,7 @@ You can change this later in the settings.</value>
     <value>History</value>
   </data>
   <data name="History_Tooltip" xml:space="preserve">
-    <value>{0:ddd MMM d, yyyy, h:mm:ss tt}
+    <value>{0:ddd MMM d, yyyy}, {0:T}
 PC: {1}</value>
   </data>
   <data name="History_UnknownPc" xml:space="preserve">
