@@ -1,3 +1,4 @@
+using ShotMark.App.Localization;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -49,7 +50,6 @@ internal sealed class PcFilterVm(string? slug, string label) : ObservableObject
 internal sealed class CaptureTileVm : ObservableObject
 {
     private const int ThumbnailHeight = 152;
-    private static readonly CultureInfo German = CultureInfo.GetCultureInfo("de-DE");
 
     private BitmapSource? _thumbnail;
     private PixelSize? _size;
@@ -67,19 +67,19 @@ internal sealed class CaptureTileVm : ObservableObject
     public string Path => Entry.PngPath;
     public string PcLabel { get; private set; }
     public bool IsOwnPc => Entry.IsOwnPc;
-    public string TimeText => Entry.Timestamp.ToString("HH:mm", German);
+    public string TimeText => Entry.Timestamp.ToString("t", CultureInfo.CurrentCulture);
 
     public string ToolTipText
     {
         get
         {
-            var text = $"{Entry.Timestamp.ToString("ddd dd.MM.yyyy, HH:mm:ss", German)}\nPC: {PcLabel}";
+            var text = Loc.Format(Strings.History_Tooltip, Entry.Timestamp, PcLabel);
             if (_size is { } size) text += $"\n{size.Width} × {size.Height} px";
             return text;
         }
     }
 
-    public override string ToString() => $"Aufnahme {Entry.Timestamp.ToString("dd.MM.yyyy HH:mm", German)}, {PcLabel}";
+    public override string ToString() => Loc.Format(Strings.History_ItemName, Entry.Timestamp, PcLabel);
 
     public BitmapSource? Thumbnail
     {
@@ -184,11 +184,14 @@ internal sealed class HistoryStripViewModel : ObservableObject, IDisposable
     {
         get
         {
-            var count = _entries.Count;
-            var pcs = HistoryIndex.PcSlugs(_entries).Count;
-            var captures = count == 1 ? "1 Aufnahme" : $"{count} Aufnahmen";
-            return pcs > 1 ? $"{captures} von {pcs} PCs" : captures;
+            return SummaryText(_entries.Count, HistoryIndex.PcSlugs(_entries).Count);
         }
+    }
+
+    internal static string SummaryText(int count, int pcs)
+    {
+        var captures = count == 1 ? Strings.History_OneCapture : Loc.Format(Strings.History_Captures, count);
+        return pcs > 1 ? Loc.Format(Strings.History_FromPcs, captures, pcs) : captures;
     }
 
     public void Configure(string folder, string ownSlug)
@@ -243,7 +246,7 @@ internal sealed class HistoryStripViewModel : ObservableObject, IDisposable
     }
 
     public string PcLabel(string? slug) =>
-        slug is null ? "unbekannt" : _pcs.TryGetValue(slug, out var info) ? info.DisplayName : slug;
+        slug is null ? Strings.History_UnknownPc : _pcs.TryGetValue(slug, out var info) ? info.DisplayName : slug;
 
     private void RebuildFilters()
     {
@@ -253,7 +256,7 @@ internal sealed class HistoryStripViewModel : ObservableObject, IDisposable
             .ToList();
         if (_filterSlug is not null && !slugs.Contains(_filterSlug, StringComparer.OrdinalIgnoreCase)) _filterSlug = null;
 
-        var wanted = new List<(string? Slug, string Label)> { (null, "Alle PCs") };
+        var wanted = new List<(string? Slug, string Label)> { (null, Strings.History_AllPcs) };
         wanted.AddRange(slugs.Select(s => ((string?)s, PcLabel(s))));
         if (Filters.Select(f => (f.Slug, f.Label)).SequenceEqual(wanted)) return;
 

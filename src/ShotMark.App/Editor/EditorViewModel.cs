@@ -130,7 +130,7 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
         _conflict = null;
         _warning = warning;
         if (_tool == ToolKind.Crop) _tool = _toolBeforeCrop;
-        SetStatus(SaveStatus.Saved, $"Gespeichert ✓ {capture.Document.ModifiedAt.LocalDateTime:HH:mm}");
+        SetStatus(SaveStatus.Saved, Loc.Format(Strings.Status_Saved, capture.Document.ModifiedAt.LocalDateTime));
         OnPropertyChanged(nameof(Capture));
         OnPropertyChanged(nameof(Tool));
         OnPropertyChanged(nameof(Conflict));
@@ -154,7 +154,7 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
             await SaveAsCopyAsync();
             if (!_dirty)
             {
-                _host.Notify("Die Aufnahme wurde inzwischen auf einem anderen PC geändert. Deine Version ist als Kopie gespeichert.");
+                _host.Notify(Strings.Notice_SavedAsCopy);
                 return true;
             }
         }
@@ -162,11 +162,11 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
         if (await RescueLocallyAsync() is { } rescued)
         {
             _dirty = false;
-            _host.Notify($"Der Speicherordner ist nicht erreichbar. Deine Aufnahme wurde lokal gesichert:\n{rescued}");
+            _host.Notify(Loc.Format(Strings.Notice_RescuedLocally, rescued));
             return true;
         }
 
-        return _host.ConfirmDiscard("Die Änderungen an der aktuellen Aufnahme konnten weder im Speicherordner noch lokal gesichert werden.\n\nTrotzdem verwerfen?");
+        return _host.ConfirmDiscard(Strings.Confirm_DiscardUnsaved);
     }
 
     private async Task<string?> RescueLocallyAsync()
@@ -328,7 +328,7 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
     {
         _saving = true;
         _dirty = false;
-        SetStatus(SaveStatus.Saving, "Speichert …");
+        SetStatus(SaveStatus.Saving, Strings.Status_Saving);
         var document = _state.ApplyTo(capture.Document);
         try
         {
@@ -342,7 +342,7 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
             {
                 case SaveOutcome.Saved saved:
                     capture.Document = saved.Document;
-                    if (isCurrent && !_dirty) SetStatus(SaveStatus.Saved, $"Gespeichert ✓ {DateTime.Now:HH:mm}");
+                    if (isCurrent && !_dirty) SetStatus(SaveStatus.Saved, Loc.Format(Strings.Status_Saved, DateTime.Now));
                     _host.CaptureSaved(capture.Paths.PngPath);
                     break;
                 case SaveOutcome.Conflict conflict:
@@ -351,7 +351,7 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
                         _dirty = true;
                         _conflict = new ConflictInfo(conflict.ModifiedOn, conflict.ModifiedAt);
                         OnPropertyChanged(nameof(Conflict));
-                        SetStatus(SaveStatus.Conflict, $"Nicht gespeichert – wurde auf „{conflict.ModifiedOn}“ geändert");
+                        SetStatus(SaveStatus.Conflict, Loc.Format(Strings.Status_Conflict, conflict.ModifiedOn));
                     }
                     break;
                 case SaveOutcome.Failed failed:
@@ -359,7 +359,7 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
                     if (isCurrent)
                     {
                         _dirty = true;
-                        SetStatus(SaveStatus.Failed, "Nicht gespeichert – erneut versuchen");
+                        SetStatus(SaveStatus.Failed, Strings.Status_Failed);
                     }
                     break;
             }
@@ -368,7 +368,7 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
         {
             Log.Error("Speichern fehlgeschlagen", e);
             _dirty = true;
-            SetStatus(SaveStatus.Failed, "Nicht gespeichert – erneut versuchen");
+            SetStatus(SaveStatus.Failed, Strings.Status_Failed);
         }
         finally
         {
@@ -385,7 +385,7 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
     public void MarkUnsaved()
     {
         _dirty = true;
-        SetStatus(SaveStatus.Failed, "Nicht gespeichert – erneut versuchen");
+        SetStatus(SaveStatus.Failed, Strings.Status_Failed);
     }
 
     /// <summary>Konflikt: Stand vom anderen PC laden, eigene Änderungen verwerfen.</summary>
@@ -415,7 +415,7 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
     {
         if (_selectedId is { } id && !_state.Annotations.Any(a => a.Id == id)) _selectedId = null;
         _dirty = true;
-        SetStatus(SaveStatus.Pending, "Änderungen werden gespeichert …");
+        SetStatus(SaveStatus.Pending, Strings.Status_Pending);
         _autosave.Stop();
         _autosave.Start();
         RaiseStateChanged();

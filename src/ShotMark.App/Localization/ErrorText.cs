@@ -30,5 +30,5 @@ internal static class ErrorText
     public static string WithDetails(string message, string? detail) =>
         string.IsNullOrWhiteSpace(detail) ? message : message + "\n" + Format(Strings.ErrorDetails, detail.Trim());
 
-    public static string Format(string format, params object?[] args) => string.Format(CultureInfo.CurrentCulture, format, args);
+    private static string Format(string format, params object?[] args) => Loc.Format(format, args);
 }

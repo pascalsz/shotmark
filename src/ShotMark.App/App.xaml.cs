@@ -140,7 +140,7 @@ public partial class App : Application
     private void StartUpdater()
     {
         if (Installation.Manager is not { } manager) return;
-        if (_justUpdated) _host!.Notify(string.Format(CultureInfo.CurrentCulture, Strings.UpdatedNotice, Installation.Version));
+        if (_justUpdated) _host!.Notify(Loc.Format(Strings.UpdatedNotice, Installation.Version));
         var host = _host!;
         _updater = new AppUpdater(manager, host.CurrentActivity, host.ShutdownAsync);
         _updater.Start();
@@ -177,7 +177,7 @@ public partial class App : Application
     {
         Log.Error("Fehler in der Oberfläche", e.Exception);
         e.Handled = true;
-        MessageBox.Show(ErrorText.WithDetails(ErrorText.Format(Strings.UnexpectedError, Log.FilePath), e.Exception.Message),
+        MessageBox.Show(ErrorText.WithDetails(Loc.Format(Strings.UnexpectedError, Log.FilePath), e.Exception.Message),
             "ShotMark", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 

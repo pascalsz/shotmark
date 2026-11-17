@@ -246,7 +246,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
             if (outcome is SaveOutcome.Saved)
             {
                 paths = rescuePaths;
-                warning = ErrorText.SaveFailed(failed, store.Folder, ErrorText.Format(Strings.SaveRescuedLocally, rescuePaths.PngPath));
+                warning = ErrorText.SaveFailed(failed, store.Folder, Loc.Format(Strings.SaveRescuedLocally, rescuePaths.PngPath));
             }
             else
             {
