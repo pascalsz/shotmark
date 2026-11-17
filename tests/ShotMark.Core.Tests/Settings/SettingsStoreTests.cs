@@ -26,6 +26,25 @@ public class SettingsStoreTests
     }
 
     [Fact]
+    public void Old_file_without_language_means_automatic()
+    {
+        using var dir = new TempDir();
+        var store = new SettingsStore(dir.Path);
+        File.WriteAllText(store.FilePath, """{ "pcName": "Büro" }""");
+        Assert.Null(store.Load().Language);
+    }
+
+    [Fact]
+    public void Language_round_trips()
+    {
+        using var dir = new TempDir();
+        var store = new SettingsStore(dir.Path);
+        store.Save(new AppSettings { PcName = "Büro", Language = "de" });
+        Assert.Equal("de", store.Load().Language);
+        Assert.Contains("\"language\": \"de\"", File.ReadAllText(store.FilePath));
+    }
+
+    [Fact]
     public void Corrupt_file_gives_defaults()
     {
         using var dir = new TempDir();
