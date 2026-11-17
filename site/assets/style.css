@@ -264,7 +264,8 @@ kbd {
   letter-spacing: -0.035em;
   line-height: 1.02;
 }
-.hero h1 .mark-box { padding-right: calc(0.12em + 0.035em); }
+/* room after the frame so the full stop sits outside it */
+.hero h1 .mark-box { padding-right: calc(0.12em + 0.035em); margin-right: calc(0.12em + 6px); }
 .hero h1 .mark-box > svg:first-of-type { inset: -0.02em -0.12em 0.02em; }
 
 /* the arrow hangs off the framed word: it points at the frame from the right, above the full stop */
@@ -272,7 +273,7 @@ kbd {
   position: absolute;
   inset: auto;
   top: 0.04em;
-  left: calc(100% + 0.06em);
+  left: calc(100% + 0.12em + 4px);
   width: 1.6em;
   height: 0.8em;
 }
@@ -482,7 +483,7 @@ kbd {
 @media (max-width: 560px) {
   body { font-size: 1rem; }
   .shot-mark span { font-size: 0.8rem; bottom: calc(100% + 6px); }
-  .hero .mark-box > .mark-arrow { width: 1.05em; height: 0.525em; top: 0.12em; }
+  .hero .mark-box > .mark-arrow { width: 0.8em; height: 0.4em; top: 0.16em; }
   .window-bar { height: 30px; }
   .window-bar .controls { gap: 14px; }
   .tools li { grid-template-columns: 24px 1fr auto; }
