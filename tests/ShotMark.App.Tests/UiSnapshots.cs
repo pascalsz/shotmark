@@ -204,7 +204,8 @@ public class UiSnapshots
 
         private void SaveOnBackdrop(FrameworkElement element, string name)
         {
-            var host = new Border { Background = new SolidColorBrush(Color.FromRgb(0xE8, 0xEA, 0xEE)), Padding = new Thickness(24), Child = element };
+            // Transparenter Grund: Das Panel liegt auf der Webseite über einem dunklen Bild (Schatten bleibt erhalten)
+            var host = new Border { Background = Brushes.Transparent, Padding = new Thickness(24), Child = element };
             host.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             var size = host.DesiredSize;
             host.Arrange(new Rect(size));

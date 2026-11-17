@@ -49,7 +49,7 @@ img, svg { display: block; max-width: 100%; }
 img { height: auto; }
 
 a { color: var(--link); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
-a:not(.button):hover { color: #8cc2ff; }
+a:not(.button):not(.skip):hover { color: #8cc2ff; }
 
 :focus-visible {
   outline: 2px solid var(--link);
@@ -95,6 +95,7 @@ kbd {
   z-index: 10;
 }
 .skip:focus { top: 12px; }
+.skip:hover { color: #fff; }
 
 .wrap {
   width: 100%;
@@ -198,7 +199,7 @@ kbd {
 }
 
 .mark-arrow { overflow: visible; filter: var(--mark-shadow); pointer-events: none; }
-.mark-arrow path { fill: none; stroke: var(--mark); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.mark-arrow path { fill: none; stroke: var(--mark); stroke-width: 7; stroke-linecap: butt; }
 
 .mark-check, .mark-cross { flex: none; overflow: visible; filter: var(--mark-shadow); }
 .mark-check path, .mark-cross path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
@@ -237,6 +238,7 @@ kbd {
   text-shadow: 1px 2px 2px rgb(0 0 0 / 0.5);
 }
 .shot-mark.label-right span { left: auto; right: 0; }
+.shot-mark.label-side span { left: calc(100% + 12px); bottom: auto; top: 50%; transform: translateY(-50%); }
 
 /* Draw-in: the marks are complete without JS; with JS they draw themselves once on entering the view */
 /* site.js measures every mark (--len) and gives frames a pixel viewBox; without it the strokes are plain and complete */
@@ -261,17 +263,22 @@ kbd {
   letter-spacing: -0.035em;
   line-height: 1.02;
 }
+.hero h1 .mark-box { padding-right: calc(0.12em + 0.035em); }
 .hero h1 .mark-box > svg:first-of-type { inset: -0.02em -0.1em 0.02em; }
 
 /* the arrow hangs off the framed word: it points at the frame from the right, above the full stop */
 .hero .mark-box > .mark-arrow {
   position: absolute;
   inset: auto;
-  top: 0.02em;
-  left: calc(100% + 0.03em);
-  width: 1.7em;
-  height: 0.72em;
+  top: 0.04em;
+  left: calc(100% + 0.06em);
+  width: 1.6em;
+  height: 0.8em;
 }
+.mark-arrow .head { fill: var(--mark); stroke: none; }
+/* The head appears once its shaft has drawn; without site.js --head stays unset and the head is simply there */
+.js .mark-arrow .head { fill-opacity: var(--head, 1); }
+.js .is-drawn .mark-arrow .head { fill-opacity: 1; transition: fill-opacity 160ms ease-out var(--delay, 0ms); }
 
 .hero .lede {
   margin-top: 26px;
@@ -404,7 +411,10 @@ kbd {
   right: clamp(-12px, -1vw, 0px);
   bottom: 0;
   width: min(42%, 320px);
-  border-radius: 12px;
+  /* transparent PNG with the panel's own shadow: no frame of its own */
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 .feature-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 28px; }
 .feature-list li { display: grid; grid-template-columns: 24px 1fr; gap: 4px 14px; }
@@ -470,8 +480,8 @@ kbd {
 
 @media (max-width: 560px) {
   body { font-size: 1rem; }
-  .hero .mark-arrow { display: none; }
-  .shot-mark span { display: none; }
+  .shot-mark span { font-size: 0.8rem; bottom: calc(100% + 6px); }
+  .hero .mark-box > .mark-arrow { width: 1.05em; height: 0.525em; top: 0.12em; }
   .window-bar { height: 30px; }
   .window-bar .controls { gap: 14px; }
   .tools li { grid-template-columns: 24px 1fr auto; }

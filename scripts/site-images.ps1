@@ -1,4 +1,5 @@
 # Erzeugt die App-Bilder der Projektseite (site/assets/en, site/assets/de) aus den UI-Snapshots.
+# Danach die Herkunft in die PNGs schreiben (impeccable embed-prompt, siehe Commit "fix(site): review findings").
 #   pwsh -File scripts/site-images.ps1            (doppelte Auflösung, für scharfe Bilder auf HiDPI-Bildschirmen)
 #   pwsh -File scripts/site-images.ps1 -Scale 1
 #   pwsh -File scripts/site-images.ps1 -OgOnly   (nur die Vorschaubilder og.png aus den vorhandenen hero.png neu zeichnen)
@@ -28,7 +29,6 @@ $images = [ordered]@{
     '13-overlay-scroll.png'       = 'scroll.png'
     '15-scroll-panel-manual.png'  = 'scroll-panel.png'
     '05-editor-filter-laptop.png' = 'history.png'
-    '07-editor-conflict.png'      = 'conflict.png'
 }
 # Vorschaubild für soziale Netzwerke (1200×630): Überschrift mit rotem Rahmen wie auf der Seite, daneben der Editor
 Add-Type -AssemblyName System.Drawing

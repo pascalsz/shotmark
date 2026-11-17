@@ -53,6 +53,18 @@ function LocalPath([string]$pageFile, [string]$ref) {
     if ($clean.EndsWith('/') -or (Test-Path $full -PathType Container)) { $full = Join-Path $full 'index.html' }
     $full
 }
+# Existiert die Datei mit exakt dieser Schreibweise? GitHub Pages unterscheidet Groß/Klein, Windows nicht.
+function ExistsExactCase([string]$full) {
+    if (-not (Test-Path $full)) { return $false }
+    $relative = [System.IO.Path]::GetRelativePath($Root, $full)
+    if ($relative.StartsWith('..')) { return $true }
+    $dir = $Root
+    foreach ($part in $relative -split '[\\/]') {
+        if (-not ((Get-ChildItem -LiteralPath $dir -Force | ForEach-Object Name) -ccontains $part)) { return $false }
+        $dir = Join-Path $dir $part
+    }
+    $true
+}
 
 # Breite und Höhe einer PNG-Datei aus dem IHDR-Kopf (ohne System.Drawing, läuft auch auf Linux-Runnern)
 function PngSize([string]$path) {
@@ -134,7 +146,7 @@ foreach ($lang in $Pages.Keys) {
         $local = LocalPath $file $r.Ref
         # Mit -Only darf die andere Sprachseite noch fehlen
         $otherPage = $Only -and ($r.Rel -eq 'alternate' -or $r.Tag -eq 'a') -and $local -and $local -ne [System.IO.Path]::GetFullPath($file) -and $local.EndsWith('index.html')
-        if ($local -and -not $r.Ref.StartsWith('/') -and -not $otherPage) { Check (Test-Path $local) $lang "Datei fehlt: $($r.Ref)" }
+        if ($local -and -not $r.Ref.StartsWith('/') -and -not $otherPage) { Check (ExistsExactCase $local) $lang "Datei fehlt (oder falsche Groß-/Kleinschreibung): $($r.Ref)" }
         $other = $lang -eq 'en' ? 'de' : 'en'
         Check ($r.Ref -notmatch "assets/$other/") $lang "Bild der anderen Sprache: $($r.Ref)"
     }

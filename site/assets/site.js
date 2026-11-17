@@ -22,6 +22,21 @@
     frames.forEach((svg) => resize.observe(svg));
   }
 
+  // Language switch: open the other language at the section currently being read
+  const sections = [...document.querySelectorAll("main section[id]")];
+  document.querySelectorAll("a[hreflang]").forEach((link) => {
+    const base = link.getAttribute("href");
+    const point = () => {
+      const line = innerHeight * 0.35;
+      const current = sections.filter((section) => section.getBoundingClientRect().top <= line).pop();
+      link.setAttribute("href", current ? `${base}#${current.id}` : base);
+    };
+    ["pointerdown", "focus", "click"].forEach((type) => link.addEventListener(type, point));
+  });
+
+  // Arrow heads wait for their shaft (CSS: fill-opacity var(--head)); without this line they are always visible
+  document.querySelectorAll(".mark-arrow .head").forEach((head) => head.style.setProperty("--head", "0"));
+
   const groups = document.querySelectorAll("[data-marks]");
   if (!("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) {
     groups.forEach((group) => group.classList.add("is-drawn"));
