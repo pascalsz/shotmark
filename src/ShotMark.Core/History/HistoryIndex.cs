@@ -1,3 +1,4 @@
+using ShotMark.Core.Localization;
 using System.Globalization;
 using ShotMark.Core.Storage;
 namespace ShotMark.Core.History;
@@ -10,7 +11,6 @@ public sealed record CaptureItem(HistoryEntry Entry) : HistoryItem;
 
 public static class HistoryIndex
 {
-    private static readonly string[] ShortDayNames = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
 
     public static IReadOnlyList<HistoryEntry> Scan(string folder, string ownPcSlug)
     {
@@ -42,10 +42,10 @@ public static class HistoryIndex
     public static string DayLabel(DateTime day, DateTime today)
     {
         var d = day.Date;
-        if (d == today.Date) return "Heute";
-        if (d == today.Date.AddDays(-1)) return "Gestern";
-        var format = d.Year == today.Year ? "dd.MM." : "dd.MM.yyyy";
-        return $"{ShortDayNames[(int)d.DayOfWeek]} {d.ToString(format, CultureInfo.InvariantCulture)}";
+        if (d == today.Date) return CoreStrings.Today;
+        if (d == today.Date.AddDays(-1)) return CoreStrings.Yesterday;
+        var format = d.Year == today.Year ? CoreStrings.DayLabelThisYear : CoreStrings.DayLabelOtherYear;
+        return d.ToString(format, CultureInfo.CurrentCulture);
     }
 
     public static IReadOnlyList<HistoryItem> WithDaySeparators(IEnumerable<HistoryEntry> sortedEntries, DateTime today)

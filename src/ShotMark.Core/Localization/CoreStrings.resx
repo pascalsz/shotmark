@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DayLabelOtherYear" xml:space="preserve">
+    <value>ddd MMM d, yyyy</value>
+  </data>
+  <data name="DayLabelThisYear" xml:space="preserve">
+    <value>ddd MMM d</value>
+  </data>
+  <data name="ScrollHintManual" xml:space="preserve">
+    <value>Manual – scroll slowly yourself, then Stop</value>
+  </data>
+  <data name="ScrollHintNoReaction" xml:space="preserve">
+    <value>No movement – scroll with the mouse wheel yourself or press Stop</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Yesterday</value>
+  </data>
+</root>

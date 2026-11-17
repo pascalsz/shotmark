@@ -13,6 +13,9 @@
     <Version>1.0.0</Version>
     <!-- WPF-App: DPI-Modus kommt aus app.manifest (PerMonitorV2), nicht aus WinForms -->
     <NoWarn>$(NoWarn);WFO0003</NoWarn>
+    <!-- Englisch ist die Grundsprache, Übersetzungen liegen in *.de.resx; keine fremden Framework-Satelliten im Paket -->
+    <NeutralLanguage>en</NeutralLanguage>
+    <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ShotMark.Core\ShotMark.Core.csproj" />
+    <ProjectReference Include="..\ShotMark.App.Strings\ShotMark.App.Strings.csproj" />
   </ItemGroup>
 
   <ItemGroup>

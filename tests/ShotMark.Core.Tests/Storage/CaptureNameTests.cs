@@ -13,6 +13,17 @@ public class CaptureNameTests
     }
 
     [Theory]
+    [InlineData("de-DE")]
+    [InlineData("en-US")]
+    [InlineData("ar-SA")]
+    public void BaseName_does_not_depend_on_the_language(string culture)
+    {
+        // Deutsche und englische PCs teilen sich denselben Ordner
+        using var _ = new CultureScope(culture);
+        Assert.Equal("2026-10-19_15-30-12_Buero", new CaptureName(T, "Buero").BaseName);
+    }
+
+    [Theory]
     [InlineData("2026-10-19_15-30-12_Buero", "Buero", 1)]
     [InlineData("2026-10-19_15-30-12_DESKTOP-Office_3", "DESKTOP-Office", 3)]
     public void TryParse_reads_valid_names(string name, string pc, int seq)

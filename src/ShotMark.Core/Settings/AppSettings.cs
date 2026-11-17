@@ -21,6 +21,9 @@ public sealed record AppSettings
     public string? SaveFolder { get; init; }
     public bool StartWithWindows { get; init; } = true;
     public bool CopyToClipboard { get; init; } = true;
+
+    /// <summary>Sprache der Oberfläche: <c>"de"</c>, <c>"en"</c> oder <c>null</c> = Windows-Sprache folgen.</summary>
+    public string? Language { get; init; }
 }
 
 public sealed class SettingsStore(string directory)

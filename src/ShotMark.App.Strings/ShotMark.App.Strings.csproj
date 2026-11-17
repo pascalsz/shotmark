@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Texte der Oberfläche (Englisch = Grundsprache, Deutsch in Strings.de.resx).
+    Eigenes Projekt ohne WPF: Im temporären Markup-Projekt von WPF fehlt sonst die beim Build erzeugte Klasse.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>ShotMark.App.Localization</RootNamespace>
+    <NeutralLanguage>en</NeutralLanguage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Strings.resx" GenerateSource="true" PublicClass="true" StronglyTypedLanguage="CSharp"
+                      StronglyTypedNamespace="ShotMark.App.Localization" StronglyTypedClassName="Strings" />
+  </ItemGroup>
+
+</Project>

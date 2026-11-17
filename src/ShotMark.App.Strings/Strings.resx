@@ -1,0 +1,660 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CaptureFailed" xml:space="preserve">
+    <value>The capture failed.</value>
+  </data>
+  <data name="Color_Black" xml:space="preserve">
+    <value>Black</value>
+  </data>
+  <data name="Color_Blue" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  <data name="Color_Green" xml:space="preserve">
+    <value>Green</value>
+  </data>
+  <data name="Color_Red" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="Color_White" xml:space="preserve">
+    <value>White</value>
+  </data>
+  <data name="Color_Yellow" xml:space="preserve">
+    <value>Yellow</value>
+  </data>
+  <data name="Common_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Common_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Common_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Confirm_DiscardUnsaved" xml:space="preserve">
+    <value>The changes to the current capture could be saved neither in the save folder nor locally.
+
+Discard anyway?</value>
+  </data>
+  <data name="Editor_CapturedHere" xml:space="preserve">
+    <value>Captured on this PC</value>
+  </data>
+  <data name="Editor_CaptureGroup" xml:space="preserve">
+    <value>Capture</value>
+  </data>
+  <data name="Editor_ClipboardBusy" xml:space="preserve">
+    <value>Clipboard busy</value>
+  </data>
+  <data name="Editor_CloseUnsaved" xml:space="preserve">
+    <value>The latest changes could not be saved.
+
+Close anyway? They stay in the editor; ShotMark saves them locally on exit at the latest.</value>
+  </data>
+  <data name="Editor_Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="Editor_Conflict" xml:space="preserve">
+    <value>This capture has since been changed on “{0}” ({1:MMM d}, {1:t}). Your changes are not saved yet.</value>
+  </data>
+  <data name="Editor_Copied" xml:space="preserve">
+    <value>Copied ✓</value>
+  </data>
+  <data name="Editor_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="Editor_CopyImage" xml:space="preserve">
+    <value>Copy image</value>
+  </data>
+  <data name="Editor_CropApply" xml:space="preserve">
+    <value>Crop  (Enter)</value>
+  </data>
+  <data name="Editor_CropCancel" xml:space="preserve">
+    <value>Cancel  (Esc)</value>
+  </data>
+  <data name="Editor_CropRemove" xml:space="preserve">
+    <value>Remove crop</value>
+  </data>
+  <data name="Editor_Delete" xml:space="preserve">
+    <value>Delete  (Del)</value>
+  </data>
+  <data name="Editor_EmptyHint" xml:space="preserve">
+    <value>Press {0} to capture an area. The capture then opens here.</value>
+  </data>
+  <data name="Editor_FileInfo" xml:space="preserve">
+    <value>{0}   ·   captured on {1}, {2:g}</value>
+  </data>
+  <data name="Editor_Fit" xml:space="preserve">
+    <value>Fit</value>
+  </data>
+  <data name="Editor_NewCapture" xml:space="preserve">
+    <value>New capture</value>
+  </data>
+  <data name="Editor_NewCaptureTip" xml:space="preserve">
+    <value>New capture ({0}, Ctrl+N)</value>
+  </data>
+  <data name="Editor_NoCaptureOpen" xml:space="preserve">
+    <value>No capture open yet</value>
+  </data>
+  <data name="Editor_OpenFolder" xml:space="preserve">
+    <value>Open screenshot folder</value>
+  </data>
+  <data name="Editor_Redo" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="Editor_Reload" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="Editor_Retry" xml:space="preserve">
+    <value>Try again</value>
+  </data>
+  <data name="Editor_SaveAsCopy" xml:space="preserve">
+    <value>Save as copy</value>
+  </data>
+  <data name="Editor_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Editor_Size" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="Editor_Strength" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="Editor_TextBoxName" xml:space="preserve">
+    <value>Annotation text</value>
+  </data>
+  <data name="Editor_Undo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="ErrorDetails" xml:space="preserve">
+    <value>Details: {0}</value>
+  </data>
+  <data name="FirstRun_EnterName" xml:space="preserve">
+    <value>Please enter a name, e.g. “Office” or “Laptop”.</value>
+  </data>
+  <data name="FirstRun_Folder" xml:space="preserve">
+    <value>Screenshots are saved here automatically:
+{0}</value>
+  </data>
+  <data name="FirstRun_Intro" xml:space="preserve">
+    <value>What should this PC be called? The name appears in the file name and in the history, so you can later see on which computer a screenshot was taken.</value>
+  </data>
+  <data name="FirstRun_NamePreview" xml:space="preserve">
+    <value>File names will then look like this: {0}</value>
+  </data>
+  <data name="FirstRun_NameTaken" xml:space="preserve">
+    <value>The name “{0}” is already used by the PC “{1}”. Please choose a different name so the captures don't get mixed up.</value>
+  </data>
+  <data name="FirstRun_NoDropbox" xml:space="preserve">
+    <value>Dropbox was not found on this PC. For now, screenshots are saved to:
+{0}
+You can change this later in the settings.</value>
+  </data>
+  <data name="FirstRun_Start" xml:space="preserve">
+    <value>Let's go</value>
+  </data>
+  <data name="FirstRun_UseAnyway" xml:space="preserve">
+    <value>Use anyway</value>
+  </data>
+  <data name="FirstRun_Welcome" xml:space="preserve">
+    <value>Welcome to ShotMark</value>
+  </data>
+  <data name="FirstRun_WindowTitle" xml:space="preserve">
+    <value>Set up ShotMark</value>
+  </data>
+  <data name="Folder_NoDropbox" xml:space="preserve">
+    <value>Dropbox was not found on this PC. Screenshots are saved to “{0}”.</value>
+  </data>
+  <data name="Folder_NotWritable" xml:space="preserve">
+    <value>The save folder “{0}” is not writable. Please check it in the settings.</value>
+  </data>
+  <data name="Hint_Arrow" xml:space="preserve">
+    <value>Drag from the start to the tip. Hold Shift for 45° steps.</value>
+  </data>
+  <data name="Hint_Blur" xml:space="preserve">
+    <value>Drag an area to pixelate – e.g. passwords or names.</value>
+  </data>
+  <data name="Hint_Check" xml:space="preserve">
+    <value>Click to place a check mark, drag to set its size.</value>
+  </data>
+  <data name="Hint_Crop" xml:space="preserve">
+    <value>Drag a frame or adjust it with the handles. The original is kept.</value>
+  </data>
+  <data name="Hint_Cross" xml:space="preserve">
+    <value>Click to place a cross, drag to set its size.</value>
+  </data>
+  <data name="Hint_Rectangle" xml:space="preserve">
+    <value>Drag a frame. Hold Shift for a square.</value>
+  </data>
+  <data name="Hint_Select" xml:space="preserve">
+    <value>Click an annotation to move it, change it or delete it with Del.</value>
+  </data>
+  <data name="Hint_Text" xml:space="preserve">
+    <value>Click into the image and type. Enter confirms, Shift+Enter starts a new line.</value>
+  </data>
+  <data name="History_AllPcs" xml:space="preserve">
+    <value>All PCs</value>
+  </data>
+  <data name="History_Captures" xml:space="preserve">
+    <value>{0} captures</value>
+  </data>
+  <data name="History_Empty" xml:space="preserve">
+    <value>No captures in the folder yet.</value>
+  </data>
+  <data name="History_FromPcs" xml:space="preserve">
+    <value>{0} from {1} PCs</value>
+  </data>
+  <data name="History_ItemName" xml:space="preserve">
+    <value>Capture {0:g}, {1}</value>
+  </data>
+  <data name="History_OneCapture" xml:space="preserve">
+    <value>1 capture</value>
+  </data>
+  <data name="History_Title" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="History_Tooltip" xml:space="preserve">
+    <value>{0:ddd MMM d, yyyy}, {0:T}
+PC: {1}</value>
+  </data>
+  <data name="History_UnknownPc" xml:space="preserve">
+    <value>unknown</value>
+  </data>
+  <data name="Hotkey_CaptureStillInTray" xml:space="preserve">
+    <value>{0} Captures are still available from the tray menu.</value>
+  </data>
+  <data name="Hotkey_Failed" xml:space="preserve">
+    <value>The keyboard shortcut “{0}” could not be registered (error {1}).</value>
+  </data>
+  <data name="Hotkey_ScrollNotRegistered" xml:space="preserve">
+    <value>Keyboard shortcut for scrolling capture not registered</value>
+  </data>
+  <data name="Hotkey_ScrollStillInTray" xml:space="preserve">
+    <value>{0} Scrolling capture is still available from the tray menu.</value>
+  </data>
+  <data name="Hotkey_SnippingTool" xml:space="preserve">
+    <value>Windows uses the PrtScn key for the Snipping Tool. Click here and turn off “Use the Print screen key to open screen capture” – or choose a different shortcut in ShotMark.</value>
+  </data>
+  <data name="Hotkey_Taken" xml:space="preserve">
+    <value>The keyboard shortcut “{0}” is used by another program – e.g. Snagit or the screenshot feature of Dropbox or OneDrive. ShotMark keeps trying; alternatively choose a different shortcut in the settings.</value>
+  </data>
+  <data name="Key_Alt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="Key_Ctrl" xml:space="preserve">
+    <value>Ctrl</value>
+  </data>
+  <data name="Key_Delete" xml:space="preserve">
+    <value>Del</value>
+  </data>
+  <data name="Key_End" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="Key_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Key_Insert" xml:space="preserve">
+    <value>Ins</value>
+  </data>
+  <data name="Key_NumPad" xml:space="preserve">
+    <value>Num {0}</value>
+  </data>
+  <data name="Key_PageDown" xml:space="preserve">
+    <value>PgDn</value>
+  </data>
+  <data name="Key_PageUp" xml:space="preserve">
+    <value>PgUp</value>
+  </data>
+  <data name="Key_Pause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="Key_PrintScreen" xml:space="preserve">
+    <value>PrtScn</value>
+  </data>
+  <data name="Key_ScrollLock" xml:space="preserve">
+    <value>ScrLk</value>
+  </data>
+  <data name="Key_Shift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="Key_Space" xml:space="preserve">
+    <value>Space</value>
+  </data>
+  <data name="Key_Win" xml:space="preserve">
+    <value>Win</value>
+  </data>
+  <data name="Notice_CaptureSaved" xml:space="preserve">
+    <value>The new capture is saved and can be found in the history.</value>
+  </data>
+  <data name="Notice_HotkeyActive" xml:space="preserve">
+    <value>{0} is now active for ShotMark.</value>
+  </data>
+  <data name="Notice_RescuedLocally" xml:space="preserve">
+    <value>The save folder is not reachable. Your capture was saved locally:
+{0}</value>
+  </data>
+  <data name="Notice_SavedAsCopy" xml:space="preserve">
+    <value>This capture has since been changed on another PC. Your version was saved as a copy.</value>
+  </data>
+  <data name="OpenFailed" xml:space="preserve">
+    <value>The capture could not be opened.</value>
+  </data>
+  <data name="Overlay_Hint" xml:space="preserve">
+    <value>Drag an area  ·  Esc or right-click cancels</value>
+  </data>
+  <data name="Overlay_ScrollHint" xml:space="preserve">
+    <value>↓  Scrolling capture: drag over the content that should be scrolled  ·  Esc cancels</value>
+  </data>
+  <data name="Overlay_Title" xml:space="preserve">
+    <value>ShotMark – Select area</value>
+  </data>
+  <data name="Overlay_TooShort" xml:space="preserve">
+    <value>↓  Too short for a scrolling capture – drag at least {0} px high  ·  Esc cancels</value>
+  </data>
+  <data name="Panel_NoCaptureHint" xml:space="preserve">
+    <value>Available as soon as a capture is open.</value>
+  </data>
+  <data name="Panel_Selected" xml:space="preserve">
+    <value>{0} selected</value>
+  </data>
+  <data name="Panel_SelectedHint" xml:space="preserve">
+    <value>Drag to move, the handles change the size. Arrow keys move by 1 px, with Shift by 10 px.</value>
+  </data>
+  <data name="Panel_Tools" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="Ready_Text" xml:space="preserve">
+    <value>Press {0} to capture an area. ShotMark waits in the notification area of the taskbar.</value>
+  </data>
+  <data name="Ready_Title" xml:space="preserve">
+    <value>ShotMark is ready</value>
+  </data>
+  <data name="SaveFolderUnavailable" xml:space="preserve">
+    <value>The save folder “{0}” is not reachable.</value>
+  </data>
+  <data name="SaveKeepsOpen" xml:space="preserve">
+    <value>It stays open – ShotMark will try again with your next change.</value>
+  </data>
+  <data name="SaveNewerVersion" xml:space="preserve">
+    <value>This capture was saved with a newer version of ShotMark and is not overwritten. Please update ShotMark on this PC.</value>
+  </data>
+  <data name="SaveRescuedLocally" xml:space="preserve">
+    <value>The capture was saved locally: {0}</value>
+  </data>
+  <data name="SaveWriteFailed" xml:space="preserve">
+    <value>The capture could not be saved to “{0}”.</value>
+  </data>
+  <data name="Scroll_ContentChanged" xml:space="preserve">
+    <value>The content changed while scrolling (e.g. images loading or animations) – the scrolling capture was stopped early.</value>
+  </data>
+  <data name="Scroll_Error" xml:space="preserve">
+    <value>The scrolling capture was stopped because of an error. The result so far is saved; details are in the log.</value>
+  </data>
+  <data name="Scroll_MaxSize" xml:space="preserve">
+    <value>Maximum length reached – the scrolling capture was stopped at {0:N0} px.</value>
+  </data>
+  <data name="Scroll_TooFast" xml:space="preserve">
+    <value>Scrolled too fast – the scrolling capture ends at the last matching position. Tip: turn the wheel more slowly when scrolling yourself.</value>
+  </data>
+  <data name="ScrollPanel_AutomaticHint" xml:space="preserve">
+    <value>Scrolling automatically – the end of the page is detected.</value>
+  </data>
+  <data name="ScrollPanel_FrameTitle" xml:space="preserve">
+    <value>ShotMark – Scroll frame</value>
+  </data>
+  <data name="ScrollPanel_Height" xml:space="preserve">
+    <value>{0:N0} px</value>
+  </data>
+  <data name="ScrollPanel_PanelTitle" xml:space="preserve">
+    <value>ShotMark – Scrolling capture</value>
+  </data>
+  <data name="ScrollPanel_Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="ScrollPanel_StopEsc" xml:space="preserve">
+    <value>Stop  (Esc)</value>
+  </data>
+  <data name="ScrollPanel_StopName" xml:space="preserve">
+    <value>Stop scrolling capture</value>
+  </data>
+  <data name="ScrollPanel_Title" xml:space="preserve">
+    <value>Scrolling capture</value>
+  </data>
+  <data name="ScrollPanel_TitleManual" xml:space="preserve">
+    <value>Scrolling capture · manual</value>
+  </data>
+  <data name="Settings_Accepted" xml:space="preserve">
+    <value>Accepted. Takes effect after saving.</value>
+  </data>
+  <data name="Settings_AutoFolder" xml:space="preserve">
+    <value>Automatic (Dropbox)</value>
+  </data>
+  <data name="Settings_Autostart" xml:space="preserve">
+    <value>Start ShotMark with Windows</value>
+  </data>
+  <data name="Settings_AutostartHint" xml:space="preserve">
+    <value>Only takes effect in the installed version (via Setup.exe).</value>
+  </data>
+  <data name="Settings_Behavior" xml:space="preserve">
+    <value>Behavior</value>
+  </data>
+  <data name="Settings_Capture" xml:space="preserve">
+    <value>Capture</value>
+  </data>
+  <data name="Settings_CaptureHotkeyName" xml:space="preserve">
+    <value>Keyboard shortcut for capturing</value>
+  </data>
+  <data name="Settings_Change" xml:space="preserve">
+    <value>Change …</value>
+  </data>
+  <data name="Settings_Clipboard" xml:space="preserve">
+    <value>Copy the finished image to the clipboard after capturing</value>
+  </data>
+  <data name="Settings_EnterName" xml:space="preserve">
+    <value>Please enter a name.</value>
+  </data>
+  <data name="Settings_FolderAuto" xml:space="preserve">
+    <value>Automatic: “Screenshots” folder in this PC's Dropbox.</value>
+  </data>
+  <data name="Settings_FolderCustom" xml:space="preserve">
+    <value>Custom folder. For other PCs to see the captures, it should be in a shared folder such as Dropbox.</value>
+  </data>
+  <data name="Settings_Hotkeys" xml:space="preserve">
+    <value>Keyboard shortcuts</value>
+  </data>
+  <data name="Settings_IdleHint" xml:space="preserve">
+    <value>Click into the field and press the key combination you want. Scrolling capture is also available in the tray menu.</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Settings_LanguageAuto" xml:space="preserve">
+    <value>Automatic (Windows language)</value>
+  </data>
+  <data name="Settings_LanguageHint" xml:space="preserve">
+    <value>ShotMark restarts to switch the language.</value>
+  </data>
+  <data name="Settings_NamePreview" xml:space="preserve">
+    <value>New captures will be named e.g. {0} – existing files stay unchanged.</value>
+  </data>
+  <data name="Settings_NameRequired" xml:space="preserve">
+    <value>Please enter a name for this PC.</value>
+  </data>
+  <data name="Settings_NeedModifier" xml:space="preserve">
+    <value>Please combine it with Ctrl, Alt or Win – otherwise the shortcut blocks normal typing.</value>
+  </data>
+  <data name="Settings_PcName" xml:space="preserve">
+    <value>Name of this PC</value>
+  </data>
+  <data name="Settings_PickFolderTitle" xml:space="preserve">
+    <value>Choose a folder for screenshots</value>
+  </data>
+  <data name="Settings_PressCaptureHotkey" xml:space="preserve">
+    <value>Now press the key combination for capturing …</value>
+  </data>
+  <data name="Settings_PressScrollHotkey" xml:space="preserve">
+    <value>Now press the key combination for scrolling capture …</value>
+  </data>
+  <data name="Settings_PrintScreenButton" xml:space="preserve">
+    <value>PrtScn key</value>
+  </data>
+  <data name="Settings_PrintScreenTakenByScroll" xml:space="preserve">
+    <value>The PrtScn key is already used for scrolling capture.</value>
+  </data>
+  <data name="Settings_PrintScreenTip" xml:space="preserve">
+    <value>Reset to the PrtScn key</value>
+  </data>
+  <data name="Settings_SaveFolder" xml:space="preserve">
+    <value>Save folder</value>
+  </data>
+  <data name="Settings_ScrollCapture" xml:space="preserve">
+    <value>Scrolling capture</value>
+  </data>
+  <data name="Settings_ScrollError" xml:space="preserve">
+    <value>Scrolling capture: {0}</value>
+  </data>
+  <data name="Settings_ScrollHotkeyName" xml:space="preserve">
+    <value>Keyboard shortcut for scrolling capture</value>
+  </data>
+  <data name="Settings_ScrollOff" xml:space="preserve">
+    <value>Off – tray menu only</value>
+  </data>
+  <data name="Settings_ScrollOffTip" xml:space="preserve">
+    <value>No keyboard shortcut for scrolling capture – it stays in the tray menu</value>
+  </data>
+  <data name="Settings_ScrollOnTip" xml:space="preserve">
+    <value>Start scrolling capture with a keyboard shortcut again</value>
+  </data>
+  <data name="Settings_Subtitle" xml:space="preserve">
+    <value>Apply to this PC only.</value>
+  </data>
+  <data name="Settings_TakenByCapture" xml:space="preserve">
+    <value>This shortcut is already used for capturing.</value>
+  </data>
+  <data name="Settings_TakenByCaptureRetry" xml:space="preserve">
+    <value>This shortcut is already used for capturing – please click into the field and press a different one.</value>
+  </data>
+  <data name="Settings_TakenByScroll" xml:space="preserve">
+    <value>This shortcut is already used for scrolling capture.</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Settings_TurnOff" xml:space="preserve">
+    <value>Turn off</value>
+  </data>
+  <data name="Settings_WindowTitle" xml:space="preserve">
+    <value>ShotMark – Settings</value>
+  </data>
+  <data name="Size_Block" xml:space="preserve">
+    <value>Block size</value>
+  </data>
+  <data name="Size_Font" xml:space="preserve">
+    <value>Font size</value>
+  </data>
+  <data name="Size_Stroke" xml:space="preserve">
+    <value>Stroke width</value>
+  </data>
+  <data name="Status_Conflict" xml:space="preserve">
+    <value>Not saved – changed on “{0}”</value>
+  </data>
+  <data name="Status_Failed" xml:space="preserve">
+    <value>Not saved – try again</value>
+  </data>
+  <data name="Status_Pending" xml:space="preserve">
+    <value>Saving changes …</value>
+  </data>
+  <data name="Status_Saved" xml:space="preserve">
+    <value>Saved ✓ {0:t}</value>
+  </data>
+  <data name="Status_Saving" xml:space="preserve">
+    <value>Saving …</value>
+  </data>
+  <data name="Tip_ActualSize" xml:space="preserve">
+    <value>Actual size (Ctrl+1)</value>
+  </data>
+  <data name="Tip_Arrow" xml:space="preserve">
+    <value>Arrow (A) – Shift for 45° steps</value>
+  </data>
+  <data name="Tip_Blur" xml:space="preserve">
+    <value>Blur (U)</value>
+  </data>
+  <data name="Tip_Check" xml:space="preserve">
+    <value>Check mark for “good” (H)</value>
+  </data>
+  <data name="Tip_Copy" xml:space="preserve">
+    <value>Copy the finished image to the clipboard (Ctrl+C)</value>
+  </data>
+  <data name="Tip_Crop" xml:space="preserve">
+    <value>Crop (C)</value>
+  </data>
+  <data name="Tip_CropRemove" xml:space="preserve">
+    <value>The image is cropped – restore it to full size here</value>
+  </data>
+  <data name="Tip_Cross" xml:space="preserve">
+    <value>Cross for “bad” (X)</value>
+  </data>
+  <data name="Tip_Fit" xml:space="preserve">
+    <value>Fit to window (Ctrl+0)</value>
+  </data>
+  <data name="Tip_Rectangle" xml:space="preserve">
+    <value>Rectangle (R) – Shift for a square</value>
+  </data>
+  <data name="Tip_Redo" xml:space="preserve">
+    <value>Redo (Ctrl+Y)</value>
+  </data>
+  <data name="Tip_Reload" xml:space="preserve">
+    <value>Load the version from the other PC – discard your changes</value>
+  </data>
+  <data name="Tip_SaveAsCopy" xml:space="preserve">
+    <value>Save your version as a new capture</value>
+  </data>
+  <data name="Tip_Select" xml:space="preserve">
+    <value>Select and move (V)</value>
+  </data>
+  <data name="Tip_Text" xml:space="preserve">
+    <value>Text (T)</value>
+  </data>
+  <data name="Tip_Undo" xml:space="preserve">
+    <value>Undo (Ctrl+Z)</value>
+  </data>
+  <data name="Tip_ZoomIn" xml:space="preserve">
+    <value>Zoom in (Ctrl+Plus)</value>
+  </data>
+  <data name="Tip_ZoomOut" xml:space="preserve">
+    <value>Zoom out (Ctrl+Minus)</value>
+  </data>
+  <data name="Tool_Arrow" xml:space="preserve">
+    <value>Arrow</value>
+  </data>
+  <data name="Tool_Blur" xml:space="preserve">
+    <value>Blur</value>
+  </data>
+  <data name="Tool_BlurLong" xml:space="preserve">
+    <value>Blur</value>
+  </data>
+  <data name="Tool_Check" xml:space="preserve">
+    <value>Check</value>
+  </data>
+  <data name="Tool_Crop" xml:space="preserve">
+    <value>Crop</value>
+  </data>
+  <data name="Tool_Cross" xml:space="preserve">
+    <value>Cross</value>
+  </data>
+  <data name="Tool_Rectangle" xml:space="preserve">
+    <value>Rectangle</value>
+  </data>
+  <data name="Tool_Select" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="Tool_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="Tray_Exit" xml:space="preserve">
+    <value>Exit ShotMark</value>
+  </data>
+  <data name="Tray_NewCapture" xml:space="preserve">
+    <value>New capture   ({0})</value>
+  </data>
+  <data name="Tray_OpenEditor" xml:space="preserve">
+    <value>Open editor</value>
+  </data>
+  <data name="Tray_OpenFolder" xml:space="preserve">
+    <value>Open screenshot folder</value>
+  </data>
+  <data name="Tray_ScrollCapture" xml:space="preserve">
+    <value>Scrolling capture</value>
+  </data>
+  <data name="Tray_ScrollCaptureWithKey" xml:space="preserve">
+    <value>Scrolling capture   ({0})</value>
+  </data>
+  <data name="Tray_Settings" xml:space="preserve">
+    <value>Settings …</value>
+  </data>
+  <data name="Tray_Tooltip" xml:space="preserve">
+    <value>ShotMark – {0} for a screenshot</value>
+  </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>An unexpected error occurred. Details are in {0}.</value>
+  </data>
+  <data name="UpdatedNotice" xml:space="preserve">
+    <value>ShotMark was updated to version {0}.</value>
+  </data>
+  <data name="WarningNewerVersion" xml:space="preserve">
+    <value>This capture was saved with a newer version of ShotMark. Please update ShotMark on this PC. Until then only the finished image is shown.</value>
+  </data>
+  <data name="WarningProjectUnreadable" xml:space="preserve">
+    <value>The project file could not be read – annotations are burned in and can no longer be edited individually.</value>
+  </data>
+</root>

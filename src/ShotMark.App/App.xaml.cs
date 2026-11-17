@@ -1,10 +1,14 @@
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using ShotMark.App.Localization;
 using ShotMark.App.Updates;
+using ShotMark.Core.Settings;
 using Velopack;
 
 namespace ShotMark.App;
@@ -23,7 +27,9 @@ public partial class App : Application
     private AppHost? _host;
     private AppUpdater? _updater;
     private bool _sessionEnding;
+    private bool _restarting;
     private static bool _justUpdated;
+    private string[] _args = [];
 
     /// <summary>
     /// Velopack läuft vor WPF und führt die Installations-Hooks aus (diese beenden den Prozess danach selbst).
@@ -54,12 +60,18 @@ public partial class App : Application
         base.OnStartup(e);
         System.Windows.Forms.Application.EnableVisualStyles();
 
+        _args = e.Args;
+        // Neustart nach Sprachwechsel: erst die alte Instanz enden lassen, sonst hält sie noch die Einzelinstanz-Sperre
+        if (RestartArguments.WaitFor(e.Args) is { } oldProcess) WaitForExit(oldProcess);
+
         var customProfile = ArgumentValue(e.Args, "--profile");
         var profile = customProfile is not null
             ? Path.GetFullPath(customProfile)
             : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ShotMark");
         Directory.CreateDirectory(profile);
         if (customProfile is not null) Log.FilePath = Path.Combine(profile, "log.txt");
+        // Vor dem ersten Fenster, damit schon der Erststart-Dialog in der richtigen Sprache erscheint
+        Language.Apply(new SettingsStore(profile).Load().Language);
 
         var id = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(profile.ToLowerInvariant())))[..16];
         _instanceMutex = new Mutex(true, $@"Local\ShotMark-{id}", out var isFirstInstance);
@@ -93,6 +105,7 @@ public partial class App : Application
         };
 
         _host = new AppHost(profile, manageAutostart: customProfile is null);
+        _host.RestartRequested += Restart;
         SessionEnding += (_, _) =>
         {
             _sessionEnding = true;
@@ -132,10 +145,46 @@ public partial class App : Application
         }
     }
 
+    private async void Restart()
+    {
+        if (_host is null || !await _host.ShutdownAsync())
+        {
+            Log.Info("Neustart nach Sprachwechsel abgebrochen – die Sprache gilt ab dem nächsten Start");
+            return;
+        }
+        // Ein bereitliegendes Update wendet die neue Instanz beim Start selbst an. Würde es jetzt beim Beenden
+        // installiert, liefe die neue Instanz schon aus demselben Ordner und würde dabei beendet.
+        _restarting = true;
+        try
+        {
+            var start = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute = false };
+            foreach (var arg in RestartArguments.Build(_args, Environment.ProcessId)) start.ArgumentList.Add(arg);
+            Process.Start(start)?.Dispose();
+        }
+        catch (Exception error) when (error is System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+            Log.Error("Neustart nach Sprachwechsel fehlgeschlagen", error);
+        }
+        Shutdown();
+    }
+
+    private static void WaitForExit(int processId)
+    {
+        try
+        {
+            using var process = Process.GetProcessById(processId);
+            process.WaitForExit(TimeSpan.FromSeconds(30));
+        }
+        catch (ArgumentException)
+        {
+            // schon beendet
+        }
+    }
+
     private void StartUpdater()
     {
         if (Installation.Manager is not { } manager) return;
-        if (_justUpdated) _host!.Notify($"ShotMark wurde auf Version {Installation.Version} aktualisiert.");
+        if (_justUpdated) _host!.Notify(Loc.Format(Strings.UpdatedNotice, Installation.Version));
         var host = _host!;
         _updater = new AppUpdater(manager, host.CurrentActivity, host.ShutdownAsync);
         _updater.Start();
@@ -172,7 +221,7 @@ public partial class App : Application
     {
         Log.Error("Fehler in der Oberfläche", e.Exception);
         e.Handled = true;
-        MessageBox.Show($"Es ist ein unerwarteter Fehler aufgetreten:\n{e.Exception.Message}\n\nDetails stehen in {Log.FilePath}.",
+        MessageBox.Show(ErrorText.WithDetails(Loc.Format(Strings.UnexpectedError, Log.FilePath), e.Exception.Message),
             "ShotMark", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 
@@ -186,7 +235,7 @@ public partial class App : Application
     {
         _updater?.Dispose();
         // Beim Abmelden/Herunterfahren keinen Updater mehr starten – das Update folgt beim nächsten Start
-        if (!_sessionEnding) _updater?.ApplyPendingOnExit();
+        if (!_sessionEnding && !_restarting) _updater?.ApplyPendingOnExit();
         _host?.Dispose();
         _instanceMutex?.Dispose();
         base.OnExit(e);

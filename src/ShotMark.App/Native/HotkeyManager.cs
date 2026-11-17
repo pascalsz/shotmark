@@ -1,3 +1,4 @@
+using ShotMark.App.Localization;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using ShotMark.App.Settings;
@@ -45,8 +46,8 @@ internal sealed class HotkeyManager : IDisposable
         var code = Marshal.GetLastWin32Error();
         var name = HotkeyText.Format(setting);
         error = code == ERROR_HOTKEY_ALREADY_REGISTERED
-            ? $"Das Tastenkürzel „{name}“ ist von einem anderen Programm belegt – z. B. Snagit oder die Screenshot-Funktion von Dropbox bzw. OneDrive. ShotMark versucht es automatisch weiter; alternativ in den Einstellungen ein anderes Kürzel wählen."
-            : $"Das Tastenkürzel „{name}“ konnte nicht registriert werden (Fehler {code}).";
+            ? Loc.Format(Strings.Hotkey_Taken, name)
+            : Loc.Format(Strings.Hotkey_Failed, name, code);
         return false;
     }
 

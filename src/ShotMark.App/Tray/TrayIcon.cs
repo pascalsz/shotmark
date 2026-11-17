@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Windows.Forms;
+using ShotMark.App.Localization;
 
 namespace ShotMark.App.Tray;
 
@@ -29,12 +30,12 @@ internal sealed class TrayIcon : IDisposable
         menu.Items.Add(_captureItem);
         _scrollItem = new ToolStripMenuItem("", null, (_, _) => commands.StartScrollCaptureFromMenu());
         menu.Items.Add(_scrollItem);
-        menu.Items.Add("Editor öffnen", null, (_, _) => commands.OpenEditor());
-        menu.Items.Add("Screenshot-Ordner öffnen", null, (_, _) => commands.OpenFolder());
+        menu.Items.Add(Strings.Tray_OpenEditor, null, (_, _) => commands.OpenEditor());
+        menu.Items.Add(Strings.Tray_OpenFolder, null, (_, _) => commands.OpenFolder());
         menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add("Einstellungen …", null, (_, _) => commands.ShowSettings());
+        menu.Items.Add(Strings.Tray_Settings, null, (_, _) => commands.ShowSettings());
         menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add("ShotMark beenden", null, (_, _) => commands.Exit());
+        menu.Items.Add(Strings.Tray_Exit, null, (_, _) => commands.Exit());
 
         _icon = new NotifyIcon
         {
@@ -54,9 +55,9 @@ internal sealed class TrayIcon : IDisposable
 
     public void SetHotkeyLabels(string label, string? scrollLabel)
     {
-        _captureItem.Text = $"Neue Aufnahme   ({label})";
-        _scrollItem.Text = scrollLabel is null ? "Scroll-Aufnahme" : $"Scroll-Aufnahme   ({scrollLabel})";
-        _icon.Text = $"ShotMark – {label} für Screenshot";
+        _captureItem.Text = Loc.Format(Strings.Tray_NewCapture, label);
+        _scrollItem.Text = scrollLabel is null ? Strings.Tray_ScrollCapture : Loc.Format(Strings.Tray_ScrollCaptureWithKey, scrollLabel);
+        _icon.Text = Loc.Format(Strings.Tray_Tooltip, label);
     }
 
     public void ShowInfo(string title, string text)
