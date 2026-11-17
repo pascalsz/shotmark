@@ -54,6 +54,15 @@ function LocalPath([string]$pageFile, [string]$ref) {
     $full
 }
 
+# Breite und Höhe einer PNG-Datei aus dem IHDR-Kopf (ohne System.Drawing, läuft auch auf Linux-Runnern)
+function PngSize([string]$path) {
+    $bytes = [System.IO.File]::ReadAllBytes($path)
+    if ($bytes.Length -lt 24 -or $bytes[1] -ne 0x50 -or $bytes[2] -ne 0x4E -or $bytes[3] -ne 0x47) { return $null }
+    $w = ([int]$bytes[16] -shl 24) -bor ([int]$bytes[17] -shl 16) -bor ([int]$bytes[18] -shl 8) -bor [int]$bytes[19]
+    $h = ([int]$bytes[20] -shl 24) -bor ([int]$bytes[21] -shl 16) -bor ([int]$bytes[22] -shl 8) -bor [int]$bytes[23]
+    "${w}x${h}"
+}
+
 $sectionIds = @{}
 foreach ($lang in $Pages.Keys) {
     if ($Only -and $Only -ne $lang) { continue }
@@ -136,6 +145,12 @@ foreach ($lang in $Pages.Keys) {
     }
     Check ((Text $html).Contains($Trademark[$lang])) $lang 'Markenhinweis fehlt oder weicht ab'
 
+    # Vorschaubild für soziale Netzwerke: eigenes og.png der Sprache in 1200×630
+    $ogImage = ($metas | Where-Object { (Attr $_ 'property') -eq 'og:image' } | ForEach-Object { Attr $_ 'content' } | Select-Object -First 1)
+    Check ($ogImage -eq "${SiteUrl}assets/$lang/og.png") $lang "og:image soll ${SiteUrl}assets/$lang/og.png sein: $ogImage"
+    $ogFile = Join-Path $Root "assets/$lang/og.png"
+    Check ((Test-Path $ogFile) -and (PngSize $ogFile) -eq '1200x630') $lang "assets/$lang/og.png fehlt oder ist nicht 1200×630"
+
     $sectionIds[$lang] = @(Tags $html 'section' | ForEach-Object { Attr $_ 'id' } | Where-Object { $_ } | Sort-Object)
 }
 
@@ -143,6 +158,18 @@ foreach ($lang in $Pages.Keys) {
 if (-not $Only -and $sectionIds.Count -eq 2) {
     $diff = Compare-Object $sectionIds['en'] $sectionIds['de']
     Check (-not $diff) 'en/de' ("Abschnitt-IDs unterscheiden sich: " + (($diff | ForEach-Object { "$($_.InputObject)$($_.SideIndicator)" }) -join ', '))
+}
+
+# Begleitdateien
+if (-not $Only) {
+    foreach ($name in '404.html', 'robots.txt', 'sitemap.xml') {
+        Check (Test-Path (Join-Path $Root $name)) 'site' "$name fehlt"
+    }
+    $sitemap = Join-Path $Root 'sitemap.xml'
+    if (Test-Path $sitemap) {
+        $xml = Get-Content $sitemap -Raw -Encoding UTF8
+        foreach ($url in $SiteUrl, "${SiteUrl}de/") { Check ($xml.Contains("<loc>$url</loc>")) 'sitemap' "URL fehlt: $url" }
+    }
 }
 
 # 11. Einblend-Effekte verstecken nichts ohne JavaScript
