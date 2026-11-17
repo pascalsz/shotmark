@@ -19,28 +19,51 @@ using ShotMark.Core.Storage;
 namespace ShotMark.App.Tests;
 
 /// <summary>
-/// Rendert alle Fenster offscreen als PNG zur Sichtprüfung. Läuft nur, wenn die Umgebungsvariable
+/// Rendert alle Fenster offscreen als PNG zur Sichtprüfung und für die Webseite, je Sprache in einen
+/// Unterordner (<c>de\</c>, <c>en\</c>) mit passenden Beispielinhalten. Läuft nur, wenn die Umgebungsvariable
 /// SHOTMARK_SNAPSHOT_DIR gesetzt ist (z. B. vor einem Release), sonst endet der Test sofort.
 /// </summary>
 public class UiSnapshots
 {
+    /// <summary>Beispielinhalte je Sprache – die Bilder auf der Webseite sollen keine fremdsprachigen Reste zeigen.</summary>
+    private sealed record Demo(
+        string Culture, string Folder, string OwnPcName, string OwnSlug, string HotkeyLabel, string ClickHere,
+        string Portal, string Heading, string SubHeading, string Empty, string Placeholder, string Account, string Button, string CapturedAt);
+
+    private static readonly Demo[] Demos =
+    [
+        new("de-DE", "de", "Büro", "Buero", "Druck", "Hier klicken",
+            "Kundenportal", "Dokumente anfragen", "Ihre Anfragen", "Sie haben noch keine Anfrage gestellt.",
+            "Frage zu Rechnung, Lieferung oder Vertrag", "Kontonummer: DE12 3456 7890 1234 5678", "Senden", "Aufnahme {0:dd.MM. HH:mm}"),
+        new("en-US", "en", "Office", "Office", "PrtScn", "Click here",
+            "Customer portal", "Request documents", "Your requests", "You haven't sent a request yet.",
+            "Question about an invoice, delivery or contract", "Account number: 4021 7788 3150 9264", "Send", "Captured {0:MMM d, h:mm tt}"),
+    ];
+
     [Fact]
     public void Render_ui_snapshots()
     {
         var output = Environment.GetEnvironmentVariable("SHOTMARK_SNAPSHOT_DIR");
         if (string.IsNullOrWhiteSpace(output)) return;
-        Sta.Run(() => new SnapshotRun(output).Execute());
+        Sta.Run(() =>
+        {
+            foreach (var demo in Demos)
+            {
+                using var _ = new CultureScope(demo.Culture);
+                new SnapshotRun(Path.Combine(output, demo.Folder), demo).Execute();
+            }
+        });
     }
 
-    private sealed class FakeHost(CaptureStore store) : IEditorHost, IEditorCommands
+    private sealed class FakeHost(CaptureStore store, Demo demo) : IEditorHost, IEditorCommands
     {
         public EditorViewModel? Vm { get; set; }
         public CaptureStore Store { get; } = store;
-        public string PcName => "Büro";
-        public string HotkeyLabel => "Druck";
+        public string PcName => demo.OwnPcName;
+        public string HotkeyLabel => demo.HotkeyLabel;
         public string RescueFolder => Path.Combine(Path.GetTempPath(), "shotmark-rescue");
         public void CaptureSaved(string pngPath) { }
-        public string PcLabel(string? slug) => slug == "Buero" ? "Büro" : slug ?? "unbekannt";
+        public string PcLabel(string? slug) => slug == demo.OwnSlug ? demo.OwnPcName : slug ?? ShotMark.App.Localization.Strings.History_UnknownPc;
         public void Notify(string message) { }
         public bool ConfirmDiscard(string message) => true;
         public void StartCapture() { }
@@ -54,7 +77,7 @@ public class UiSnapshots
         }
     }
 
-    private sealed class SnapshotRun(string output)
+    private sealed class SnapshotRun(string output, Demo demo)
     {
         private readonly string _shots = Path.Combine(output, "shots");
 
@@ -62,25 +85,26 @@ public class UiSnapshots
         {
             DispatcherPump.Install();
             var app = Application.Current ?? new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-            app.Resources.MergedDictionaries.Add(new ResourceDictionary
-            {
-                Source = new Uri("pack://application:,,,/ShotMark;component/Theme/Theme.xaml"),
-            });
+            if (app.Resources.MergedDictionaries.Count == 0)
+                app.Resources.MergedDictionaries.Add(new ResourceDictionary
+                {
+                    Source = new Uri("pack://application:,,,/ShotMark;component/Theme/Theme.xaml"),
+                });
 
             Directory.CreateDirectory(output);
             if (Directory.Exists(_shots)) Directory.Delete(_shots, recursive: true);
-            var (buero, newest) = CreateSampleCaptures();
+            var (own, newest) = CreateSampleCaptures();
 
             // Editor mit allen Werkzeugen
-            var host = new FakeHost(buero);
+            var host = new FakeHost(own, demo);
             var vm = new EditorViewModel(host);
             host.Vm = vm;
             var history = new HistoryStripViewModel(Dispatcher.CurrentDispatcher);
-            history.Configure(_shots, "Buero");
+            history.Configure(_shots, demo.OwnSlug);
             var editor = new EditorWindow(vm, history, host);
             ShowOffscreen(editor, 1320, 860);
             DispatcherPump.Run(() => host.OpenFromHistoryAsync(newest));
-            AddAllAnnotations(vm);
+            AddAllAnnotations(vm, demo.ClickHere);
             vm.Tool = ToolKind.Arrow;
             vm.SelectedId = vm.State.Annotations.OfType<ArrowAnnotation>().First().Id;
             DispatcherPump.Pump(1500);
@@ -126,11 +150,11 @@ public class UiSnapshots
             editor.Close();
 
             // Leerer Editor
-            var emptyHost = new FakeHost(buero);
+            var emptyHost = new FakeHost(own, demo);
             var emptyVm = new EditorViewModel(emptyHost);
             emptyHost.Vm = emptyVm;
             var emptyHistory = new HistoryStripViewModel(Dispatcher.CurrentDispatcher);
-            emptyHistory.Configure(Path.Combine(output, "empty-folder"), "Buero");
+            emptyHistory.Configure(Path.Combine(output, "empty-folder"), demo.OwnSlug);
             var empty = new EditorWindow(emptyVm, emptyHistory, emptyHost);
             ShowOffscreen(empty, 1100, 720);
             DispatcherPump.Pump(800);
@@ -139,7 +163,7 @@ public class UiSnapshots
             empty.Close();
 
             // Einstellungen und Ersteinrichtung
-            var settings = new SettingsWindow(new AppSettings { PcName = "Büro" }, @"C:\Users\anna\Dropbox\Screenshots", false, _ => null);
+            var settings = new SettingsWindow(new AppSettings { PcName = demo.OwnPcName }, @"C:\Users\anna\Dropbox\Screenshots", false, _ => null);
             ShowOffscreen(settings, settings.Width, double.NaN);
             DispatcherPump.Pump(300);
             Save(settings, "09-settings.png");
@@ -188,47 +212,47 @@ public class UiSnapshots
             host.Child = null;
         }
 
-        private (CaptureStore Buero, string NewestPath) CreateSampleCaptures()
+        private (CaptureStore Own, string NewestPath) CreateSampleCaptures()
         {
-            var buero = new CaptureStore(_shots, "Buero");
+            var own = new CaptureStore(_shots, demo.OwnSlug);
             var laptop = new CaptureStore(_shots, "Laptop");
-            PcRegistry.Register(_shots, new PcInfo("Buero", "Büro", "PC-1"));
+            PcRegistry.Register(_shots, new PcInfo(demo.OwnSlug, demo.OwnPcName, "PC-1"));
             PcRegistry.Register(_shots, new PcInfo("Laptop", "Laptop", "PC-2"));
             var now = DateTime.Now;
             var samples = new (CaptureStore Store, string Pc, DateTime At, Color Accent)[]
             {
                 (laptop, "Laptop", now.AddDays(-6).Date.AddHours(14), Color.FromRgb(0x7A, 0x5A, 0xF8)),
-                (buero, "Büro", now.AddDays(-1).Date.AddHours(9).AddMinutes(12), Color.FromRgb(0x0E, 0x9F, 0x6E)),
+                (own, demo.OwnPcName, now.AddDays(-1).Date.AddHours(9).AddMinutes(12), Color.FromRgb(0x0E, 0x9F, 0x6E)),
                 (laptop, "Laptop", now.AddDays(-1).Date.AddHours(17).AddMinutes(40), Color.FromRgb(0xE8, 0x7B, 0x12)),
                 (laptop, "Laptop", now.AddMinutes(-50), Color.FromRgb(0x2D, 0x7F, 0xF9)),
-                (buero, "Büro", now.AddMinutes(-20), Color.FromRgb(0xD9, 0x3A, 0x6A)),
-                (buero, "Büro", now.AddMinutes(-2), Color.FromRgb(0x1F, 0x6F, 0x8B)),
+                (own, demo.OwnPcName, now.AddMinutes(-20), Color.FromRgb(0xD9, 0x3A, 0x6A)),
+                (own, demo.OwnPcName, now.AddMinutes(-2), Color.FromRgb(0x1F, 0x6F, 0x8B)),
             };
             string newest = "";
             foreach (var (store, pc, at, accent) in samples)
             {
-                var image = SamplePage(accent, at);
+                var image = SamplePage(demo, accent, at);
                 var png = Exporter.EncodePng(image);
                 var paths = store.CreateNew(at);
                 var doc = CaptureDocument.New(new DateTimeOffset(at), new CapturedOn(pc, pc), new PixelSize(image.PixelWidth, image.PixelHeight));
                 store.Save(paths, doc, png, png, pc, new DateTimeOffset(at));
                 newest = paths.PngPath;
             }
-            return (buero, newest);
+            return (own, newest);
         }
 
-        private static void AddAllAnnotations(EditorViewModel vm)
+        private static void AddAllAnnotations(EditorViewModel vm, string clickHere)
         {
             vm.AddAnnotation(new RectangleAnnotation(Guid.NewGuid(), new RectD(46, 132, 420, 74), Palette.Red, 4, true));
             vm.AddAnnotation(new ArrowAnnotation(Guid.NewGuid(), new PointD(700, 360), new PointD(560, 432), Palette.Red, 6, true));
             vm.AddAnnotation(new CheckAnnotation(Guid.NewGuid(), new RectD(486, 140, 52, 52), Palette.Green, true));
             vm.AddAnnotation(new CrossAnnotation(Guid.NewGuid(), new RectD(486, 236, 52, 52), Palette.Red, true));
-            vm.AddAnnotation(new TextAnnotation(Guid.NewGuid(), new PointD(600, 300), "Hier klicken", Palette.Red, 22));
-            vm.AddAnnotation(new BlurAnnotation(Guid.NewGuid(), new RectD(60, 340, 260, 34), 10));
+            vm.AddAnnotation(new TextAnnotation(Guid.NewGuid(), new PointD(600, 300), clickHere, Palette.Red, 22));
+            vm.AddAnnotation(new BlurAnnotation(Guid.NewGuid(), new RectD(60, 340, 320, 34), 10));
         }
 
         /// <summary>Synthetische Webseite als Aufnahme-Inhalt.</summary>
-        private static BitmapSource SamplePage(Color accent, DateTime at)
+        private static BitmapSource SamplePage(Demo demo, Color accent, DateTime at)
         {
             const int w = 900, h = 560;
             var visual = new DrawingVisual();
@@ -237,20 +261,21 @@ public class UiSnapshots
                 var face = new Typeface("Segoe UI");
                 var bold = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.SemiBold, FontStretches.Normal);
                 FormattedText T(string s, double size, Brush b, Typeface? f = null) =>
-                    new(s, CultureInfo.GetCultureInfo("de-DE"), FlowDirection.LeftToRight, f ?? face, size, b, 1.0);
+                    new(s, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, f ?? face, size, b, 1.0);
                 dc.DrawRectangle(new SolidColorBrush(Color.FromRgb(0xF4, 0xF5, 0xF7)), null, new Rect(0, 0, w, h));
                 dc.DrawRectangle(new SolidColorBrush(accent), null, new Rect(0, 0, w, 56));
-                dc.DrawText(T("Kundenportal", 20, Brushes.White, bold), new Point(28, 14));
+                dc.DrawText(T(demo.Portal, 20, Brushes.White, bold), new Point(28, 14));
                 dc.DrawRoundedRectangle(Brushes.White, new Pen(new SolidColorBrush(Color.FromRgb(0xDD, 0xDF, 0xE4)), 1), new Rect(28, 84, 844, 440), 10, 10);
-                dc.DrawText(T("Dokumente fragen", 26, Brushes.Black, bold), new Point(56, 98));
-                dc.DrawText(T("Ihre Fragen", 16, Brushes.Black, bold), new Point(60, 146));
-                dc.DrawText(T("Sie haben zu diesem Objekt noch keine Frage gestellt.", 14, Brushes.DimGray), new Point(60, 172));
+                dc.DrawText(T(demo.Heading, 26, Brushes.Black, bold), new Point(56, 98));
+                dc.DrawText(T(demo.SubHeading, 16, Brushes.Black, bold), new Point(60, 146));
+                dc.DrawText(T(demo.Empty, 14, Brushes.DimGray), new Point(60, 172));
                 dc.DrawRoundedRectangle(null, new Pen(Brushes.LightGray, 1), new Rect(56, 226, 788, 90), 8, 8);
-                dc.DrawText(T("Frage zu Gutachten, Besichtigung oder Risiken", 14, Brushes.Gray), new Point(72, 240));
-                dc.DrawText(T("Kontonummer: DE12 3456 7890 1234 5678", 14, Brushes.Black), new Point(64, 346));
+                dc.DrawText(T(demo.Placeholder, 14, Brushes.Gray), new Point(72, 240));
+                dc.DrawText(T(demo.Account, 14, Brushes.Black), new Point(64, 346));
                 dc.DrawRoundedRectangle(new SolidColorBrush(accent), null, new Rect(644, 420, 200, 44), 8, 8);
-                dc.DrawText(T("Fragen", 16, Brushes.White, bold), new Point(718, 430));
-                dc.DrawText(T($"Aufnahme {at:dd.MM. HH:mm}", 12, Brushes.Gray), new Point(64, 486));
+                var button = T(demo.Button, 16, Brushes.White, bold);
+                dc.DrawText(button, new Point(744 - button.Width / 2, 430));
+                dc.DrawText(T(string.Format(CultureInfo.CurrentCulture, demo.CapturedAt, at), 12, Brushes.Gray), new Point(64, 486));
             }
             var bitmap = new RenderTargetBitmap(w, h, 96, 96, PixelFormats.Pbgra32);
             bitmap.Render(visual);

@@ -118,7 +118,8 @@ Screenshots\
   bekommt seine Version beim nächsten Wechsel automatisch als Kopie gespeichert.
 - Ist der Speicherordner nicht erreichbar, sichert ShotMark Aufnahmen lokal in `%LOCALAPPDATA%\ShotMark\Nicht gespeichert\`.
 - Projektdateien einer neueren ShotMark-Version werden von älteren Versionen nie überschrieben.
-- Einstellungen (Kürzel, PC-Name, Autostart) gelten pro PC und liegen in `%APPDATA%\ShotMark\settings.json`.
+- Einstellungen (Kürzel, PC-Name, Autostart, Sprache) gelten pro PC und liegen in `%APPDATA%\ShotMark\settings.json`.
+- **Sprache:** ShotMark folgt der Windows-Sprache (Deutsch/Englisch), änderbar unter *Einstellungen* → *Sprache*. Deutsche und englische PCs können denselben Ordner teilen, Dateinamen und Projektdateien sind unabhängig von der Sprache.
 - Fehlerprotokoll: `%LOCALAPPDATA%\ShotMark\log.txt`.
 
 ## Befehlszeile
@@ -141,7 +142,8 @@ dotnet test ShotMark.slnx
 
 - `src/ShotMark.Core`: Modell, Geometrie, Dateiformat, Speichern, Verlauf, Einstellungen. Ohne UI und plattformneutral (Grundlage für eine spätere Mac-Version).
 - `src/ShotMark.App`: WPF-Oberfläche, Aufnahme, Tray, Tastenkürzel.
-- `tests/`: xUnit-Tests. `UiSnapshots` rendert alle Fenster offscreen als PNG, wenn `SHOTMARK_SNAPSHOT_DIR` gesetzt ist.
+- `src/ShotMark.App.Strings`: Texte der Oberfläche (`Strings.resx` Englisch, `Strings.de.resx` Deutsch). Texte aus `ShotMark.Core` liegen in `src/ShotMark.Core/Localization/`. Neue Sprache = weitere `*.<sprache>.resx`.
+- `tests/`: xUnit-Tests. `UiSnapshots` rendert alle Fenster offscreen als PNG nach `SHOTMARK_SNAPSHOT_DIR\de\` und `…\en\`, wenn die Variable gesetzt ist.
 - Lokal paketieren: `powershell -ExecutionPolicy Bypass -File scripts\publish.ps1 -Version 1.2.3` legt Setup, Portable-Zip und Update-Pakete nach `Releases\` ([Velopack](https://velopack.io)).
 - Veröffentlichen: Tag pushen (`git tag v1.2.3`, `git push origin v1.2.3`). Die GitHub Action `release.yml` testet, packt und erstellt das Release, die installierten Versionen aktualisieren sich daraus.
 - Update-Feed zum Testen umbiegen: Umgebungsvariable `SHOTMARK_UPDATE_FEED` auf einen Ordner mit `Releases\`-Inhalt setzen.
