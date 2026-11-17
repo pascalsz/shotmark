@@ -480,3 +480,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Velopack-Ausgabe (scripts/publish.ps1)
+Releases/

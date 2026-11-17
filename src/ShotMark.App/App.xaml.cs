@@ -4,6 +4,8 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using ShotMark.App.Updates;
+using Velopack;
 
 namespace ShotMark.App;
 
@@ -19,6 +21,33 @@ public partial class App : Application
     private EventWaitHandle? _captureSignal;
     private EventWaitHandle? _exitSignal;
     private AppHost? _host;
+    private AppUpdater? _updater;
+    private bool _sessionEnding;
+    private static bool _justUpdated;
+
+    /// <summary>
+    /// Velopack läuft vor WPF und führt die Installations-Hooks aus (diese beenden den Prozess danach selbst).
+    /// Velopacks eigenes Anwenden beim Start ist aus: Es würde bei jedem weiteren Aufruf (<c>--capture</c>,
+    /// Startmenü) eine laufende Instanz hart beenden, ohne dass sie offene Änderungen sichern kann.
+    /// Bereitliegende Updates wendet <see cref="OnStartup"/> nur in der ersten Instanz an.
+    /// </summary>
+    [STAThread]
+    public static void Main(string[] args)
+    {
+        VelopackApp.Build()
+            .OnFirstRun(_ =>
+            {
+                if (Installation.IsInstalled && Installation.Manager!.AppId == Installation.PackId) LegacyInstall.Remove();
+            })
+            .OnRestarted(_ => _justUpdated = true)
+            .OnBeforeUninstallFastCallback(_ => Native.Autostart.Remove())
+            .SetAutoApplyOnStartup(false)
+            .Run();
+
+        var app = new App();
+        app.InitializeComponent();
+        app.Run();
+    }
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -53,6 +82,7 @@ public partial class App : Application
             Shutdown();
             return;
         }
+        if (ApplyPendingUpdate(e.Args)) return;
 
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += (_, args) => Log.Error("Unbehandelter Fehler", args.ExceptionObject as Exception);
@@ -62,8 +92,12 @@ public partial class App : Application
             args.SetObserved();
         };
 
-        _host = new AppHost(profile);
-        SessionEnding += (_, _) => _host?.SaveBlocking();
+        _host = new AppHost(profile, manageAutostart: customProfile is null);
+        SessionEnding += (_, _) =>
+        {
+            _sessionEnding = true;
+            _host?.SaveBlocking();
+        };
         if (!_host.Start())
         {
             Shutdown();
@@ -71,8 +105,40 @@ public partial class App : Application
         }
 
         ListenForSignals();
+        StartUpdater();
         if (wantsCapture) _host.StartCapture();
         else if (e.Args.Contains("--open-editor", StringComparer.OrdinalIgnoreCase)) _host.OpenEditor();
+    }
+
+    /// <summary>
+    /// Ein beim letzten Lauf heruntergeladenes Update vor allem anderen anwenden (der Normalfall nach dem Login).
+    /// Es läuft noch nichts, also geht nichts verloren. Velopack startet ShotMark danach mit denselben Argumenten neu.
+    /// </summary>
+    private bool ApplyPendingUpdate(string[] args)
+    {
+        if (Installation.Manager?.UpdatePendingRestart is not { } pending) return false;
+        try
+        {
+            Log.Info($"Wende bereitliegendes Update {pending.Version} an");
+            // Beendet den Prozess (Mutex wird dabei frei), Velopack installiert und startet neu
+            Installation.Manager.ApplyUpdatesAndRestart(pending, args);
+            return true;
+        }
+        catch (Exception error)
+        {
+            // Lieber mit der alten Version weiterarbeiten als gar nicht starten
+            Log.Error("Bereitliegendes Update konnte nicht angewendet werden", error);
+            return false;
+        }
+    }
+
+    private void StartUpdater()
+    {
+        if (Installation.Manager is not { } manager) return;
+        if (_justUpdated) _host!.Notify($"ShotMark wurde auf Version {Installation.Version} aktualisiert.");
+        var host = _host!;
+        _updater = new AppUpdater(manager, host.CurrentActivity, host.ShutdownAsync);
+        _updater.Start();
     }
 
     private void ListenForSignals()
@@ -118,6 +184,9 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        _updater?.Dispose();
+        // Beim Abmelden/Herunterfahren keinen Updater mehr starten – das Update folgt beim nächsten Start
+        if (!_sessionEnding) _updater?.ApplyPendingOnExit();
         _host?.Dispose();
         _instanceMutex?.Dispose();
         base.OnExit(e);

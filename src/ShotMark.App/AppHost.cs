@@ -16,6 +16,7 @@ using ShotMark.Core.Model;
 using ShotMark.Core.Scrolling;
 using ShotMark.Core.Settings;
 using ShotMark.Core.Storage;
+using ShotMark.Core.Updates;
 using PcNames = ShotMark.Core.Storage.PcName;
 
 namespace ShotMark.App;
@@ -44,9 +45,12 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
     private SettingsWindow? _settingsWindow;
     private DispatcherTimer? _hotkeyRetry;
     private CancellationTokenSource? _scrollStop;
+    private readonly bool _manageAutostart;
 
-    public AppHost(string profileDirectory)
+    /// <param name="manageAutostart">Nur das Standardprofil trägt sich in den Autostart ein, nicht Testprofile (<c>--profile</c>).</param>
+    public AppHost(string profileDirectory, bool manageAutostart = true)
     {
+        _manageAutostart = manageAutostart;
         _settingsStore = new SettingsStore(profileDirectory);
         _settings = _settingsStore.Load();
     }
@@ -338,7 +342,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         _scrollHotkeyPending = false;
         _preCapture?.SetHotkey(null);
         _hotkeyRetry?.Stop();
-        var window = new SettingsWindow(_settings, _automaticFolder, Autostart.IsInstalledCopy(Environment.ProcessPath ?? ""), CheckHotkey);
+        var window = new SettingsWindow(_settings, _automaticFolder, Autostart.IsInstalledCopy && _manageAutostart, CheckHotkey);
         if (_editor is { IsVisible: true }) window.Owner = _editor;
         _settingsWindow = window;
         var accepted = window.ShowDialog() == true;
@@ -506,6 +510,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
 
     private void ApplyAutostart()
     {
+        if (!_manageAutostart) return;
         try
         {
             if (Environment.ProcessPath is { } exe) Autostart.Apply(_settings.StartWithWindows, exe);
@@ -520,12 +525,18 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
 
     public async void Exit()
     {
-        if (_exiting) return;
+        if (await ShutdownAsync()) Application.Current.Shutdown();
+    }
+
+    /// <summary>Sichert offene Änderungen und räumt Fenster, Tray und Kürzel ab. False, wenn das Sichern abgelehnt wurde.</summary>
+    public async Task<bool> ShutdownAsync()
+    {
+        if (_exiting) return false;
         _exiting = true;
         if (_editorVm is not null && !await _editorVm.SecureUnsavedAsync())
         {
             _exiting = false;
-            return;
+            return false;
         }
         if (_editor is not null)
         {
@@ -533,8 +544,19 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
             _editor.Close();
         }
         Dispose();
-        Application.Current.Shutdown();
+        return true;
     }
+
+    // ---------- Updates ----------
+
+    /// <summary>Für die Entscheidung, ob ein Update-Neustart gerade niemanden stört.</summary>
+    public UpdateActivity CurrentActivity() => new(
+        Capturing: _capturing || _scrollStop is not null,
+        EditorOpen: _editor is { IsVisible: true },
+        UnsavedChanges: _editorVm?.IsDirty == true,
+        // Einstellungen, Erststart-Dialog, Aufnahme-Overlays – jedes sichtbare Fenster zählt als „beschäftigt“
+        DialogOpen: _settingsWindow is not null || Application.Current.Windows.OfType<Window>().Any(w => w.IsVisible),
+        UserIdle: NativeMethods.UserIdleTime());
 
     public void Dispose()
     {

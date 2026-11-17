@@ -33,4 +33,18 @@
     <InternalsVisibleTo Include="ShotMark.App.Tests" />
   </ItemGroup>
 
+  <!-- Installation und automatische Updates (GitHub Releases) -->
+  <ItemGroup>
+    <PackageReference Include="Velopack" Version="1.2.161" />
+  </ItemGroup>
+
+  <!-- Eigener Main in App.xaml.cs: Velopack muss vor WPF laufen (Installations-/Update-Hooks) -->
+  <PropertyGroup>
+    <StartupObject>ShotMark.App.App</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <ApplicationDefinition Remove="App.xaml" />
+    <Page Include="App.xaml" />
+  </ItemGroup>
+
 </Project>

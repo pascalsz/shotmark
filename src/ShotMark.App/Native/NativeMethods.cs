@@ -33,6 +33,24 @@ internal static class NativeMethods
         public int Y;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    private struct LASTINPUTINFO
+    {
+        public uint cbSize;
+        public uint dwTime;
+    }
+
+    [DllImport("user32.dll")]
+    private static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+    /// <summary>Zeit seit der letzten Maus- oder Tastatureingabe in dieser Sitzung.</summary>
+    public static TimeSpan UserIdleTime()
+    {
+        var info = new LASTINPUTINFO { cbSize = (uint)Marshal.SizeOf<LASTINPUTINFO>() };
+        if (!GetLastInputInfo(ref info)) return TimeSpan.Zero;
+        return TimeSpan.FromMilliseconds(unchecked((uint)Environment.TickCount - info.dwTime));
+    }
+
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);

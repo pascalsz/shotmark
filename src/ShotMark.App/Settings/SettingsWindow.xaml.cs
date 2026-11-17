@@ -38,7 +38,7 @@ internal partial class SettingsWindow : Window
         AutostartBox.IsEnabled = isInstalledCopy;
         AutostartHint.Text = isInstalledCopy
             ? ""
-            : "Wirkt nur bei der installierten Version (über Installieren.cmd).";
+            : "Wirkt nur bei der installierten Version (über Setup.exe).";
         AutostartHint.Visibility = isInstalledCopy ? Visibility.Collapsed : Visibility.Visible;
         ClipboardBox.IsChecked = settings.CopyToClipboard;
         UpdateFolder();
