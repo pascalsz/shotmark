@@ -1,10 +1,13 @@
+using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using ShotMark.App.Localization;
 using ShotMark.App.Updates;
+using ShotMark.Core.Settings;
 using Velopack;
 
 namespace ShotMark.App;
@@ -60,6 +63,8 @@ public partial class App : Application
             : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ShotMark");
         Directory.CreateDirectory(profile);
         if (customProfile is not null) Log.FilePath = Path.Combine(profile, "log.txt");
+        // Vor dem ersten Fenster, damit schon der Erststart-Dialog in der richtigen Sprache erscheint
+        Language.Apply(new SettingsStore(profile).Load().Language);
 
         var id = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(profile.ToLowerInvariant())))[..16];
         _instanceMutex = new Mutex(true, $@"Local\ShotMark-{id}", out var isFirstInstance);
@@ -135,7 +140,7 @@ public partial class App : Application
     private void StartUpdater()
     {
         if (Installation.Manager is not { } manager) return;
-        if (_justUpdated) _host!.Notify($"ShotMark wurde auf Version {Installation.Version} aktualisiert.");
+        if (_justUpdated) _host!.Notify(string.Format(CultureInfo.CurrentCulture, Strings.UpdatedNotice, Installation.Version));
         var host = _host!;
         _updater = new AppUpdater(manager, host.CurrentActivity, host.ShutdownAsync);
         _updater.Start();
