@@ -80,6 +80,7 @@ public class UiSnapshots
     private sealed class SnapshotRun(string output, Demo demo)
     {
         private readonly string _shots = Path.Combine(output, "shots");
+        private readonly double _scale = SnapshotScale.FromEnvironment();
 
         public void Execute()
         {
@@ -109,6 +110,8 @@ public class UiSnapshots
             vm.SelectedId = vm.State.Annotations.OfType<ArrowAnnotation>().First().Id;
             DispatcherPump.Pump(1500);
             Save(editor, "01-editor.png");
+            // Vorlage für das Aufnahme-Overlay immer in 1x: Seine Koordinaten und die Lupe arbeiten in Bildschirmpixeln
+            Save(editor, "01-editor-screen.png", scale: 1);
 
             vm.SelectedId = null;
             vm.Tool = ToolKind.Text;
@@ -176,7 +179,7 @@ public class UiSnapshots
             firstRun.Close();
 
             // Aufnahme-Overlay (eingefrorener „Bildschirm“ = gerenderter Editor)
-            var screen = Exporter.DecodeImage(File.ReadAllBytes(Path.Combine(output, "01-editor.png")));
+            var screen = Exporter.DecodeImage(File.ReadAllBytes(Path.Combine(output, "01-editor-screen.png")));
             var monitor = new Int32Rect(0, 0, screen.PixelWidth, screen.PixelHeight);
             var snapshot = new ScreenSnapshot(screen, monitor, [monitor], DateTime.Now);
             var session = new RegionCaptureSession(snapshot);
@@ -206,7 +209,7 @@ public class UiSnapshots
             var size = host.DesiredSize;
             host.Arrange(new Rect(size));
             host.UpdateLayout();
-            var bitmap = new RenderTargetBitmap((int)Math.Ceiling(size.Width), (int)Math.Ceiling(size.Height), 96, 96, PixelFormats.Pbgra32);
+            var bitmap = new RenderTargetBitmap((int)Math.Ceiling(size.Width * _scale), (int)Math.Ceiling(size.Height * _scale), 96 * _scale, 96 * _scale, PixelFormats.Pbgra32);
             bitmap.Render(host);
             File.WriteAllBytes(Path.Combine(output, name), Exporter.EncodePng(bitmap));
             host.Child = null;
@@ -305,12 +308,13 @@ public class UiSnapshots
             DispatcherPump.Pump(200);
         }
 
-        private void Save(Window window, string name)
+        private void Save(Window window, string name, double? scale = null)
         {
+            var s = scale ?? _scale;
             window.UpdateLayout();
             // Wurzel des Fenster-Templates = Client-Bereich inklusive Außenabständen des Inhalts
             var content = (FrameworkElement)VisualTreeHelper.GetChild(window, 0);
-            var bitmap = new RenderTargetBitmap((int)content.ActualWidth, (int)content.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+            var bitmap = new RenderTargetBitmap((int)Math.Round(content.ActualWidth * s), (int)Math.Round(content.ActualHeight * s), 96 * s, 96 * s, PixelFormats.Pbgra32);
             var background = new DrawingVisual();
             using (var dc = background.RenderOpen())
                 dc.DrawRectangle(window.Background, null, new Rect(0, 0, content.ActualWidth, content.ActualHeight));
@@ -324,7 +328,7 @@ public class UiSnapshots
             element.Measure(new Size(size.Width, size.Height));
             element.Arrange(new Rect(0, 0, size.Width, size.Height));
             element.UpdateLayout();
-            var bitmap = new RenderTargetBitmap(size.Width, size.Height, 96, 96, PixelFormats.Pbgra32);
+            var bitmap = new RenderTargetBitmap((int)Math.Round(size.Width * _scale), (int)Math.Round(size.Height * _scale), 96 * _scale, 96 * _scale, PixelFormats.Pbgra32);
             bitmap.Render(element);
             File.WriteAllBytes(Path.Combine(output, name), Exporter.EncodePng(bitmap));
         }
