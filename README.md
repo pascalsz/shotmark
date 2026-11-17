@@ -1,5 +1,7 @@
 # ShotMark
 
+**Projektseite:** [pascalsz.github.io/shotmark/de](https://pascalsz.github.io/shotmark/de/) · English: [pascalsz.github.io/shotmark](https://pascalsz.github.io/shotmark/)
+
 Schlankes Screenshot- und Markierungswerkzeug für Windows: **Druck-Taste → Bereich aufziehen → markieren → fertig gespeichert.**
 Gedacht als leichtgewichtige Alternative zu großen Screenshot-Suiten. Liegt der Speicherordner in einem synchronisierten
 Ordner wie Dropbox, arbeiten beliebig viele PCs zusammen: Im Verlauf siehst du, welche Screenshots wann auf welchem PC
@@ -143,6 +145,7 @@ dotnet test ShotMark.slnx
 - `src/ShotMark.Core`: Modell, Geometrie, Dateiformat, Speichern, Verlauf, Einstellungen. Ohne UI und plattformneutral (Grundlage für eine spätere Mac-Version).
 - `src/ShotMark.App`: WPF-Oberfläche, Aufnahme, Tray, Tastenkürzel.
 - `src/ShotMark.App.Strings`: Texte der Oberfläche (`Strings.resx` Englisch, `Strings.de.resx` Deutsch). Texte aus `ShotMark.Core` liegen in `src/ShotMark.Core/Localization/`. Neue Sprache = weitere `*.<sprache>.resx`.
+- `site/`: Projektseite (statisches HTML/CSS, Englisch unter `/`, Deutsch unter `/de/`). Bilder neu erzeugen mit `pwsh -File scripts/site-images.ps1`, prüfen mit `pwsh -File scripts/check-site.ps1`, lokal ansehen mit `python -m http.server 8765 --directory site`. Veröffentlicht wird per GitHub Action `pages.yml` bei Änderungen auf `main`.
 - `tests/`: xUnit-Tests. `UiSnapshots` rendert alle Fenster offscreen als PNG nach `SHOTMARK_SNAPSHOT_DIR\de\` und `…\en\`, wenn die Variable gesetzt ist.
 - Lokal paketieren: `powershell -ExecutionPolicy Bypass -File scripts\publish.ps1 -Version 1.2.3` legt Setup, Portable-Zip und Update-Pakete nach `Releases\` ([Velopack](https://velopack.io)).
 - Veröffentlichen: Tag pushen (`git tag v1.2.3`, `git push origin v1.2.3`). Die GitHub Action `release.yml` testet, packt und erstellt das Release, die installierten Versionen aktualisieren sich daraus.
