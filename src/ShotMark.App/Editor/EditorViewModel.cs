@@ -1,3 +1,4 @@
+using ShotMark.App.Localization;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -354,7 +355,7 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
                     }
                     break;
                 case SaveOutcome.Failed failed:
-                    Log.Error("Speichern fehlgeschlagen: " + capture.Paths.PngPath, new IOException(failed.Message));
+                    Log.Error($"Speichern fehlgeschlagen ({failed.Error}): " + capture.Paths.PngPath, new IOException(failed.Detail));
                     if (isCurrent)
                     {
                         _dirty = true;
@@ -394,7 +395,7 @@ internal sealed class EditorViewModel : INotifyPropertyChanged
         _dirty = false;
         _conflict = null;
         var loaded = await Task.Run(() => CaptureStore.Load(Capture.Paths.PngPath));
-        await OpenAsync(OpenCapture.FromLoaded(loaded, _host.PcLabel), loaded.Warning);
+        await OpenAsync(OpenCapture.FromLoaded(loaded, _host.PcLabel), loaded.Warning is { } w ? ErrorText.Describe(w) : null);
     }
 
     /// <summary>Konflikt: eigenen Stand als neue Aufnahme speichern.</summary>

@@ -12,10 +12,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CaptureFailed" xml:space="preserve">
+    <value>Die Aufnahme ist fehlgeschlagen.</value>
+  </data>
   <data name="ErrorDetails" xml:space="preserve">
     <value>Details: {0}</value>
   </data>
+  <data name="OpenFailed" xml:space="preserve">
+    <value>Die Aufnahme konnte nicht geöffnet werden.</value>
+  </data>
+  <data name="SaveFolderUnavailable" xml:space="preserve">
+    <value>Der Speicherordner „{0}“ ist nicht erreichbar.</value>
+  </data>
+  <data name="SaveKeepsOpen" xml:space="preserve">
+    <value>Sie bleibt geöffnet – ShotMark versucht es bei der nächsten Änderung erneut.</value>
+  </data>
+  <data name="SaveNewerVersion" xml:space="preserve">
+    <value>Diese Aufnahme wurde mit einer neueren ShotMark-Version gespeichert und wird nicht überschrieben. Bitte ShotMark auf diesem PC aktualisieren.</value>
+  </data>
+  <data name="SaveRescuedLocally" xml:space="preserve">
+    <value>Die Aufnahme wurde lokal gesichert: {0}</value>
+  </data>
+  <data name="SaveWriteFailed" xml:space="preserve">
+    <value>Die Aufnahme konnte nicht in „{0}“ gespeichert werden.</value>
+  </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>Es ist ein unerwarteter Fehler aufgetreten. Details stehen in {0}.</value>
+  </data>
   <data name="UpdatedNotice" xml:space="preserve">
     <value>ShotMark wurde auf Version {0} aktualisiert.</value>
+  </data>
+  <data name="WarningNewerVersion" xml:space="preserve">
+    <value>Diese Aufnahme wurde mit einer neueren ShotMark-Version gespeichert. Bitte ShotMark auf diesem PC aktualisieren. Bis dahin wird nur das fertige Bild angezeigt.</value>
+  </data>
+  <data name="WarningProjectUnreadable" xml:space="preserve">
+    <value>Projektdatei konnte nicht gelesen werden – Markierungen sind eingebrannt und nicht mehr einzeln bearbeitbar.</value>
   </data>
 </root>

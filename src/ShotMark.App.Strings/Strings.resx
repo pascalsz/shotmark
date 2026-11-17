@@ -12,10 +12,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CaptureFailed" xml:space="preserve">
+    <value>The capture failed.</value>
+  </data>
   <data name="ErrorDetails" xml:space="preserve">
     <value>Details: {0}</value>
   </data>
+  <data name="OpenFailed" xml:space="preserve">
+    <value>The capture could not be opened.</value>
+  </data>
+  <data name="SaveFolderUnavailable" xml:space="preserve">
+    <value>The save folder “{0}” is not reachable.</value>
+  </data>
+  <data name="SaveKeepsOpen" xml:space="preserve">
+    <value>It stays open – ShotMark will try again with your next change.</value>
+  </data>
+  <data name="SaveNewerVersion" xml:space="preserve">
+    <value>This capture was saved with a newer version of ShotMark and is not overwritten. Please update ShotMark on this PC.</value>
+  </data>
+  <data name="SaveRescuedLocally" xml:space="preserve">
+    <value>The capture was saved locally: {0}</value>
+  </data>
+  <data name="SaveWriteFailed" xml:space="preserve">
+    <value>The capture could not be saved to “{0}”.</value>
+  </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>An unexpected error occurred. Details are in {0}.</value>
+  </data>
   <data name="UpdatedNotice" xml:space="preserve">
     <value>ShotMark was updated to version {0}.</value>
+  </data>
+  <data name="WarningNewerVersion" xml:space="preserve">
+    <value>This capture was saved with a newer version of ShotMark. Please update ShotMark on this PC. Until then only the finished image is shown.</value>
+  </data>
+  <data name="WarningProjectUnreadable" xml:space="preserve">
+    <value>The project file could not be read – annotations are burned in and can no longer be edited individually.</value>
   </data>
 </root>

@@ -177,7 +177,7 @@ public partial class App : Application
     {
         Log.Error("Fehler in der Oberfläche", e.Exception);
         e.Handled = true;
-        MessageBox.Show($"Es ist ein unerwarteter Fehler aufgetreten:\n{e.Exception.Message}\n\nDetails stehen in {Log.FilePath}.",
+        MessageBox.Show(ErrorText.WithDetails(ErrorText.Format(Strings.UnexpectedError, Log.FilePath), e.Exception.Message),
             "ShotMark", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 

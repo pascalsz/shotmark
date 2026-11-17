@@ -50,7 +50,7 @@ public class UiSnapshots
         public async Task OpenFromHistoryAsync(string pngPath)
         {
             var loaded = CaptureStore.Load(pngPath);
-            await Vm!.OpenAsync(OpenCapture.FromLoaded(loaded, PcLabel), loaded.Warning);
+            await Vm!.OpenAsync(OpenCapture.FromLoaded(loaded, PcLabel), loaded.Warning is { } w ? ShotMark.App.Localization.ErrorText.Describe(w) : null);
         }
     }
 

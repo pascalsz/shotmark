@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using ShotMark.App.Capture;
 using ShotMark.App.Editor;
 using ShotMark.App.History;
+using ShotMark.App.Localization;
 using ShotMark.App.Native;
 using ShotMark.App.Rendering;
 using ShotMark.App.Settings;
@@ -146,7 +147,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         catch (Exception e)
         {
             Log.Error("Aufnahme fehlgeschlagen", e);
-            _tray?.ShowWarning("Die Aufnahme ist fehlgeschlagen: " + e.Message);
+            _tray?.ShowWarning(ErrorText.WithDetails(Strings.CaptureFailed, e.Message));
         }
         finally
         {
@@ -238,19 +239,19 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         if (outcome is SaveOutcome.Failed failed)
         {
             // Speicherordner nicht beschreibbar: sofort lokal sichern, damit keine Aufnahme verloren geht
-            Log.Error("Neue Aufnahme nicht gespeichert", new IOException(failed.Message));
+            Log.Error($"Neue Aufnahme nicht gespeichert ({failed.Error})", new IOException(failed.Detail));
             var rescueStore = new CaptureStore(RescueFolder, store.PcSlug);
             var rescuePaths = rescueStore.CreateNew(capture.Timestamp);
             outcome = await Task.Run(() => rescueStore.Save(rescuePaths, document, png, png, pcName, DateTimeOffset.Now));
             if (outcome is SaveOutcome.Saved)
             {
                 paths = rescuePaths;
-                warning = $"Der Speicherordner „{store.Folder}“ ist nicht erreichbar ({failed.Message}). Die Aufnahme wurde lokal gesichert: {rescuePaths.PngPath}";
+                warning = ErrorText.SaveFailed(failed, store.Folder, ErrorText.Format(Strings.SaveRescuedLocally, rescuePaths.PngPath));
             }
             else
             {
                 unsaved = true;
-                warning = $"Die Aufnahme konnte nicht gespeichert werden ({failed.Message}). Sie bleibt geöffnet – ShotMark versucht es bei der nächsten Änderung erneut.";
+                warning = ErrorText.SaveFailed(failed, store.Folder, Strings.SaveKeepsOpen);
             }
         }
         var open = new OpenCapture(paths, document, png, original);
@@ -287,12 +288,12 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         try
         {
             var loaded = await Task.Run(() => CaptureStore.Load(pngPath));
-            await _editorVm!.OpenAsync(OpenCapture.FromLoaded(loaded, PcLabel), loaded.Warning);
+            await _editorVm!.OpenAsync(OpenCapture.FromLoaded(loaded, PcLabel), loaded.Warning is { } w ? ErrorText.Describe(w) : null);
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException or NotSupportedException or FileFormatException)
         {
             Log.Error("Öffnen fehlgeschlagen: " + pngPath, e);
-            MessageBox.Show(_editor!, $"Die Aufnahme konnte nicht geöffnet werden:\n{e.Message}", "ShotMark", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(_editor!, ErrorText.WithDetails(Strings.OpenFailed, e.Message), "ShotMark", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
