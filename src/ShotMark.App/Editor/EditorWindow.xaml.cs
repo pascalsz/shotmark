@@ -1,3 +1,4 @@
+using ShotMark.App.Localization;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
@@ -25,8 +26,8 @@ internal partial class EditorWindow : Window
 {
     private static readonly (RgbColor Color, string Name)[] SwatchColors =
     [
-        (Palette.Red, "Rot"), (Palette.Green, "Grün"), (Palette.Yellow, "Gelb"),
-        (Palette.Blue, "Blau"), (Palette.Black, "Schwarz"), (Palette.White, "Weiß"),
+        (Palette.Red, Strings.Color_Red), (Palette.Green, Strings.Color_Green), (Palette.Yellow, Strings.Color_Yellow),
+        (Palette.Blue, Strings.Color_Blue), (Palette.Black, Strings.Color_Black), (Palette.White, Strings.Color_White),
     ];
 
     private readonly EditorViewModel _vm;
@@ -62,15 +63,15 @@ internal partial class EditorWindow : Window
         _copyFeedback.Tick += (_, _) =>
         {
             _copyFeedback.Stop();
-            CopyLabel.Text = "Kopieren";
+            CopyLabel.Text = Strings.Editor_Copy;
         };
 
         foreach (var (kind, button) in _toolButtons)
             System.Windows.Automation.AutomationProperties.SetName(button, ToolName(kind));
-        System.Windows.Automation.AutomationProperties.SetName(UndoButton, "Rückgängig");
-        System.Windows.Automation.AutomationProperties.SetName(RedoButton, "Wiederholen");
-        System.Windows.Automation.AutomationProperties.SetName(NewCaptureButton, "Neue Aufnahme");
-        System.Windows.Automation.AutomationProperties.SetName(CopyButton, "Bild kopieren");
+        System.Windows.Automation.AutomationProperties.SetName(UndoButton, Strings.Editor_Undo);
+        System.Windows.Automation.AutomationProperties.SetName(RedoButton, Strings.Editor_Redo);
+        System.Windows.Automation.AutomationProperties.SetName(NewCaptureButton, Strings.Editor_NewCapture);
+        System.Windows.Automation.AutomationProperties.SetName(CopyButton, Strings.Editor_CopyImage);
 
         Board.ViewModel = vm;
         Board.TextEditRequested += BeginTextEdit;
@@ -83,8 +84,8 @@ internal partial class EditorWindow : Window
         PreviewKeyDown += OnPreviewKeyDown;
         SizeChanged += (_, _) => UpdateCompactMode();
 
-        EmptyHint.Text = $"Drücke {commands.HotkeyLabel}, um einen Bereich aufzunehmen. Die Aufnahme öffnet sich dann hier.";
-        NewCaptureButton.ToolTip = $"Neue Aufnahme ({commands.HotkeyLabel}, Strg+N)";
+        EmptyHint.Text = Loc.Format(Strings.Editor_EmptyHint, commands.HotkeyLabel);
+        NewCaptureButton.ToolTip = Loc.Format(Strings.Editor_NewCaptureTip, commands.HotkeyLabel);
 
         SyncTool();
         SyncPanel();
@@ -129,8 +130,8 @@ internal partial class EditorWindow : Window
 
     public void RefreshHotkeyLabel()
     {
-        EmptyHint.Text = $"Drücke {_commands.HotkeyLabel}, um einen Bereich aufzunehmen. Die Aufnahme öffnet sich dann hier.";
-        NewCaptureButton.ToolTip = $"Neue Aufnahme ({_commands.HotkeyLabel}, Strg+N)";
+        EmptyHint.Text = Loc.Format(Strings.Editor_EmptyHint, _commands.HotkeyLabel);
+        NewCaptureButton.ToolTip = Loc.Format(Strings.Editor_NewCaptureTip, _commands.HotkeyLabel);
     }
 
     // ---------- Synchronisation ViewModel → Oberfläche ----------
@@ -190,9 +191,9 @@ internal partial class EditorWindow : Window
         var tool = _vm.Tool;
         var selected = _vm.Selected;
         var target = _vm.StyleTarget;
-        PanelTitle.Text = _vm.Capture is null ? "Werkzeuge" : selected is not null ? $"{ToolName(target)} ausgewählt" : ToolName(tool);
-        PanelHint.Text = _vm.Capture is null ? "Stehen bereit, sobald eine Aufnahme geöffnet ist."
-            : selected is not null ? "Ziehen verschiebt, die Griffe ändern die Größe. Pfeiltasten schieben um 1 px, mit Umschalt um 10 px."
+        PanelTitle.Text = _vm.Capture is null ? Strings.Panel_Tools : selected is not null ? Loc.Format(Strings.Panel_Selected, ToolName(target)) : ToolName(tool);
+        PanelHint.Text = _vm.Capture is null ? Strings.Panel_NoCaptureHint
+            : selected is not null ? Strings.Panel_SelectedHint
             : HintFor(tool);
 
         var showStyle = _vm.Capture is not null && target is not (ToolKind.Select or ToolKind.Crop);
@@ -240,7 +241,7 @@ internal partial class EditorWindow : Window
         foreach (var button in _toolButtons.Values) button.IsEnabled = hasCapture;
         Title = hasCapture ? $"{Path.GetFileNameWithoutExtension(capture!.Paths.PngPath)} – ShotMark" : "ShotMark";
         FileText.Text = hasCapture
-            ? $"{Path.GetFileName(capture!.Paths.PngPath)}   ·   aufgenommen auf {capture.Document.CapturedOn.PcName}, {capture.Document.CapturedAt.LocalDateTime:dd.MM.yyyy HH:mm}"
+            ? Loc.Format(Strings.Editor_FileInfo, Path.GetFileName(capture!.Paths.PngPath), capture.Document.CapturedOn.PcName, capture.Document.CapturedAt.LocalDateTime)
             : "";
         UpdateSizeText();
         SyncPanel();
@@ -268,7 +269,7 @@ internal partial class EditorWindow : Window
     {
         if (_vm.Conflict is { } conflict)
         {
-            ConflictText.Text = $"Diese Aufnahme wurde inzwischen auf „{conflict.ModifiedOn}“ geändert ({conflict.ModifiedAt.LocalDateTime:dd.MM. HH:mm}). Deine Änderungen sind noch nicht gespeichert.";
+            ConflictText.Text = Loc.Format(Strings.Editor_Conflict, conflict.ModifiedOn, conflict.ModifiedAt.LocalDateTime);
             ConflictBanner.Visibility = Visibility.Visible;
         }
         else
@@ -281,38 +282,38 @@ internal partial class EditorWindow : Window
 
     private static string ToolName(ToolKind tool) => tool switch
     {
-        ToolKind.Select => "Auswahl",
-        ToolKind.Rectangle => "Rechteck",
-        ToolKind.Arrow => "Pfeil",
-        ToolKind.Check => "Haken",
-        ToolKind.Cross => "Kreuz",
-        ToolKind.Text => "Text",
-        ToolKind.Blur => "Unkenntlich machen",
-        ToolKind.Crop => "Zuschneiden",
+        ToolKind.Select => Strings.Tool_Select,
+        ToolKind.Rectangle => Strings.Tool_Rectangle,
+        ToolKind.Arrow => Strings.Tool_Arrow,
+        ToolKind.Check => Strings.Tool_Check,
+        ToolKind.Cross => Strings.Tool_Cross,
+        ToolKind.Text => Strings.Tool_Text,
+        ToolKind.Blur => Strings.Tool_BlurLong,
+        ToolKind.Crop => Strings.Tool_Crop,
         _ => "",
     };
 
     private static string HintFor(ToolKind tool) => tool switch
     {
-        ToolKind.Select => "Markierung anklicken, um sie zu verschieben, zu ändern oder mit Entf zu löschen.",
-        ToolKind.Rectangle => "Rahmen aufziehen. Mit Umschalt wird es ein Quadrat.",
-        ToolKind.Arrow => "Vom Anfang zur Spitze ziehen. Mit Umschalt in 45°-Schritten.",
-        ToolKind.Check => "Klicken setzt einen Haken, Ziehen bestimmt die Größe.",
-        ToolKind.Cross => "Klicken setzt ein Kreuz, Ziehen bestimmt die Größe.",
-        ToolKind.Text => "Ins Bild klicken und schreiben. Enter übernimmt, Umschalt+Enter macht eine neue Zeile.",
-        ToolKind.Blur => "Bereich aufziehen, der verpixelt wird – z. B. Passwörter oder Namen.",
-        ToolKind.Crop => "Rahmen aufziehen oder an den Griffen anpassen. Das Original bleibt erhalten.",
+        ToolKind.Select => Strings.Hint_Select,
+        ToolKind.Rectangle => Strings.Hint_Rectangle,
+        ToolKind.Arrow => Strings.Hint_Arrow,
+        ToolKind.Check => Strings.Hint_Check,
+        ToolKind.Cross => Strings.Hint_Cross,
+        ToolKind.Text => Strings.Hint_Text,
+        ToolKind.Blur => Strings.Hint_Blur,
+        ToolKind.Crop => Strings.Hint_Crop,
         _ => "",
     };
 
     private static (string Label, double Min, double Max) SizeSpec(ToolKind tool) => tool switch
     {
-        ToolKind.Rectangle => ("Strichstärke", 1, 20),
-        ToolKind.Arrow => ("Strichstärke", 2, 24),
-        ToolKind.Check or ToolKind.Cross => ("Größe", 16, 200),
-        ToolKind.Text => ("Schriftgröße", 10, 96),
-        ToolKind.Blur => ("Blockgröße", 4, 40),
-        _ => ("Größe", 1, 20),
+        ToolKind.Rectangle => (Strings.Size_Stroke, 1, 20),
+        ToolKind.Arrow => (Strings.Size_Stroke, 2, 24),
+        ToolKind.Check or ToolKind.Cross => (Strings.Editor_Size, 16, 200),
+        ToolKind.Text => (Strings.Size_Font, 10, 96),
+        ToolKind.Blur => (Strings.Size_Block, 4, 40),
+        _ => (Strings.Editor_Size, 1, 20),
     };
 
     private void BuildSwatches()
@@ -425,7 +426,7 @@ internal partial class EditorWindow : Window
             AcceptsReturn = true,
             TextWrapping = TextWrapping.NoWrap,
         };
-        System.Windows.Automation.AutomationProperties.SetName(box, "Text der Markierung");
+        System.Windows.Automation.AutomationProperties.SetName(box, Strings.Editor_TextBoxName);
         var screen = Board.ToScreen(_editingPosition);
         Canvas.SetLeft(box, screen.X - 3);
         Canvas.SetTop(box, screen.Y - 1);
@@ -558,7 +559,7 @@ internal partial class EditorWindow : Window
     {
         if (_vm.Capture is null) return;
         CommitTextEdit();
-        CopyLabel.Text = _vm.CopyToClipboard() ? "Kopiert ✓" : "Zwischenablage belegt";
+        CopyLabel.Text = _vm.CopyToClipboard() ? Strings.Editor_Copied : Strings.Editor_ClipboardBusy;
         _copyFeedback.Stop();
         _copyFeedback.Start();
     }
@@ -660,7 +661,7 @@ internal partial class EditorWindow : Window
         if (_vm.IsDirty && _vm.Capture is not null)
         {
             var answer = MessageBox.Show(this,
-                "Die letzten Änderungen konnten nicht gespeichert werden.\n\nTrotzdem schließen? Sie bleiben im Editor erhalten; spätestens beim Beenden sichert ShotMark sie lokal.",
+                Strings.Editor_CloseUnsaved,
                 "ShotMark", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (answer != MessageBoxResult.Yes) return;
         }

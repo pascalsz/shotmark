@@ -1,3 +1,4 @@
+using System.Globalization;
 using ShotMark.Core.History;
 namespace ShotMark.Core.Tests.History;
 
@@ -60,7 +61,21 @@ public class HistoryIndexTests
     [InlineData("2026-10-12", "Mo 12.10.")]
     [InlineData("2025-12-31", "Mi 31.12.2025")]
     public void DayLabel(string day, string expected)
-        => Assert.Equal(expected, HistoryIndex.DayLabel(DateTime.Parse(day), new DateTime(2026, 10, 19, 12, 0, 0)));
+    {
+        using var _ = new CultureScope("de-DE");
+        Assert.Equal(expected, HistoryIndex.DayLabel(DateTime.Parse(day, CultureInfo.InvariantCulture), new DateTime(2026, 10, 19, 12, 0, 0)));
+    }
+
+    [Theory]
+    [InlineData("2026-10-19", "Today")]
+    [InlineData("2026-10-18", "Yesterday")]
+    [InlineData("2026-10-13", "Tue Oct 13")]
+    [InlineData("2025-12-31", "Wed Dec 31, 2025")]
+    public void DayLabel_english(string day, string expected)
+    {
+        using var _ = new CultureScope("en-US");
+        Assert.Equal(expected, HistoryIndex.DayLabel(DateTime.Parse(day, CultureInfo.InvariantCulture), new DateTime(2026, 10, 19, 12, 0, 0)));
+    }
 
     [Fact]
     public void WithDaySeparators_inserts_header_per_day()
@@ -69,6 +84,7 @@ public class HistoryIndexTests
         Touch(dir, "2026-10-19_15-30-12_Buero.png");
         Touch(dir, "2026-10-19_10-00-00_Buero.png");
         Touch(dir, "2026-10-18_09-00-00_Laptop.png");
+        using var _ = new CultureScope("de-DE");
         var items = HistoryIndex.WithDaySeparators(HistoryIndex.Scan(dir.Path, "Buero"), new DateTime(2026, 10, 19));
         Assert.Collection(items,
             i => Assert.Equal("Heute", Assert.IsType<DayHeaderItem>(i).Label),

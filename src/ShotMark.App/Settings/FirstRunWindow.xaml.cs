@@ -1,3 +1,4 @@
+using ShotMark.App.Localization;
 using System.Windows;
 using System.Windows.Controls;
 using ShotMark.Core.Storage;
@@ -17,8 +18,8 @@ internal partial class FirstRunWindow : Window
         _captureFolder = captureFolder;
         _machineName = machineName;
         FolderInfo.Text = isFallbackFolder
-            ? $"Dropbox wurde auf diesem PC nicht gefunden. Screenshots landen vorerst in:\n{captureFolder}\nDas lässt sich später in den Einstellungen ändern."
-            : $"Screenshots werden automatisch hier gespeichert:\n{captureFolder}";
+            ? Loc.Format(Strings.FirstRun_NoDropbox, captureFolder)
+            : Loc.Format(Strings.FirstRun_Folder, captureFolder);
         NameBox.Text = suggestedName;
         Loaded += (_, _) =>
         {
@@ -39,12 +40,12 @@ internal partial class FirstRunWindow : Window
     {
         _warned = false;
         Warning.Visibility = Visibility.Collapsed;
-        OkButton.Content = "Los geht’s";
+        OkButton.Content = Strings.FirstRun_Start;
         var name = NameBox.Text.Trim();
         OkButton.IsEnabled = name.Length > 0;
         Preview.Text = name.Length > 0
-            ? $"Dateinamen sehen dann so aus: {DateTime.Now:yyyy-MM-dd_HH-mm-ss}_{PcName.ToSlug(name)}.png"
-            : "Bitte einen Namen eingeben, z. B. „Büro“ oder „Laptop“.";
+            ? Loc.Format(Strings.FirstRun_NamePreview, SettingsWindow.ExampleFileName(name))
+            : Strings.FirstRun_EnterName;
     }
 
     private void OnOk(object sender, RoutedEventArgs e)
@@ -53,9 +54,9 @@ internal partial class FirstRunWindow : Window
         if (name.Length == 0) return;
         if (!_warned && PcRegistry.FindConflict(_captureFolder, PcName.ToSlug(name), _machineName) is { } other)
         {
-            Warning.Text = $"Der Name „{other.DisplayName}“ wird schon vom PC „{other.MachineName}“ verwendet. Bitte wähle einen anderen Namen, damit sich die Aufnahmen nicht vermischen.";
+            Warning.Text = Loc.Format(Strings.FirstRun_NameTaken, other.DisplayName, other.MachineName);
             Warning.Visibility = Visibility.Visible;
-            OkButton.Content = "Trotzdem verwenden";
+            OkButton.Content = Strings.FirstRun_UseAnyway;
             _warned = true;
             return;
         }

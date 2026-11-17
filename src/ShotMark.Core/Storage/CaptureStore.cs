@@ -18,10 +18,29 @@ public abstract record SaveOutcome
 {
     public sealed record Saved(CaptureDocument Document) : SaveOutcome;
     public sealed record Conflict(string ModifiedOn, DateTimeOffset ModifiedAt, int DiskRevision) : SaveOutcome;
-    public sealed record Failed(string Message) : SaveOutcome;
+    /// <param name="Detail">Rohtext der Ausnahme (Sprache von Windows) – nur für Protokoll und eine Detailzeile.</param>
+    public sealed record Failed(StorageError Error, string? Detail) : SaveOutcome;
 }
 
-public sealed record LoadedCapture(CapturePaths Paths, CaptureDocument? Document, byte[] ImagePng, string? Warning);
+/// <summary>Warum nicht gespeichert werden konnte – die App übersetzt das in einen Satz.</summary>
+public enum StorageError
+{
+    /// <summary>Ordner oder Projektdatei nicht lesbar (Netz weg, gesperrt, keine Rechte).</summary>
+    FolderUnavailable,
+    /// <summary>Schreiben fehlgeschlagen.</summary>
+    WriteFailed,
+    /// <summary>Die Projektdatei stammt von einer neueren ShotMark-Version und wird nicht überschrieben.</summary>
+    NewerVersion,
+}
+
+/// <summary>Hinweis beim Öffnen: Es wird nur das fertige Bild angezeigt.</summary>
+public enum LoadWarning
+{
+    NewerVersion,
+    ProjectUnreadable,
+}
+
+public sealed record LoadedCapture(CapturePaths Paths, CaptureDocument? Document, byte[] ImagePng, LoadWarning? Warning);
 
 public sealed class CaptureStore(string folder, string pcSlug)
 {
@@ -51,9 +70,6 @@ public sealed class CaptureStore(string folder, string pcSlug)
         }
     }
 
-    public const string NewerVersionMessage =
-        "Diese Aufnahme wurde mit einer neueren ShotMark-Version gespeichert. Bitte ShotMark auf diesem PC aktualisieren.";
-
     public SaveOutcome Save(CapturePaths paths, CaptureDocument document, byte[] originalPng, byte[] flattenedPng, string pcName, DateTimeOffset now)
     {
         try
@@ -62,9 +78,9 @@ public sealed class CaptureStore(string folder, string pcSlug)
             switch (ReadDiskState(paths.ProjectPath))
             {
                 case DiskState.Unavailable unavailable:
-                    return new SaveOutcome.Failed(unavailable.Message);
+                    return new SaveOutcome.Failed(StorageError.FolderUnavailable, unavailable.Detail);
                 case DiskState.Newer:
-                    return new SaveOutcome.Failed(NewerVersionMessage);
+                    return new SaveOutcome.Failed(StorageError.NewerVersion, null);
                 case DiskState.Present { Document: var onDisk } when onDisk.Revision != document.Revision || onDisk.SaveId != document.SaveId:
                     return new SaveOutcome.Conflict(onDisk.ModifiedOn, onDisk.ModifiedAt, onDisk.Revision);
                 case DiskState.Corrupt:
@@ -87,14 +103,14 @@ public sealed class CaptureStore(string folder, string pcSlug)
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException)
         {
-            return new SaveOutcome.Failed(e.Message);
+            return new SaveOutcome.Failed(StorageError.WriteFailed, e.Message);
         }
     }
 
     public static LoadedCapture Load(string pngPath)
     {
         var paths = CapturePaths.ForPng(pngPath);
-        string? warning = null;
+        LoadWarning? warning = null;
         if (File.Exists(paths.ProjectPath))
         {
             try
@@ -104,11 +120,11 @@ public sealed class CaptureStore(string folder, string pcSlug)
             }
             catch (NotSupportedException)
             {
-                warning = NewerVersionMessage + " Bis dahin wird nur das fertige Bild angezeigt.";
+                warning = LoadWarning.NewerVersion;
             }
             catch (Exception e) when (e is IOException or InvalidDataException or JsonException)
             {
-                warning = "Projektdatei konnte nicht gelesen werden – Markierungen sind eingebrannt und nicht mehr einzeln bearbeitbar.";
+                warning = LoadWarning.ProjectUnreadable;
             }
         }
         return new LoadedCapture(paths, null, ReadAllBytesShared(pngPath), warning);
@@ -127,7 +143,7 @@ public sealed class CaptureStore(string folder, string pcSlug)
         public sealed record Present(CaptureDocument Document) : DiskState;
         public sealed record Newer : DiskState;
         public sealed record Corrupt : DiskState;
-        public sealed record Unavailable(string Message) : DiskState;
+        public sealed record Unavailable(string Detail) : DiskState;
     }
 
     private static DiskState ReadDiskState(string projectPath)

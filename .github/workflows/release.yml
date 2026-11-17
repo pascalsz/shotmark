@@ -1,0 +1,58 @@
+# Veröffentlicht eine neue Version, sobald ein Tag wie v1.1.0 gepusht wird:
+#   git tag v1.1.0 && git push origin v1.1.0
+# Baut, testet, packt mit Velopack und legt Setup.exe, Portable.zip und die Update-Pakete
+# in ein GitHub-Release. Installierte ShotMark-Versionen holen sich das Update von dort selbst.
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Version aus dem Tag
+        shell: pwsh
+        run: |
+          $version = $env:GITHUB_REF_NAME.TrimStart('v')
+          if ($version -notmatch '^\d+\.\d+\.\d+$') { throw "Tag $env:GITHUB_REF_NAME ist keine Version wie v1.2.3" }
+          "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Tests
+        run: dotnet test ShotMark.slnx -c Release
+
+      - name: Letzte Version holen (für Delta-Updates)
+        shell: pwsh
+        run: |
+          dotnet tool restore
+          gh release view --repo $env:GITHUB_REPOSITORY *> $null
+          if ($LASTEXITCODE -ne 0) { 'Noch kein Release vorhanden - erstes Paket ohne Delta.'; exit 0 }
+          dotnet vpk download github --repoUrl "https://github.com/$env:GITHUB_REPOSITORY" --token "$env:GH_TOKEN"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bauen und packen
+        shell: pwsh
+        run: ./scripts/publish.ps1 -Version $env:VERSION
+
+      - name: Release veröffentlichen
+        shell: pwsh
+        run: >
+          dotnet vpk upload github --repoUrl "https://github.com/$env:GITHUB_REPOSITORY" --token "$env:GH_TOKEN"
+          --publish --tag $env:GITHUB_REF_NAME --releaseName "ShotMark $env:VERSION"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

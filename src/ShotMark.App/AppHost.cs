@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using ShotMark.App.Capture;
 using ShotMark.App.Editor;
 using ShotMark.App.History;
+using ShotMark.App.Localization;
 using ShotMark.App.Native;
 using ShotMark.App.Rendering;
 using ShotMark.App.Settings;
@@ -16,6 +17,7 @@ using ShotMark.Core.Model;
 using ShotMark.Core.Scrolling;
 using ShotMark.Core.Settings;
 using ShotMark.Core.Storage;
+using ShotMark.Core.Updates;
 using PcNames = ShotMark.Core.Storage.PcName;
 
 namespace ShotMark.App;
@@ -44,9 +46,12 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
     private SettingsWindow? _settingsWindow;
     private DispatcherTimer? _hotkeyRetry;
     private CancellationTokenSource? _scrollStop;
+    private readonly bool _manageAutostart;
 
-    public AppHost(string profileDirectory)
+    /// <param name="manageAutostart">Nur das Standardprofil trägt sich in den Autostart ein, nicht Testprofile (<c>--profile</c>).</param>
+    public AppHost(string profileDirectory, bool manageAutostart = true)
     {
+        _manageAutostart = manageAutostart;
         _settingsStore = new SettingsStore(profileDirectory);
         _settings = _settingsStore.Load();
     }
@@ -86,7 +91,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         ApplyAutostart();
 
         if (firstRun && hotkeyOk)
-            _tray.ShowInfo("ShotMark ist bereit", $"Drücke {HotkeyLabel}, um einen Bereich aufzunehmen. ShotMark wartet im Infobereich der Taskleiste.");
+            _tray.ShowInfo(Strings.Ready_Title, Loc.Format(Strings.Ready_Text, HotkeyLabel));
         Log.Info($"Gestartet als „{_pcName}“, Ordner {_store.Folder}");
         return true;
     }
@@ -142,7 +147,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         catch (Exception e)
         {
             Log.Error("Aufnahme fehlgeschlagen", e);
-            _tray?.ShowWarning("Die Aufnahme ist fehlgeschlagen: " + e.Message);
+            _tray?.ShowWarning(ErrorText.WithDetails(Strings.CaptureFailed, e.Message));
         }
         finally
         {
@@ -202,12 +207,12 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         bitmap.Freeze();
         var note = result.Reason switch
         {
-            ScrollEndReason.MaxSize => $"Höchstlänge erreicht – die Scroll-Aufnahme wurde bei {result.Image.Height:N0} px beendet.",
+            ScrollEndReason.MaxSize => Loc.Format(Strings.Scroll_MaxSize, result.Image.Height),
             ScrollEndReason.ContentChanged when result.WasManual =>
-                "Zu schnell gescrollt – die Scroll-Aufnahme endet beim letzten passenden Stand. Tipp: beim Selbst-Scrollen langsamer drehen.",
+                Strings.Scroll_TooFast,
             ScrollEndReason.ContentChanged =>
-                "Der Inhalt hat sich beim Scrollen verändert (z. B. nachladende Bilder oder Animationen) – die Scroll-Aufnahme wurde vorzeitig beendet.",
-            ScrollEndReason.Error => "Die Scroll-Aufnahme wurde wegen eines Fehlers beendet. Das Ergebnis bis dahin ist gespeichert; Details stehen im Protokoll.",
+                Strings.Scroll_ContentChanged,
+            ScrollEndReason.Error => Strings.Scroll_Error,
             _ => null,
         };
         await SaveAndOpenAsync(new CroppedCapture(bitmap, request.Timestamp), note);
@@ -234,19 +239,19 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         if (outcome is SaveOutcome.Failed failed)
         {
             // Speicherordner nicht beschreibbar: sofort lokal sichern, damit keine Aufnahme verloren geht
-            Log.Error("Neue Aufnahme nicht gespeichert", new IOException(failed.Message));
+            Log.Error($"Neue Aufnahme nicht gespeichert ({failed.Error})", new IOException(failed.Detail));
             var rescueStore = new CaptureStore(RescueFolder, store.PcSlug);
             var rescuePaths = rescueStore.CreateNew(capture.Timestamp);
             outcome = await Task.Run(() => rescueStore.Save(rescuePaths, document, png, png, pcName, DateTimeOffset.Now));
             if (outcome is SaveOutcome.Saved)
             {
                 paths = rescuePaths;
-                warning = $"Der Speicherordner „{store.Folder}“ ist nicht erreichbar ({failed.Message}). Die Aufnahme wurde lokal gesichert: {rescuePaths.PngPath}";
+                warning = ErrorText.SaveFailed(failed, store.Folder, Loc.Format(Strings.SaveRescuedLocally, rescuePaths.PngPath));
             }
             else
             {
                 unsaved = true;
-                warning = $"Die Aufnahme konnte nicht gespeichert werden ({failed.Message}). Sie bleibt geöffnet – ShotMark versucht es bei der nächsten Änderung erneut.";
+                warning = ErrorText.SaveFailed(failed, store.Folder, Strings.SaveKeepsOpen);
             }
         }
         var open = new OpenCapture(paths, document, png, original);
@@ -258,7 +263,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         var editor = EnsureEditor();
         if (!await _editorVm!.OpenAsync(open, warning))
         {
-            _tray?.ShowInfo("ShotMark", "Die neue Aufnahme ist gespeichert und im Verlauf zu finden.");
+            _tray?.ShowInfo("ShotMark", Strings.Notice_CaptureSaved);
             return;
         }
         if (unsaved) _editorVm.MarkUnsaved();
@@ -283,18 +288,18 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         try
         {
             var loaded = await Task.Run(() => CaptureStore.Load(pngPath));
-            await _editorVm!.OpenAsync(OpenCapture.FromLoaded(loaded, PcLabel), loaded.Warning);
+            await _editorVm!.OpenAsync(OpenCapture.FromLoaded(loaded, PcLabel), loaded.Warning is { } w ? ErrorText.Describe(w) : null);
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException or NotSupportedException or FileFormatException)
         {
             Log.Error("Öffnen fehlgeschlagen: " + pngPath, e);
-            MessageBox.Show(_editor!, $"Die Aufnahme konnte nicht geöffnet werden:\n{e.Message}", "ShotMark", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(_editor!, ErrorText.WithDetails(Strings.OpenFailed, e.Message), "ShotMark", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
     public void CaptureSaved(string pngPath) => _history?.NotifyChanged(pngPath);
 
-    public string PcLabel(string? slug) => _history?.PcLabel(slug) ?? slug ?? "unbekannt";
+    public string PcLabel(string? slug) => _history?.PcLabel(slug) ?? slug ?? Strings.History_UnknownPc;
 
     public void Notify(string message) => _tray?.ShowInfo("ShotMark", message);
 
@@ -338,14 +343,16 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         _scrollHotkeyPending = false;
         _preCapture?.SetHotkey(null);
         _hotkeyRetry?.Stop();
-        var window = new SettingsWindow(_settings, _automaticFolder, Autostart.IsInstalledCopy(Environment.ProcessPath ?? ""), CheckHotkey);
+        var window = new SettingsWindow(_settings, _automaticFolder, Autostart.IsInstalledCopy && _manageAutostart, CheckHotkey);
         if (_editor is { IsVisible: true }) window.Owner = _editor;
         _settingsWindow = window;
         var accepted = window.ShowDialog() == true;
         _settingsWindow = null;
+        var restart = false;
         if (accepted && window.Result is { } result)
         {
             var locationChanged = result.SaveFolder != _settings.SaveFolder || result.PcName != _settings.PcName;
+            restart = Language.WouldChange(result.Language);
             _settings = result;
             _settingsStore.Save(_settings);
             if (locationChanged)
@@ -357,8 +364,14 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
             _tray?.SetHotkeyLabels(HotkeyLabel, ScrollHotkeyLabel);
             _editor?.RefreshHotkeyLabel();
         }
-        RegisterHotkey(showWarning: true);
+        // Kürzel immer wieder aktivieren: Bricht der Nutzer den Neustart ab (offene Änderungen nicht verwerfen),
+        // läuft ShotMark sonst ohne Tastenkürzel weiter. Beim Neustart gibt Dispose() sie ohnehin wieder frei.
+        RegisterHotkey(showWarning: !restart);
+        if (restart) RestartRequested?.Invoke();
     }
+
+    /// <summary>Die Sprache wurde geändert – die App startet sich neu (siehe <see cref="App"/>).</summary>
+    public event Action? RestartRequested;
 
     private string? CheckHotkey(HotkeySetting candidate)
     {
@@ -385,7 +398,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         if (!showWarning) return _hotkeyActive;
         // Nur eine Meldung zeigen – das Aufnahme-Kürzel ist wichtiger
         if (!_hotkeyActive) ShowHotkeyWarning(error);
-        else if (scrollError is not null) _tray?.ShowWarning(scrollError + " Die Scroll-Aufnahme geht weiterhin über das Tray-Menü.");
+        else if (scrollError is not null) _tray?.ShowWarning(Loc.Format(Strings.Hotkey_ScrollStillInTray, scrollError));
         return _hotkeyActive;
     }
 
@@ -397,7 +410,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         if (_scrollHotkeys is null || _settings.ScrollHotkey is not { } scroll || scroll == _settings.Hotkey) return null;
         if (_scrollHotkeys.TryRegister(scroll, out var error)) return null;
         _scrollHotkeyPending = true;
-        return error ?? "Tastenkürzel für die Scroll-Aufnahme nicht registriert";
+        return error ?? Strings.Hotkey_ScrollNotRegistered;
     }
 
     private void ShowHotkeyWarning(string? error)
@@ -406,12 +419,12 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         if (_settings.Hotkey == HotkeySetting.PrintScreen && WindowsUsesPrintScreenForSnipping())
         {
             _tray?.ShowWarning(
-                "Windows verwendet die Druck-Taste für das Snipping Tool. Hier klicken und „Druck-Taste zum Öffnen der Bildschirmaufnahme verwenden“ ausschalten – oder in ShotMark ein anderes Kürzel wählen.",
+                Strings.Hotkey_SnippingTool,
                 () => OpenUri("ms-settings:easeofaccess-keyboard"));
         }
         else
         {
-            _tray?.ShowWarning(error + " Aufnahmen gehen weiterhin über das Tray-Menü.");
+            _tray?.ShowWarning(Loc.Format(Strings.Hotkey_CaptureStillInTray, error));
         }
     }
 
@@ -432,7 +445,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
                     _hotkeyActive = true;
                     _preCapture?.SetHotkey(_settings.Hotkey);
                     Log.Info($"Tastenkürzel „{HotkeyLabel}“ ist jetzt registriert");
-                    _tray?.ShowInfo("ShotMark", $"{HotkeyLabel} ist jetzt für ShotMark aktiv.");
+                    _tray?.ShowInfo("ShotMark", Loc.Format(Strings.Notice_HotkeyActive, HotkeyLabel));
                 }
                 if (_scrollHotkeyPending && _settings.ScrollHotkey is { } scroll && _scrollHotkeys.TryRegister(scroll, out _))
                 {
@@ -498,14 +511,15 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         catch (Exception e) when (e is IOException or UnauthorizedAccessException)
         {
             Log.Error("Speicherordner nicht beschreibbar: " + folder.Folder, e);
-            _tray?.ShowWarning($"Der Speicherordner „{folder.Folder}“ ist nicht beschreibbar. Bitte in den Einstellungen prüfen.");
+            _tray?.ShowWarning(Loc.Format(Strings.Folder_NotWritable, folder.Folder));
         }
         if (folder.IsFallback && showFallbackWarning)
-            _tray?.ShowWarning($"Dropbox wurde auf diesem PC nicht gefunden. Screenshots werden in „{folder.Folder}“ gespeichert.");
+            _tray?.ShowWarning(Loc.Format(Strings.Folder_NoDropbox, folder.Folder));
     }
 
     private void ApplyAutostart()
     {
+        if (!_manageAutostart) return;
         try
         {
             if (Environment.ProcessPath is { } exe) Autostart.Apply(_settings.StartWithWindows, exe);
@@ -520,12 +534,18 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
 
     public async void Exit()
     {
-        if (_exiting) return;
+        if (await ShutdownAsync()) Application.Current.Shutdown();
+    }
+
+    /// <summary>Sichert offene Änderungen und räumt Fenster, Tray und Kürzel ab. False, wenn das Sichern abgelehnt wurde.</summary>
+    public async Task<bool> ShutdownAsync()
+    {
+        if (_exiting) return false;
         _exiting = true;
         if (_editorVm is not null && !await _editorVm.SecureUnsavedAsync())
         {
             _exiting = false;
-            return;
+            return false;
         }
         if (_editor is not null)
         {
@@ -533,8 +553,19 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
             _editor.Close();
         }
         Dispose();
-        Application.Current.Shutdown();
+        return true;
     }
+
+    // ---------- Updates ----------
+
+    /// <summary>Für die Entscheidung, ob ein Update-Neustart gerade niemanden stört.</summary>
+    public UpdateActivity CurrentActivity() => new(
+        Capturing: _capturing || _scrollStop is not null,
+        EditorOpen: _editor is { IsVisible: true },
+        UnsavedChanges: _editorVm?.IsDirty == true,
+        // Einstellungen, Erststart-Dialog, Aufnahme-Overlays – jedes sichtbare Fenster zählt als „beschäftigt“
+        DialogOpen: _settingsWindow is not null || Application.Current.Windows.OfType<Window>().Any(w => w.IsVisible),
+        UserIdle: NativeMethods.UserIdleTime());
 
     public void Dispose()
     {

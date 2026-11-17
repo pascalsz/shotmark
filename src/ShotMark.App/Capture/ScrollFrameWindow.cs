@@ -1,3 +1,4 @@
+using ShotMark.App.Localization;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,10 +15,9 @@ namespace ShotMark.App.Capture;
 /// </summary>
 internal sealed class ScrollFrameWindow : IDisposable
 {
-    public const string AutomaticHint = "Scrollt automatisch – das Seitenende wird erkannt.";
+    public static string AutomaticHint => Strings.ScrollPanel_AutomaticHint;
 
     private const int FrameGap = 8; // physische Pixel zwischen Bereich und Fensterkante, Rahmen liegt sicher außerhalb
-    private static readonly CultureInfo German = CultureInfo.GetCultureInfo("de-DE");
     private readonly Int32Rect _region;
     private readonly Window _frame;
     private readonly Window _panel;
@@ -32,7 +32,7 @@ internal sealed class ScrollFrameWindow : IDisposable
         var accent = new SolidColorBrush(Color.FromRgb(0xFF, 0x8A, 0x00));
         accent.Freeze();
 
-        _frame = HelperWindow("ShotMark – Scroll-Rahmen");
+        _frame = HelperWindow(Strings.ScrollPanel_FrameTitle);
         _frame.Content = new Border { BorderBrush = accent, BorderThickness = new Thickness(3), CornerRadius = new CornerRadius(2) };
         _frame.SourceInitialized += (_, _) =>
         {
@@ -41,7 +41,7 @@ internal sealed class ScrollFrameWindow : IDisposable
         };
         _frame.DpiChanged += (_, _) => _frame.Dispatcher.BeginInvoke(PlaceFrame);
 
-        _title = new TextBlock { Text = "Scroll-Aufnahme", FontWeight = FontWeights.SemiBold, FontSize = 13.5 };
+        _title = new TextBlock { Text = Strings.ScrollPanel_Title, FontWeight = FontWeights.SemiBold, FontSize = 13.5 };
         _height = new TextBlock
         {
             Text = "0 px",
@@ -60,13 +60,13 @@ internal sealed class ScrollFrameWindow : IDisposable
         };
         var stop = _stop = new Button
         {
-            Content = "Stopp  (Esc)",
+            Content = Strings.ScrollPanel_StopEsc,
             Style = (Style)Application.Current.FindResource("PrimaryButton"),
             Margin = new Thickness(0, 12, 0, 0),
             HorizontalAlignment = HorizontalAlignment.Stretch,
         };
         stop.Click += (_, _) => StopRequested?.Invoke();
-        System.Windows.Automation.AutomationProperties.SetName(stop, "Scroll-Aufnahme stoppen");
+        System.Windows.Automation.AutomationProperties.SetName(stop, Strings.ScrollPanel_StopName);
 
         var header = new DockPanel();
         DockPanel.SetDock(_height, Dock.Right);
@@ -81,7 +81,7 @@ internal sealed class ScrollFrameWindow : IDisposable
             },
         });
 
-        _panel = HelperWindow("ShotMark – Scroll-Aufnahme");
+        _panel = HelperWindow(Strings.ScrollPanel_PanelTitle);
         _panel.SizeToContent = SizeToContent.WidthAndHeight;
         _panel.Content = new Border
         {
@@ -125,12 +125,12 @@ internal sealed class ScrollFrameWindow : IDisposable
     }
 
     /// <summary>Esc ließ sich nicht global belegen (anderes Programm): Knopf ohne Esc-Hinweis.</summary>
-    public void SetEscAvailable(bool available) => _stop.Content = available ? "Stopp  (Esc)" : "Stopp";
+    public void SetEscAvailable(bool available) => _stop.Content = available ? Strings.ScrollPanel_StopEsc : Strings.ScrollPanel_Stop;
 
     public void Update(ScrollProgress progress)
     {
-        _height.Text = $"{progress.Height.ToString("N0", German)} px";
-        _title.Text = progress.Manual ? "Scroll-Aufnahme · manuell" : "Scroll-Aufnahme";
+        _height.Text = Loc.Format(Strings.ScrollPanel_Height, progress.Height);
+        _title.Text = progress.Manual ? Strings.ScrollPanel_TitleManual : Strings.ScrollPanel_Title;
         _hint.Text = progress.Hint ?? AutomaticHint;
     }
 

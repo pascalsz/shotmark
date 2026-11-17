@@ -1,26 +1,33 @@
 # ShotMark
 
+**Projektseite:** [pascalsz.github.io/shotmark/de](https://pascalsz.github.io/shotmark/de/) · English: [pascalsz.github.io/shotmark](https://pascalsz.github.io/shotmark/)
+
 Schlankes Screenshot- und Markierungswerkzeug für Windows: **Druck-Taste → Bereich aufziehen → markieren → fertig gespeichert.**
 Gedacht als leichtgewichtige Alternative zu großen Screenshot-Suiten. Liegt der Speicherordner in einem synchronisierten
 Ordner wie Dropbox, arbeiten beliebig viele PCs zusammen: Im Verlauf siehst du, welche Screenshots wann auf welchem PC
 entstanden sind, und kannst jeden davon später weiter bearbeiten.
 
-ShotMark ist kostenlos und quelloffen (MIT-Lizenz), braucht kein Konto und sendet keine Daten ins Internet.
+ShotMark ist kostenlos und quelloffen (MIT-Lizenz), braucht kein Konto, sammelt keine Daten und hält sich selbst aktuell.
 
 ## Installation
 
-Fertige Versionen zum Herunterladen folgen über die GitHub-Releases. Bis dahin lässt sich ShotMark selbst bauen
-(siehe [Entwicklung](#entwicklung)):
+1. **`ShotMark.App-win-Setup.exe`** aus dem [neuesten Release](https://github.com/pascalsz/shotmark/releases/latest) herunterladen und starten.
+   ShotMark wird für den angemeldeten Benutzer nach `%LOCALAPPDATA%\ShotMark.App\` installiert. Adminrechte und ein installiertes .NET sind nicht nötig.
+2. Beim ersten Start fragt ShotMark nach dem **Namen dieses PCs** (z. B. „Büro“ oder „Laptop“).
+3. ShotMark wartet im Infobereich der Taskleiste und startet ab jetzt mit Windows.
 
-1. `powershell -ExecutionPolicy Bypass -File scripts\publish.ps1 -NoDropbox` baut `publish\ShotMark.exe` und legt `Installieren.cmd` daneben.
-2. Doppelklick auf **`Installieren.cmd`**. Das Skript kopiert ShotMark nach `%LOCALAPPDATA%\Programs\ShotMark\` und startet es.
-   Adminrechte und ein installiertes .NET sind nicht nötig.
-3. Beim ersten Start fragt ShotMark nach dem **Namen dieses PCs** (z. B. „Büro“ oder „Laptop“).
-4. ShotMark wartet im Infobereich der Taskleiste und startet ab jetzt mit Windows.
+> **Windows-SmartScreen-Warnung?** Das Setup ist (noch) nicht digital signiert. Windows zeigt deshalb beim ersten Start
+> „Der Computer wurde durch Windows geschützt“. Über *Weitere Informationen* → *Trotzdem ausführen* geht es weiter.
 
-**Mehrere PCs:** Ohne den Schalter `-NoDropbox` kopiert `publish.ps1` beides zusätzlich nach `<Dropbox>\Software\ShotMark\`.
-Von dort genügt auf jedem PC ein Doppelklick auf `Installieren.cmd`. Für ein Update dasselbe noch einmal: Eine laufende
-Version wird dabei geordnet beendet, offene Änderungen werden vorher gespeichert.
+**Updates kommen von selbst.** ShotMark sucht kurz nach dem Start und danach alle paar Stunden nach einer neuen Version
+und lädt sie im Hintergrund herunter. Installiert wird sie, wenn es niemanden stört: nach einigen Minuten ohne Maus- und
+Tastatureingabe, ohne offenen Editor und ohne laufende Aufnahme. Sonst beim Beenden oder beim nächsten Start.
+Offene Änderungen werden vorher gesichert.
+
+**Deinstallieren:** Windows-Einstellungen → *Apps* → *ShotMark*. Screenshots und Einstellungen bleiben erhalten.
+
+**Von einer älteren Version mit `Installieren.cmd`:** einfach das Setup ausführen. Die alte Kopie in
+`%LOCALAPPDATA%\Programs\ShotMark\` wird beim ersten Start geordnet beendet und entfernt.
 
 > **Druck-Taste belegt?** ShotMark meldet das beim Start. Zwei typische Ursachen:
 > - **Snagit läuft:** Snagit beenden bzw. dort das Kürzel ändern.
@@ -113,7 +120,8 @@ Screenshots\
   bekommt seine Version beim nächsten Wechsel automatisch als Kopie gespeichert.
 - Ist der Speicherordner nicht erreichbar, sichert ShotMark Aufnahmen lokal in `%LOCALAPPDATA%\ShotMark\Nicht gespeichert\`.
 - Projektdateien einer neueren ShotMark-Version werden von älteren Versionen nie überschrieben.
-- Einstellungen (Kürzel, PC-Name, Autostart) gelten pro PC und liegen in `%APPDATA%\ShotMark\settings.json`.
+- Einstellungen (Kürzel, PC-Name, Autostart, Sprache) gelten pro PC und liegen in `%APPDATA%\ShotMark\settings.json`.
+- **Sprache:** ShotMark folgt der Windows-Sprache (Deutsch/Englisch), änderbar unter *Einstellungen* → *Sprache*. Deutsche und englische PCs können denselben Ordner teilen, Dateinamen und Projektdateien sind unabhängig von der Sprache.
 - Fehlerprotokoll: `%LOCALAPPDATA%\ShotMark\log.txt`.
 
 ## Befehlszeile
@@ -136,13 +144,18 @@ dotnet test ShotMark.slnx
 
 - `src/ShotMark.Core`: Modell, Geometrie, Dateiformat, Speichern, Verlauf, Einstellungen. Ohne UI und plattformneutral (Grundlage für eine spätere Mac-Version).
 - `src/ShotMark.App`: WPF-Oberfläche, Aufnahme, Tray, Tastenkürzel.
-- `tests/`: xUnit-Tests. `UiSnapshots` rendert alle Fenster offscreen als PNG, wenn `SHOTMARK_SNAPSHOT_DIR` gesetzt ist.
-- Veröffentlichen: `powershell -ExecutionPolicy Bypass -File scripts\publish.ps1` (mit `-NoDropbox` nur lokal nach `publish\`).
+- `src/ShotMark.App.Strings`: Texte der Oberfläche (`Strings.resx` Englisch, `Strings.de.resx` Deutsch). Texte aus `ShotMark.Core` liegen in `src/ShotMark.Core/Localization/`. Neue Sprache = weitere `*.<sprache>.resx`.
+- `site/`: Projektseite (statisches HTML/CSS, Englisch unter `/`, Deutsch unter `/de/`). Bilder neu erzeugen mit `pwsh -File scripts/site-images.ps1`, prüfen mit `pwsh -File scripts/check-site.ps1`, lokal ansehen mit `python -m http.server 8765 --directory site`. Veröffentlicht wird per GitHub Action `pages.yml` bei Änderungen auf `main`.
+- `tests/`: xUnit-Tests. `UiSnapshots` rendert alle Fenster offscreen als PNG nach `SHOTMARK_SNAPSHOT_DIR\de\` und `…\en\`, wenn die Variable gesetzt ist.
+- Lokal paketieren: `powershell -ExecutionPolicy Bypass -File scripts\publish.ps1 -Version 1.2.3` legt Setup, Portable-Zip und Update-Pakete nach `Releases\` ([Velopack](https://velopack.io)).
+- Veröffentlichen: Tag pushen (`git tag v1.2.3`, `git push origin v1.2.3`). Die GitHub Action `release.yml` testet, packt und erstellt das Release, die installierten Versionen aktualisieren sich daraus.
+- Update-Feed zum Testen umbiegen: Umgebungsvariable `SHOTMARK_UPDATE_FEED` auf einen Ordner mit `Releases\`-Inhalt setzen.
 
 ## Datenschutz
 
-ShotMark arbeitet vollständig lokal. Es gibt keine Telemetrie, kein Konto und keine Verbindung zu einem Server.
-Aufnahmen landen nur in dem Ordner, den du selbst festlegst.
+ShotMark arbeitet lokal. Es gibt keine Telemetrie und kein Konto. Aufnahmen landen nur in dem Ordner, den du selbst festlegst.
+Die einzige Netzwerkverbindung ist die Update-Prüfung: Die installierte Version ruft die Release-Dateien von
+`github.com/pascalsz/shotmark` ab. Dabei werden keine Daten über dich oder deine Aufnahmen übertragen.
 
 ## Lizenz
 

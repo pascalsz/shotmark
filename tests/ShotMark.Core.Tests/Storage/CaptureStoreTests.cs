@@ -106,7 +106,7 @@ public class CaptureStoreTests
         var newer = ProjectFile.Write(Doc() with { FormatVersion = CaptureDocument.CurrentFormatVersion + 1, Revision = 5 }, Original);
         File.WriteAllBytes(paths.ProjectPath, newer);
         var outcome = Assert.IsType<SaveOutcome.Failed>(store.Save(paths, Doc(), Original, [7], "Büro", Now));
-        Assert.Contains("neueren", outcome.Message);
+        Assert.Equal(StorageError.NewerVersion, outcome.Error);
         Assert.Equal(newer, File.ReadAllBytes(paths.ProjectPath));
         Assert.Equal(Flat, File.ReadAllBytes(paths.PngPath));
     }
@@ -121,7 +121,9 @@ public class CaptureStoreTests
         var before = File.ReadAllBytes(paths.ProjectPath);
         using (new FileStream(paths.ProjectPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
         {
-            Assert.IsType<SaveOutcome.Failed>(store.Save(paths, saved, Original, [7], "Büro", Now));
+            var failed = Assert.IsType<SaveOutcome.Failed>(store.Save(paths, saved, Original, [7], "Büro", Now));
+            Assert.Equal(StorageError.FolderUnavailable, failed.Error);
+            Assert.False(string.IsNullOrWhiteSpace(failed.Detail));
         }
         Assert.Equal(before, File.ReadAllBytes(paths.ProjectPath));
         Assert.Equal(Flat, File.ReadAllBytes(paths.PngPath));
@@ -151,7 +153,7 @@ public class CaptureStoreTests
         File.WriteAllBytes(paths.ProjectPath, ProjectFile.Write(Doc() with { FormatVersion = 99 }, Original));
         var loaded = CaptureStore.Load(paths.PngPath);
         Assert.Null(loaded.Document);
-        Assert.Contains("neueren", loaded.Warning);
+        Assert.Equal(LoadWarning.NewerVersion, loaded.Warning);
     }
 
     [Fact]
@@ -178,7 +180,7 @@ public class CaptureStoreTests
         var loaded = CaptureStore.Load(paths.PngPath);
         Assert.Null(loaded.Document);
         Assert.Equal(Flat, loaded.ImagePng);
-        Assert.NotNull(loaded.Warning);
+        Assert.Equal(LoadWarning.ProjectUnreadable, loaded.Warning);
     }
 
     [Fact]

@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/ShotMark.App/ShotMark.App.csproj" />
+    <Project Path="src/ShotMark.App.Strings/ShotMark.App.Strings.csproj" />
     <Project Path="src/ShotMark.Core/ShotMark.Core.csproj" />
   </Folder>
   <Folder Name="/tests/">

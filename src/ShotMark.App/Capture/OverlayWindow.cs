@@ -1,3 +1,4 @@
+using ShotMark.App.Localization;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,7 +21,7 @@ internal sealed class OverlayWindow : Window
     {
         _session = session;
         _monitor = monitor;
-        Title = "ShotMark – Bereich auswählen";
+        Title = Strings.Overlay_Title;
         WindowStyle = WindowStyle.None;
         ResizeMode = ResizeMode.NoResize;
         ShowInTaskbar = false;
@@ -155,9 +156,9 @@ internal sealed class OverlayLayer(RegionCaptureSession session, Int32Rect monit
     private string Hint() => session.Mode switch
     {
         CaptureMode.Scroll when session.TooShortForScroll =>
-            $"↓  Zu niedrig für eine Scroll-Aufnahme – mindestens {RegionCaptureSession.MinScrollHeight} px hoch aufziehen  ·  Esc bricht ab",
-        CaptureMode.Scroll => "↓  Scroll-Aufnahme: Bereich über den Inhalt aufziehen, der gescrollt werden soll  ·  Esc bricht ab",
-        _ => "Bereich aufziehen  ·  Esc oder Rechtsklick bricht ab",
+            Loc.Format(Strings.Overlay_TooShort, RegionCaptureSession.MinScrollHeight),
+        CaptureMode.Scroll => Strings.Overlay_ScrollHint,
+        _ => Strings.Overlay_Hint,
     };
 
     private static void DrawCrosshair(DrawingContext dc, Point center, Rect full, double px)

@@ -1,0 +1,492 @@
+/* ShotMark project site – the page is marked up the way ShotMark marks up a capture. */
+
+:root {
+  --ground: #1b1b1d;
+  --ground-deep: #141416;
+  --panel: #232326;
+  --raise: #2a2a2e;
+  --line: #3a3a40;
+  --text: #ececee;
+  --dim: #b4b4bb;
+  --faint: #9a9aa2;
+  --mark: #fc4242;
+  --mark-text: #ff6b6b;
+  --ok: #3dbe5c;
+  --link: #5aa7ff;
+  --button: #1f6fe0;
+  --button-hover: #1a5fc4;
+  --gutter: clamp(20px, 5vw, 56px);
+  --measure: 62ch;
+  --display: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --body: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --mark-shadow: drop-shadow(1px 2px 1px rgb(0 0 0 / 0.16)) drop-shadow(2px 3px 2px rgb(0 0 0 / 0.12)) drop-shadow(3px 4px 3px rgb(0 0 0 / 0.08));
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  background: var(--ground);
+  scroll-behavior: smooth;
+  scroll-padding-top: 24px;
+  -webkit-text-size-adjust: 100%;
+  scrollbar-color: var(--line) var(--ground-deep);
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font: 400 1.0625rem/1.6 var(--body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection { background: rgb(252 66 66 / 0.35); color: #fff; }
+
+img, svg { display: block; max-width: 100%; }
+img { height: auto; }
+
+a { color: var(--link); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:not(.button):not(.skip):hover { color: #8cc2ff; }
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+h1, h2, h3 {
+  font-family: var(--display);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+h2 { font-size: clamp(2rem, 4.2vw, 3.25rem); font-weight: 700; }
+h3 { font-size: 1.25rem; font-weight: 650; letter-spacing: -0.01em; }
+
+p { margin: 0; text-wrap: pretty; }
+
+kbd {
+  display: inline-block;
+  min-width: 1.9em;
+  padding: 0.12em 0.5em 0.18em;
+  border: 1px solid var(--line);
+  border-bottom-width: 3px;
+  border-radius: 6px;
+  background: var(--raise);
+  color: var(--text);
+  font: 600 0.82em/1.4 var(--body);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.skip {
+  position: absolute;
+  left: var(--gutter);
+  top: -60px;
+  padding: 10px 14px;
+  background: var(--button);
+  color: #fff;
+  border-radius: 8px;
+  z-index: 10;
+}
+.skip:focus { top: 12px; }
+.skip:hover { color: #fff; }
+
+.wrap {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ---------- header ---------- */
+
+.site-header { padding-block: 22px; }
+.site-header .wrap { display: flex; align-items: center; gap: 28px; }
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font: 700 1.125rem/1 var(--display);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  margin-right: auto;
+}
+.brand:hover { color: var(--text); }
+.brand svg { width: 30px; height: 30px; }
+
+.site-nav { display: flex; align-items: center; gap: 24px; }
+.site-nav a {
+  color: var(--dim);
+  font-size: 0.95rem;
+  text-decoration: none;
+  padding-block: 6px;
+}
+.site-nav a:hover { color: var(--text); }
+.site-nav .lang {
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 13px;
+}
+.site-nav .lang:hover { border-color: var(--faint); }
+
+/* ---------- buttons ---------- */
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  background: var(--button);
+  color: #fff;
+  font: 600 1.0625rem/1.2 var(--body);
+  text-decoration: none;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.18) inset, 0 6px 14px -6px rgb(0 0 0 / 0.6);
+  transition: background-color 160ms ease-out, transform 160ms ease-out;
+}
+.button:hover { background: var(--button-hover); color: #fff; }
+.button:active { transform: translateY(1px); }
+.button svg { width: 20px; height: 20px; flex: none; }
+.button.big { min-height: 58px; padding: 15px 28px; font-size: 1.15rem; border-radius: 12px; }
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+}
+.text-link:hover { color: var(--text); text-decoration: underline; }
+.text-link svg { width: 18px; height: 18px; }
+
+/* ---------- marks (the app's annotation shapes) ---------- */
+
+.mark-box {
+  position: relative;
+  display: inline-block;
+  padding: 0 0.12em;
+  margin: 0 -0.04em;
+}
+.mark-box > svg:first-of-type {
+  position: absolute;
+  inset: -0.06em -0.12em -0.02em;
+  width: calc(100% + 0.24em);
+  height: calc(100% + 0.08em);
+  max-width: none; /* the global svg { max-width: 100% } would clip the overhang */
+  overflow: visible;
+  pointer-events: none;
+  filter: var(--mark-shadow);
+}
+.mark-box rect {
+  fill: none;
+  stroke: var(--mark);
+  stroke-width: 4;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+.mark-arrow { overflow: visible; filter: var(--mark-shadow); pointer-events: none; }
+.mark-arrow path { fill: none; stroke: var(--mark); stroke-width: 7; stroke-linecap: butt; }
+
+.mark-check, .mark-cross { flex: none; overflow: visible; filter: var(--mark-shadow); }
+.mark-check path, .mark-cross path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.mark-check path { stroke: var(--ok); stroke-width: 3.4; }
+.mark-cross path { stroke: var(--mark); stroke-width: 3.1; }
+
+.mark-blur {
+  color: transparent;
+  border-radius: 2px;
+  background-color: #6e6e76;
+  background-image:
+    linear-gradient(90deg, rgb(255 255 255 / 0.22) 50%, transparent 50%),
+    linear-gradient(rgb(0 0 0 / 0.18) 50%, transparent 50%);
+  background-size: 0.62em 0.62em, 0.62em 0.62em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0 0.1em;
+}
+
+/* Frame annotation laid over a screenshot, positioned in % of the image */
+.shot { position: relative; }
+.shot-mark {
+  position: absolute;
+  left: var(--x); top: var(--y); width: var(--w); height: var(--h);
+  pointer-events: none;
+}
+.shot-mark svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: var(--mark-shadow); }
+.shot-mark rect { fill: none; stroke: var(--mark); stroke-width: 4; vector-effect: non-scaling-stroke; }
+.shot-mark span {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 0;
+  color: var(--mark-text);
+  font: 700 clamp(0.95rem, 1.6vw, 1.35rem)/1.1 var(--display);
+  white-space: nowrap;
+  text-shadow: 1px 2px 2px rgb(0 0 0 / 0.5);
+}
+.shot-mark.label-right span { left: auto; right: 0; }
+.shot-mark.label-side span { left: calc(100% + 12px); bottom: auto; top: 50%; transform: translateY(-50%); }
+
+/* Draw-in: the marks are complete without JS; with JS they draw themselves once on entering the view */
+/* site.js measures every mark (--len) and gives frames a pixel viewBox; without it the strokes are plain and complete */
+.js .is-sized rect { vector-effect: none; }
+.js [data-draw] { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); }
+.js .is-drawn [data-draw] { stroke-dashoffset: 0; transition: stroke-dashoffset 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js [data-draw], .js .is-drawn [data-draw] { stroke-dashoffset: 0; transition: none; }
+  .button { transition: none; }
+}
+
+/* ---------- hero ---------- */
+
+.hero { padding-block: clamp(36px, 7vw, 92px) 0; }
+.hero-text { position: relative; max-width: 760px; }
+
+.hero h1 {
+  font-size: clamp(3rem, 8.4vw, 6rem);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+/* room after the frame so the full stop sits outside it */
+.hero h1 .mark-box { padding-right: calc(0.12em + 0.035em); margin-right: calc(0.12em + 6px); }
+.hero h1 .mark-box > svg:first-of-type { inset: -0.02em -0.12em 0.02em; }
+
+/* the arrow hangs off the framed word: it points at the frame from the right, above the full stop */
+.hero .mark-box > .mark-arrow {
+  position: absolute;
+  inset: auto;
+  top: 0.04em;
+  left: calc(100% + 0.12em + 4px);
+  width: 1.6em;
+  height: 0.8em;
+}
+.mark-arrow .head { fill: var(--mark); stroke: none; }
+/* The head appears once its shaft has drawn; without site.js --head stays unset and the head is simply there */
+.js .mark-arrow .head { fill-opacity: var(--head, 1); }
+.js .is-drawn .mark-arrow .head { fill-opacity: 1; transition: fill-opacity 160ms ease-out var(--delay, 0ms); }
+
+.hero .lede {
+  margin-top: 26px;
+  max-width: 34ch;
+  color: var(--dim);
+  font-size: clamp(1.15rem, 1.9vw, 1.4rem);
+  line-height: 1.5;
+}
+.hero .actions { margin-top: 34px; }
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--dim);
+  font-size: 0.98rem;
+}
+.facts li { display: inline-flex; align-items: center; gap: 8px; }
+.facts .mark-check { width: 20px; height: 20px; }
+
+.window {
+  margin-top: clamp(48px, 7vw, 84px);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  overflow: hidden;
+  box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.85), 0 2px 0 rgb(255 255 255 / 0.04) inset;
+}
+.window-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding-inline: 14px;
+  background: var(--raise);
+  border-bottom: 1px solid var(--line);
+  color: var(--dim);
+  font-size: 0.8rem;
+}
+.window-bar svg { width: 16px; height: 16px; }
+.window-bar .controls { margin-left: auto; display: flex; gap: 22px; }
+.window-bar .controls svg { width: 12px; height: 12px; stroke: var(--faint); fill: none; stroke-width: 1.2; }
+
+/* ---------- sections ---------- */
+
+.section { padding-block: clamp(72px, 11vw, 140px) 0; }
+.section-head { max-width: 760px; }
+.section-head p { margin-top: 18px; color: var(--dim); font-size: 1.15rem; max-width: var(--measure); }
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+  margin-top: clamp(36px, 5vw, 56px);
+}
+.split.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.split.flip > :first-child { order: 2; }
+
+.shot img, .stack img {
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 60px -36px rgb(0 0 0 / 0.9);
+}
+
+/* steps */
+.steps { margin: 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 30px; }
+.steps li { display: grid; grid-template-columns: 44px 1fr; gap: 2px 18px; counter-increment: step; }
+.steps li::before {
+  content: counter(step);
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--mark);
+  color: var(--text);
+  font: 700 1.15rem/1 var(--display);
+}
+.steps h3 { align-self: center; }
+.steps p { color: var(--dim); }
+.saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+  color: var(--text);
+  font-weight: 600;
+}
+.saved .mark-check { width: 22px; height: 22px; }
+
+/* tools */
+.tools {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 0 clamp(24px, 4vw, 56px);
+  margin: clamp(36px, 5vw, 56px) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.tools li {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 4px 16px;
+  align-items: start;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+.tools .icon { width: 26px; height: 26px; margin-top: 1px; fill: none; stroke: var(--text); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.tools .icon.filled { fill: var(--text); stroke: none; }
+.tools h3 { font-size: 1.1rem; }
+.tools p { grid-column: 2 / 4; color: var(--dim); font-size: 0.98rem; }
+.tools kbd { justify-self: end; }
+.demo-line {
+  margin-top: 34px;
+  color: var(--dim);
+  font-size: 1.15rem;
+  max-width: var(--measure);
+}
+.demo-line strong { color: var(--text); font-weight: 600; }
+
+/* more */
+.stack { position: relative; padding-bottom: clamp(40px, 6vw, 70px); }
+.stack .over {
+  position: absolute;
+  right: clamp(-12px, -1vw, 0px);
+  bottom: 0;
+  width: min(42%, 320px);
+  /* transparent PNG with the panel's own shadow: no frame of its own */
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.feature-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 28px; }
+.feature-list li { display: grid; grid-template-columns: 24px 1fr; gap: 4px 14px; }
+.feature-list .mark-check { width: 22px; height: 22px; margin-top: 2px; grid-row: span 2; }
+.feature-list p { color: var(--dim); }
+
+/* why */
+.why-text { max-width: var(--measure); margin-top: 22px; color: var(--dim); font-size: 1.2rem; line-height: 1.55; }
+.why-text strong { color: var(--text); font-weight: 600; }
+.facts.big {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 18px 40px;
+  color: var(--text);
+  font-size: 1.08rem;
+}
+.facts.big .mark-check { width: 24px; height: 24px; }
+
+/* download */
+.download {
+  margin-top: clamp(72px, 11vw, 140px);
+  padding-block: clamp(64px, 9vw, 112px);
+  background: var(--ground-deep);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.download .wrap { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(36px, 6vw, 88px); align-items: start; }
+.download h2 { margin-bottom: 20px; }
+.download .requirements { color: var(--dim); margin-top: 22px; }
+.download .more-links { display: flex; flex-wrap: wrap; gap: 4px 26px; margin-top: 18px; }
+.download .more-links a { font-size: 0.98rem; min-height: 44px; display: inline-flex; align-items: center; }
+
+.smartscreen {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 26px 28px;
+}
+.smartscreen h3 { font-size: 1.1rem; }
+.smartscreen p { margin-top: 10px; color: var(--dim); font-size: 0.98rem; }
+.smartscreen ol { margin: 14px 0 0; padding-left: 1.3em; color: var(--text); }
+.smartscreen li + li { margin-top: 6px; }
+.smartscreen .quote { color: var(--text); }
+
+/* footer */
+.site-footer { padding-block: 48px 64px; color: var(--faint); font-size: 0.92rem; }
+.site-footer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px 64px; }
+.site-footer p + p { margin-top: 10px; }
+.site-footer a { color: var(--dim); }
+.site-footer a:hover { color: var(--text); }
+.footer-links { display: flex; flex-wrap: wrap; gap: 4px 22px; margin-bottom: 14px; }
+.footer-links a { color: var(--text); text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; }
+.footer-links a:hover { text-decoration: underline; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 880px) {
+  .split, .split.flip, .download .wrap, .site-footer .wrap { grid-template-columns: minmax(0, 1fr); }
+  .split.flip > :first-child { order: 0; }
+  .site-nav a:not(.lang) { display: none; }
+}
+
+@media (max-width: 560px) {
+  body { font-size: 1rem; }
+  .shot-mark span { font-size: 0.8rem; bottom: calc(100% + 6px); }
+  .hero .mark-box > .mark-arrow { width: 0.8em; height: 0.4em; top: 0.16em; }
+  .window-bar { height: 30px; }
+  .window-bar .controls { gap: 14px; }
+  .tools li { grid-template-columns: 24px 1fr auto; }
+  .actions .button { width: 100%; justify-content: center; }
+  .smartscreen { padding: 22px 20px; }
+}

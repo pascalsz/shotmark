@@ -217,7 +217,7 @@ internal sealed class AnnotationCanvas : FrameworkElement
         foreach (var (_, position) in CropHandles(crop))
             DrawHandle(dc, ToScreen(position), round: false);
 
-        var label = new FormattedText($"{crop.Width:0} × {crop.Height:0}", CultureInfo.GetCultureInfo("de-DE"), FlowDirection.LeftToRight,
+        var label = new FormattedText($"{crop.Width:0} × {crop.Height:0}", CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
             new Typeface("Segoe UI"), 12, Brushes.White, VisualTreeHelper.GetDpi(this).PixelsPerDip);
         var pill = new Rect(inner.X + 8, inner.Y + 8, label.Width + 16, label.Height + 6);
         dc.DrawRoundedRectangle(PillBrush, null, pill, 4, 4);
