@@ -153,6 +153,9 @@ foreach ($lang in $Pages.Keys) {
 
     # Code signing policy (Bedingung der SignPath Foundation): von der Startseite verlinkt, mit genau diesem Begriff
     Check ([regex]::IsMatch($html, '<a\s[^>]*href="code-signing/"[^>]*>Code signing policy</a>')) $lang 'Link "Code signing policy" auf code-signing/ fehlt'
+    # Download-Bereich muss die SignPath Foundation nennen (Bedingung im SignPath-Antrag)
+    $download = [regex]::Match($html, '(?s)<section[^>]*id="download".*?</section>').Value
+    Check ($download.Contains('<a href="https://signpath.org/">SignPath Foundation</a>')) $lang 'Download-Bereich nennt die SignPath Foundation nicht'
 
     # 9. Snagit nur als Einordnung, Markenhinweis wörtlich
     foreach ($el in 'title', 'h1', 'h2', 'h3') {
