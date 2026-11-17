@@ -4,6 +4,13 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Englisch ist die Grundsprache, Übersetzungen liegen in *.de.resx -->
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Localization\CoreStrings.resx" GenerateSource="true" PublicClass="true" StronglyTypedLanguage="CSharp"
+                      StronglyTypedNamespace="ShotMark.Core.Localization" StronglyTypedClassName="CoreStrings" />
+  </ItemGroup>
 
 </Project>

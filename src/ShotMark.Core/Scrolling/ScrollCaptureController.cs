@@ -1,3 +1,5 @@
+using ShotMark.Core.Localization;
+
 namespace ShotMark.Core.Scrolling;
 
 public interface IFrameSource
@@ -59,8 +61,8 @@ public sealed record ScrollCaptureOptions
 public sealed class ScrollCaptureController(
     IFrameSource source, IScroller scroller, IUserActivity activity, IDelay delay, ScrollCaptureOptions? options = null)
 {
-    public const string HintManual = "Manuell – langsam selbst scrollen, dann Stopp";
-    public const string HintNoReaction = "Keine Bewegung – mit dem Mausrad selbst scrollen oder Stopp";
+    public static string HintManual => CoreStrings.ScrollHintManual;
+    public static string HintNoReaction => CoreStrings.ScrollHintNoReaction;
 
     private readonly ScrollCaptureOptions _o = options ?? new ScrollCaptureOptions();
 
