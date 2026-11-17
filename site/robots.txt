@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pascalsz.github.io/shotmark/sitemap.xml
