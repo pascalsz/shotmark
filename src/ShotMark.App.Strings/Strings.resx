@@ -652,7 +652,7 @@ PC: {1}</value>
     <value>Settings …</value>
   </data>
   <data name="Tray_Tooltip" xml:space="preserve">
-    <value>ShotMark – {0} for a screenshot</value>
+    <value>ShotMark {1} – {0} for a screenshot</value>
   </data>
   <data name="UnexpectedError" xml:space="preserve">
     <value>An unexpected error occurred. Details are in {0}.</value>

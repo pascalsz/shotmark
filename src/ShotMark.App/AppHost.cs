@@ -344,7 +344,7 @@ internal sealed class AppHost : IEditorHost, IEditorCommands, ITrayCommands, IDi
         _scrollHotkeyPending = false;
         _preCapture?.SetHotkey(null);
         _hotkeyRetry?.Stop();
-        var window = new SettingsWindow(_settings, _automaticFolder, Autostart.IsInstalledCopy && _manageAutostart, CheckHotkey);
+        var window = new SettingsWindow(_settings, _automaticFolder, Autostart.IsInstalledCopy && _manageAutostart, CheckHotkey, AppVersion.Current);
         if (_editor is { IsVisible: true }) window.Owner = _editor;
         _settingsWindow = window;
         var accepted = window.ShowDialog() == true;

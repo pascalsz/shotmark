@@ -78,9 +78,13 @@
             <TextBlock x:Name="ErrorText" TextWrapping="Wrap" />
         </Border>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0">
-            <Button Style="{StaticResource OutlineButton}" Content="{x:Static loc:Strings.Common_Cancel}" IsCancel="True" Margin="0,0,8,0" Padding="16,8" />
-            <Button Style="{StaticResource PrimaryButton}" Content="{x:Static loc:Strings.Common_Save}" IsDefault="True" Click="OnSave" />
-        </StackPanel>
+        <DockPanel Margin="0,24,0,0" LastChildFill="False">
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <Button Style="{StaticResource OutlineButton}" Content="{x:Static loc:Strings.Common_Cancel}" IsCancel="True" Margin="0,0,8,0" Padding="16,8" />
+                <Button Style="{StaticResource PrimaryButton}" Content="{x:Static loc:Strings.Common_Save}" IsDefault="True" Click="OnSave" />
+            </StackPanel>
+            <TextBlock x:Name="VersionText" DockPanel.Dock="Left" VerticalAlignment="Center"
+                       Foreground="{StaticResource TextFaintBrush}" FontSize="12" />
+        </DockPanel>
     </StackPanel>
 </Window>
