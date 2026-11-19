@@ -45,6 +45,13 @@ public sealed class AutostartTests : IDisposable
     }
 
     [Fact]
+    public void Run_entry_starts_in_the_background()
+    {
+        // Nach der Anmeldung soll ShotMark still im Tray warten, nicht das Editorfenster öffnen
+        Assert.Equal(@"""C:\Apps\ShotMark.exe"" --background", Autostart.RunCommand(@"C:\Apps\ShotMark.exe"));
+    }
+
+    [Fact]
     public void Falls_back_to_the_running_exe_without_install_root()
     {
         Assert.Equal(_exe, Autostart.LaunchTarget(_exe, null));
