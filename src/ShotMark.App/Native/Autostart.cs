@@ -17,9 +17,12 @@ internal static class Autostart
     {
         if (!IsInstalledCopy) return;
         using var key = Registry.CurrentUser.CreateSubKey(RunKey);
-        if (enabled) key.SetValue(ValueName, $"\"{LaunchTarget(exePath, InstallRoot(exePath))}\"");
+        if (enabled) key.SetValue(ValueName, RunCommand(LaunchTarget(exePath, InstallRoot(exePath))));
         else key.DeleteValue(ValueName, throwOnMissingValue: false);
     }
+
+    /// <summary>Nach der Anmeldung still im Tray starten; der Velopack-Starter reicht Argumente an die App weiter.</summary>
+    internal static string RunCommand(string target) => $"\"{target}\" {StartupArguments.Background}";
 
     /// <summary>Stammordner der Velopack-Installation; ohne Locator der Ordner über <c>current\</c>.</summary>
     internal static string? InstallRoot(string exePath)

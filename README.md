@@ -14,7 +14,8 @@ ShotMark ist kostenlos und quelloffen (MIT-Lizenz), braucht kein Konto, sammelt 
 1. **`ShotMark.App-win-Setup.exe`** aus dem [neuesten Release](https://github.com/pascalsz/shotmark/releases/latest) herunterladen und starten.
    ShotMark wird für den angemeldeten Benutzer nach `%LOCALAPPDATA%\ShotMark.App\` installiert. Adminrechte und ein installiertes .NET sind nicht nötig.
 2. Beim ersten Start fragt ShotMark nach dem **Namen dieses PCs** (z. B. „Büro“ oder „Laptop“).
-3. ShotMark wartet im Infobereich der Taskleiste und startet ab jetzt mit Windows.
+3. ShotMark öffnet den Editor und wartet danach im Infobereich der Taskleiste. Mit Windows startet es still im Infobereich,
+   über das Startmenü mit offenem Editor.
 
 > **Windows-SmartScreen-Warnung?** Das Setup ist (noch) nicht digital signiert. Windows zeigt deshalb beim ersten Start
 > „Der Computer wurde durch Windows geschützt“. Über *Weitere Informationen* → *Trotzdem ausführen* geht es weiter.
@@ -128,7 +129,8 @@ Screenshots\
 
 | Aufruf | Wirkung |
 |---|---|
-| `ShotMark.exe` | starten bzw. Editor der laufenden Instanz zeigen |
+| `ShotMark.exe` | starten und Editor zeigen bzw. Editor der laufenden Instanz zeigen |
+| `ShotMark.exe --background` | still im Infobereich starten, ohne Fenster (so trägt sich der Autostart ein) |
 | `ShotMark.exe --capture` | Aufnahme in der laufenden Instanz starten (z. B. für eine Verknüpfung) |
 | `ShotMark.exe --exit` | laufende Instanz geordnet beenden |
 | `ShotMark.exe --profile <Ordner>` | eigenes Einstellungsprofil, z. B. um einen zweiten PC zu simulieren |

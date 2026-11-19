@@ -15,7 +15,9 @@ namespace ShotMark.App;
 
 /// <summary>
 /// Start: eine Instanz pro Profil. Weitere Starts melden sich bei der laufenden Instanz:
-/// ohne Argument → Editor zeigen, <c>--capture</c> → Aufnahme starten, <c>--exit</c> → geordnet beenden.
+/// ohne Argument → Editor zeigen, <c>--capture</c> → Aufnahme starten, <c>--exit</c> → geordnet beenden,
+/// <c>--background</c> → nichts (Autostart, wenn ShotMark schon läuft).
+/// Der erste Start öffnet den Editor, außer mit <c>--background</c> (siehe <see cref="StartupArguments"/>).
 /// <c>--profile &lt;Ordner&gt;</c> nutzt ein eigenes Einstellungsverzeichnis (z. B. um einen zweiten PC zu simulieren).
 /// </summary>
 public partial class App : Application
@@ -78,14 +80,17 @@ public partial class App : Application
         _showSignal = new EventWaitHandle(false, EventResetMode.AutoReset, $@"Local\ShotMark-Show-{id}");
         _captureSignal = new EventWaitHandle(false, EventResetMode.AutoReset, $@"Local\ShotMark-Capture-{id}");
         _exitSignal = new EventWaitHandle(false, EventResetMode.AutoReset, $@"Local\ShotMark-Exit-{id}");
-        var wantsCapture = e.Args.Contains("--capture", StringComparer.OrdinalIgnoreCase);
+        var action = StartupArguments.Parse(e.Args);
+        var wantsCapture = action == StartupAction.Capture;
         var wantsExit = e.Args.Contains("--exit", StringComparer.OrdinalIgnoreCase);
 
         if (!isFirstInstance)
         {
             // Laufende Instanz darf ihr Fenster/Overlay in den Vordergrund holen (sonst kein Tastaturfokus für Esc)
             Native.NativeMethods.AllowSetForegroundWindow(Native.NativeMethods.ASFW_ANY);
-            (wantsExit ? _exitSignal : wantsCapture ? _captureSignal : _showSignal).Set();
+            if (wantsExit) _exitSignal.Set();
+            else if (wantsCapture) _captureSignal.Set();
+            else if (action != StartupAction.Background) _showSignal.Set();
             Shutdown();
             return;
         }
@@ -120,7 +125,7 @@ public partial class App : Application
         ListenForSignals();
         StartUpdater();
         if (wantsCapture) _host.StartCapture();
-        else if (e.Args.Contains("--open-editor", StringComparer.OrdinalIgnoreCase)) _host.OpenEditor();
+        else if (action == StartupAction.OpenEditor) _host.OpenEditor();
     }
 
     /// <summary>

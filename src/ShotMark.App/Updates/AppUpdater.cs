@@ -95,8 +95,8 @@ internal sealed class AppUpdater : IDisposable
         Log.Info($"Neustart für Update {pending.Version}");
         try
         {
-            // Beendet den Prozess sofort, Velopack installiert und startet ShotMark neu
-            _manager.ApplyUpdatesAndRestart(pending);
+            // Beendet den Prozess sofort, Velopack installiert und startet ShotMark neu – im Tray, wie vorher
+            _manager.ApplyUpdatesAndRestart(pending, [StartupArguments.Background]);
         }
         catch (Exception e)
         {
