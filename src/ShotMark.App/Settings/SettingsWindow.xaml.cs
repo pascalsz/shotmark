@@ -24,7 +24,8 @@ internal partial class SettingsWindow : Window
     internal static string ExampleFileName(string pcName) => new CaptureName(DateTime.Now, PcName.ToSlug(pcName)).BaseName + ".png";
 
     /// <param name="checkHotkey">Prüft, ob das Kürzel frei ist; liefert sonst eine Fehlermeldung.</param>
-    public SettingsWindow(AppSettings settings, string automaticFolder, bool isInstalledCopy, Func<HotkeySetting, string?> checkHotkey)
+    /// <param name="version">Angezeigte Version unten links; null blendet sie aus.</param>
+    public SettingsWindow(AppSettings settings, string automaticFolder, bool isInstalledCopy, Func<HotkeySetting, string?> checkHotkey, string? version)
     {
         InitializeComponent();
         SourceInitialized += (_, _) => Native.NativeMethods.UseDarkTitleBar(this);
@@ -54,6 +55,8 @@ internal partial class SettingsWindow : Window
             _ => LanguageAuto,
         }).IsChecked = true;
         UpdateFolder();
+        VersionText.Text = version is null ? "" : $"ShotMark {version}";
+        VersionText.Visibility = version is null ? Visibility.Collapsed : Visibility.Visible;
     }
 
     public AppSettings? Result { get; private set; }

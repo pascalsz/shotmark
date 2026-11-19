@@ -57,8 +57,11 @@ internal sealed class TrayIcon : IDisposable
     {
         _captureItem.Text = Loc.Format(Strings.Tray_NewCapture, label);
         _scrollItem.Text = scrollLabel is null ? Strings.Tray_ScrollCapture : Loc.Format(Strings.Tray_ScrollCaptureWithKey, scrollLabel);
-        _icon.Text = Loc.Format(Strings.Tray_Tooltip, label);
+        _icon.Text = TooltipText(label, AppVersion.Current);
     }
+
+    /// <summary>Tooltip des Tray-Symbols: Version und Aufnahme-Kürzel. Windows erlaubt höchstens 127 Zeichen.</summary>
+    internal static string TooltipText(string hotkeyLabel, string version) => Loc.Format(Strings.Tray_Tooltip, hotkeyLabel, version);
 
     public void ShowInfo(string title, string text)
     {

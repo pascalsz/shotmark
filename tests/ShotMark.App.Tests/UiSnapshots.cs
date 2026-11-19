@@ -166,7 +166,7 @@ public class UiSnapshots
             empty.Close();
 
             // Einstellungen und Ersteinrichtung
-            var settings = new SettingsWindow(new AppSettings { PcName = demo.OwnPcName }, @"C:\Users\anna\Dropbox\Screenshots", false, _ => null);
+            var settings = new SettingsWindow(new AppSettings { PcName = demo.OwnPcName }, @"C:\Users\anna\Dropbox\Screenshots", false, _ => null, "1.2.0");
             ShowOffscreen(settings, settings.Width, double.NaN);
             DispatcherPump.Pump(300);
             Save(settings, "09-settings.png");
